@@ -1,5 +1,7 @@
 # macOS
+
 .DS_Store
+**/.DS_Store
 
 # Dependencies
 node_modules/
@@ -9,3 +11,16 @@ dist/
 
 # Logs
 *.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
