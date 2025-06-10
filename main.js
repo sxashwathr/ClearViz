@@ -1,3 +1,4 @@
+process.env.ELECTRON_PRODUCT_NAME = 'ClearViz';
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 app.setName('ClearViz');
