@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
+app.setName('ClearViz');
 
 let mainWindow;
 
