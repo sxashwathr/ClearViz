@@ -4,11 +4,11 @@ const path = require('path');
 let mainWindow;
 
 function createWindow() {
-  app.dock.setIcon(path.join(__dirname, 'assets/icon.png'));
+  app.dock.setIcon(path.join(__dirname, 'assets/icon.icns'));
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: path.join(__dirname, 'assets/icon.png'),
+    icon: path.join(__dirname, 'assets/icon.icns'),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
