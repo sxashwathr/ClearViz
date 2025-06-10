@@ -13,8 +13,8 @@
   "author": "Sashwath",
   "license": "GNU General Public License v3.0",
   "devDependencies": {
-    "electron": "^latest",
-    "electron-builder": "^latest"
+    "electron": "latest",
+    "electron-builder": "latest"
   },
   "build": {
     "appId": "com.sashwath.clearviz",
