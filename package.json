@@ -4,7 +4,7 @@
   "description": "Data visualization desktop application for small businesses",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --name=ClearViz",
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
