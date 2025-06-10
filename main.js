@@ -4,9 +4,7 @@ const path = require('path');
 let mainWindow;
 
 function createWindow() {
-  if (process.platform !== 'darwin') {
-  app.setIcon(path.join(__dirname, 'assets/icon.png'));
-}
+  app.dock.setIcon(path.join(__dirname, 'assets/icon.png'));
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
