@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 app.setName('ClearViz');
+app.getName = () => 'ClearViz';
 
 let mainWindow;
 
@@ -105,6 +106,7 @@ function createMenu() {
 
 // App event handlers
 app.whenReady().then(() => {
+  app.setName('ClearViz');
   createWindow();
 
 app.on('activate', () => {
