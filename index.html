@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flourish-Style Data Visualization</title>
+    <title>ClearViz, Data Reimagined</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,8 +12,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
+            --bg-primary: #0a0b0d; /* Darker background */
+            --bg-secondary: #111317; /* Slightly lighter secondary */
             --bg-tertiary: #21262d;
             --bg-accent: #1c2128;
             --text-primary: #f0f6fc;
@@ -41,7 +41,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            background: var(--bg-primary); /* Use the darker primary background */
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
@@ -76,14 +76,13 @@
         }
 
         .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            border-radius: 8px;
-            display: flex;
+            width: 120px; /* Adjust size as needed */
+            height: auto;
+            /* background removed */
+            /* border-radius removed */
+            /* display: flex removed */
             align-items: center;
             justify-content: center;
-            color: white;
         }
 
         .header-actions {
@@ -490,31 +489,193 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Hero Section Styles */
+.hero-section {
+    min-height: 100vh;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(188, 140, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(63, 185, 80, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.nav-bar {
+    position: relative;
+    z-index: 10;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.logo-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    border-radius: 20px;
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+}
+
+.hero-highlight {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.upload-hero-area {
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-primary);
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.upload-hero-area:hover {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+.upload-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-hero-icon {
+    font-size: 2rem;
+    color: var(--accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.upload-hero-formats {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="#" class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                Flourish
-            </a>
-            <div class="header-actions">
-                <button class="btn" onclick="exportChart()">
-                    <i class="fas fa-download"></i>
-                    Export
-                </button>
-                <button class="btn btn-primary" onclick="showHelp()">
-                    <i class="fas fa-question-circle"></i>
-                    Help
-                </button>
+    <header class="hero-section">
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="logo">
+                <img src="clearviz.png" alt="ClearViz Logo" class="logo-icon">
+                <span class="logo-text">ClearViz</span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="showHelp()">Help</button>
+                <button class="btn btn-primary" onclick="exportChart()">Get Started</button>
             </div>
         </div>
-    </header>
+    </nav>
+    
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-chart-line"></i>
+            100% DATA-DRIVEN
+        </div>
+        <h1 class="hero-title"><span class="hero-highlight">ClearViz</span>, Data Reimagined.</h1>
+        <p class="hero-subtitle">
+            ClearViz transforms your raw data into beautiful, insightful visualizations
+        </p>
+        
+        <div class="upload-hero-area" id="heroUploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-hero-content">
+                <i class="fas fa-cloud-upload-alt upload-hero-icon"></i>
+                <span>Upload your data file to get started</span>
+                <div class="upload-hero-formats">CSV, Excel, or JSON files</div>
+            </div>
+        </div>
+    </div>
+</header>
 
-    <div class="main-container">
+    <div class="main-container" id="mainContainer" style="display: none;">
         <aside class="sidebar">
             <div class="sidebar-section">
                 <h3 class="section-title">Data Source</h3>
@@ -992,6 +1153,7 @@ function generateInsights(xColumn, yColumn, chartData) {
             
             populateColumnSelectors();
             showDataPreview();
+            document.getElementById('mainContainer').style.display = 'grid';
         }
 
         function populateColumnSelectors() {
@@ -1114,9 +1276,7 @@ function generateInsights(xColumn, yColumn, chartData) {
             `;
             emptyState.style.display = 'block'
         }
-// VS CODE SPECIFIC FIXES - ADD these to your file
 
-// 1. REPLACE the incomplete showChartLoading() function
 function showChartLoading() {
     const chartContainer = document.getElementById('chartContainer');
     const emptyState = chartContainer.querySelector('.empty-state');
@@ -1243,4 +1403,45 @@ function processDataImproved(data, filename) {
         }
     }, 1000);
 }
+// Hero upload area functionality
+document.getElementById('heroUploadArea').addEventListener('click', function() {
+   document.getElementById('fileInput').click();
+});
 
+// Also update the existing drag and drop for hero area
+const heroUploadArea = document.getElementById('heroUploadArea');
+if (heroUploadArea) {
+   heroUploadArea.addEventListener('dragover', (e) => {
+       e.preventDefault();
+       heroUploadArea.style.borderColor = 'var(--accent-blue)';
+       heroUploadArea.style.background = 'rgba(88, 166, 255, 0.05)';
+   });
+
+   heroUploadArea.addEventListener('dragleave', () => {
+       heroUploadArea.style.borderColor = 'var(--border-primary)';
+       heroUploadArea.style.background = 'var(--bg-secondary)';
+   });
+
+   heroUploadArea.addEventListener('drop', (e) => {
+       e.preventDefault();
+       heroUploadArea.style.borderColor = 'var(--border-primary)';
+       heroUploadArea.style.background = 'var(--bg-secondary)';
+       const files = e.dataTransfer.files;
+       if (files.length > 0) {
+           processFile(files[0]);
+       }
+   });
+}
+
+function showMessage(message, type) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    
+    setTimeout(() => {
+        statusDiv.innerHTML = '';
+    }, 5000);
+}
+
+</script>
+</body>
+</html>
