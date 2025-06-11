@@ -26,6 +26,8 @@ By combining the mind of an AI with intuitive insights, ClearViz helps you get t
 
 ## Self-hosting
 
+Navigate to Terminal (Mac/Linux) or Command Prompt (Windows), and enter the following commands.
+
 1. **Clone and Navigate to this repo**:
 ```bash
 git clone https://github.com/sxashwathr/ClearViz/
