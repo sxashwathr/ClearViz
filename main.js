@@ -17,7 +17,6 @@ function getIconPath() {
   }
   console.log('Icon path:', iconPath); // Add this debug line
   return iconPath;
-  }
 }
 
 function createWindow() {
