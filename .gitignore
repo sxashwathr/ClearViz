@@ -26,3 +26,5 @@ pids
 .eslintcache
 
 web/manifest.json
+
+frontend/
