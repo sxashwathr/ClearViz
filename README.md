@@ -26,7 +26,22 @@ By combining the mind of an AI with intuitive insights, ClearViz helps you get t
 
 ## Self-hosting
 
-**Coming soon with the release of AI insights**
+1. **Clone and Navigate to this repo**:
+```bash
+git clone https://github.com/sxashwathr/ClearViz/
+cd ClearViz
+```
+2. **Install Nodejs dependences**:
+```bash
+npm install
+```
+3. **Start the application**:
+```bash
+npm start
+
+```
+
+### More coming soon with the release of AI insights...
 
 ## Acknowledgements
 
