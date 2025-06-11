@@ -30,16 +30,15 @@ By combining the mind of an AI with intuitive insights, ClearViz helps you get t
 - Node.js (version 14 or higher) - [Download here](https://nodejs.org/)
 - Git - [Download here](https://git-scm.com/)
 
-For git download:
-```bash
-$ git --version
-```
+For git download, `$ git --version` will prompt you to download the latest version. 
 
 Navigate to Terminal (Mac/Linux) or Command Prompt (Windows), and enter the following commands.
 
 1. **Clone and Navigate to this repo:**
 ```bash
 git clone https://github.com/sxashwathr/ClearViz/
+```
+```bash
 cd ClearViz
 ```
 2. **Install Nodejs dependences:**
