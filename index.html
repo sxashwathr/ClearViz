@@ -670,7 +670,7 @@
             ClearViz transforms your raw data into beautiful, insightful visualizations
         </p>
         
-        <div class="upload-hero-area" id="heroUploadArea" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-hero-area" id="heroUploadArea">
             <div class="upload-hero-content">
                 <i class="fas fa-cloud-upload-alt upload-hero-icon"></i>
                 <span>Upload your data file to get started</span>
@@ -1392,6 +1392,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Hero upload area functionality
 document.getElementById('heroUploadArea').addEventListener('click', function() {
+   // Hide hero immediately when clicked
+   document.querySelector('.hero-section').style.display = 'none';
+   document.getElementById('mainContainer').style.display = 'grid';
    document.getElementById('fileInput').click();
 });
 
