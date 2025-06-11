@@ -63,7 +63,7 @@ function createWindow() {
   });
   
   createMenu();
-}
+
   
   mainWindow.loadFile('index.html'); 
 
