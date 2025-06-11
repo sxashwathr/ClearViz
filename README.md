@@ -26,7 +26,13 @@ By combining the mind of an AI with intuitive insights, ClearViz helps you get t
 
 ## Self-hosting
 
+**Coming soon with the release of AI insights**
+
 ## Acknowledgements
+
+### Contributors:
+- Sashwath Ravishankar
+- Raghav Reddy
 
 ## License
 
