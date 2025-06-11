@@ -15,6 +15,9 @@ function getIconPath() {
   } else {
     return path.join(appPath, 'assets', 'icon.png'); // Linux
   }
+  console.log('Icon path:', iconPath); // Add this debug line
+  return iconPath;
+  }
 }
 
 function createWindow() {
