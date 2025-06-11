@@ -6,12 +6,21 @@ app.getName = () => 'ClearViz';
 
 let mainWindow;
 
+function getIconPath() {
+  if (process.platform === 'darwin') {
+    return path.join(__dirname, 'assets', 'icon.icns'); // macOS
+  } else if (process.platform === 'win32') {
+    return path.join(__dirname, 'assets', 'icon.ico');  // Windows
+  } else {
+    return path.join(__dirname, 'assets', 'icon.png');  // Linux
+  }
+}
+
 function createWindow() {
-  app.dock.setIcon(path.join(__dirname, 'assets/icon.icns'));
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    icon: path.join(__dirname, 'assets/icon.icns'),
+    icon: getIconPath(),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
