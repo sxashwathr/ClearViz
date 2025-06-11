@@ -33,6 +33,22 @@ function createWindow() {
     show: false
   });
 
+  // For macOS dock icon specifically
+  if (process.platform === 'darwin') {
+    app.dock.setIcon(getIconPath());
+  }
+
+  mainWindow.loadFile('index.html'); 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  
+  createMenu();
+}
  if (process.platform === 'darwin') {
     app.dock.setIcon(getIconPath());
   }
@@ -135,13 +151,14 @@ function createMenu() {
 
 // App event handlers
 app.whenReady().then(() => {
+  app.setName('ClearViz');
   createWindow();
+});
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
 
 app.on('window-all-closed', () => {
