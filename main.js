@@ -62,7 +62,7 @@ function createWindow() {
   });
 
   createMenu();
-}
+
 
 function createMenu() {
   const template = [
