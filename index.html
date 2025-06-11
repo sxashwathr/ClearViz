@@ -1047,6 +1047,9 @@ function generateInsights(xColumn, yColumn, chartData) {
 
         function processFile(file) {
             showMessage(`Processing ${file.name}...`, 'success');
+
+            document.querySelector('.hero-section').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'grid';
             
             const fileExtension = file.name.split('.').pop().toLowerCase();
             
@@ -1087,7 +1090,7 @@ function generateInsights(xColumn, yColumn, chartData) {
                         });
                         return cleanRow;
                     });
-                    processDataImproved(cleanData, file.name);
+                    processData(cleanData, file.name);
                 },
                 header: true,
                 skipEmptyLines: true,
@@ -1106,7 +1109,26 @@ function generateInsights(xColumn, yColumn, chartData) {
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    processData(jsonData, file.name);
+                    const cleanData = jsonData.filter(row => {
+                        return row && typeof row === 'object' && Object.keys(row).length > 0;
+                    }).map(row => {
+                        const cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            const value = row[key];
+                            if (typeof value === 'string' && value.trim() !== '') {
+                                const numValue = parseFloat(value.replace(/[,$%]/g, ''));
+                                if (!isNaN(numValue) && isFinite(numValue)) {
+                                    cleanRow[key.trim()] = numValue;
+                                } else {
+                                    cleanRow[key.trim()] = value.trim();
+                                }
+                            } else {
+                                cleanRow[key.trim()] = value;
+                            }
+                        });
+                        return cleanRow;
+                    });
+                    processData(cleanData, file.name);
                 } catch (error) {
                     showMessage('Error parsing Excel file: ' + error.message, 'error');
                 }
@@ -1120,7 +1142,26 @@ function generateInsights(xColumn, yColumn, chartData) {
                 try {
                     const jsonData = JSON.parse(e.target.result);
                     if (Array.isArray(jsonData)) {
-                        processData(jsonData, file.name);
+                        const cleanData = jsonData.filter(row => {
+                        return row && typeof row === 'object' && Object.keys(row).length > 0;
+                    }).map(row => {
+                        const cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            const value = row[key];
+                            if (typeof value === 'string' && value.trim() !== '') {
+                                const numValue = parseFloat(value.replace(/[,$%]/g, ''));
+                                if (!isNaN(numValue) && isFinite(numValue)) {
+                                    cleanRow[key.trim()] = numValue;
+                                } else {
+                                    cleanRow[key.trim()] = value.trim();
+                                }
+                            } else {
+                                cleanRow[key.trim()] = value;
+                            }
+                        });
+                        return cleanRow;
+                    });
+                    processData(cleanData, file.name);
                     } else {
                         showMessage('JSON file must contain an array of objects', 'error');
                     }
@@ -1350,64 +1391,6 @@ document.addEventListener('DOMContentLoaded', function() {
     fixCanvasSize();
 });
 
-// 6. IMPROVED processData function to handle VS Code issues
-function processDataImproved(data, filename) {
-    console.log('processData called with:', data.length, 'rows');
-    
-    if (!data || data.length === 0) {
-        showMessage('No data found in the file', 'error');
-        return;
-    }
-
-    // More lenient filtering for VS Code
-    const validRows = data.filter(row => {
-        if (!row || typeof row !== 'object') return false;
-        const keys = Object.keys(row);
-        if (keys.length === 0) return false;
-        
-        // Check if at least one value is not empty
-        return keys.some(key => {
-            const value = row[key];
-            return value !== null && value !== undefined && 
-                   String(value).trim() !== '' && String(value).trim() !== 'undefined';
-        });
-    });
-    
-    console.log('Valid rows after filtering:', validRows.length);
-    
-    if (validRows.length === 0) {
-        showMessage('No valid data rows found in the file', 'error');
-        return;
-    }
-
-    currentData = validRows;
-    console.log('Current data set:', currentData);
-    
-    showMessage(`Successfully loaded ${validRows.length} rows from ${filename}`, 'success');
-    
-    // Update file info
-    const fileInfo = document.getElementById('fileInfo');
-    fileInfo.innerHTML = `<div class="status-message status-success"><i class="fas fa-check-circle"></i>File loaded: ${filename} (${validRows.length} rows)</div>`;
-    fileInfo.classList.remove('hidden');
-    
-    // Show controls
-    document.getElementById('chartTypeSection').style.display = 'block';
-    document.getElementById('axisSection').style.display = 'block';
-    
-    populateColumnSelectors();
-    showDataPreview();
-    
-    // Auto-try to create chart if we have data
-    setTimeout(() => {
-        const xSelect = document.getElementById('xAxis');
-        const ySelect = document.getElementById('yAxis');
-        if (xSelect.options.length > 1 && ySelect.options.length > 1) {
-            xSelect.selectedIndex = 1;
-            ySelect.selectedIndex = 2 < ySelect.options.length ? 2 : 1;
-            updateChart();
-        }
-    }, 1000);
-}
 // Hero upload area functionality
 document.getElementById('heroUploadArea').addEventListener('click', function() {
    document.getElementById('fileInput').click();
@@ -1446,6 +1429,17 @@ function showMessage(message, type) {
         statusDiv.innerHTML = '';
     }, 5000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('chart');
+    const container = document.getElementById('chartContainer');
+    
+    if (canvas && container) {
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        container.style.position = 'relative';
+    }
+});
 
 </script>
 </body>
