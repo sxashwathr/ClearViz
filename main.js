@@ -5,17 +5,19 @@ app.setName('ClearViz');
 app.getName = () => 'ClearViz';
 
 let mainWindow;
-
 function getIconPath() {
   const appPath = app.getAppPath();
+  let iconPath;
+  
   if (process.platform === 'darwin') {
-    return path.join(appPath, 'assets', 'icon.icns'); // macOS
+    iconPath = path.join(appPath, 'assets', 'icon.icns'); // macOS
   } else if (process.platform === 'win32') {
-    return path.join(appPath, 'assets', 'icon.ico'); // Windows
+    iconPath = path.join(appPath, 'assets', 'icon.ico'); // Windows
   } else {
-    return path.join(appPath, 'assets', 'icon.png'); // Linux
+    iconPath = path.join(appPath, 'assets', 'icon.png'); // Linux
   }
-  console.log('Icon path:', iconPath); // Add this debug line
+  
+  console.log('Icon path:', iconPath);
   return iconPath;
 }
 
