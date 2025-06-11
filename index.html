@@ -129,6 +129,32 @@
             opacity: 0.9;
             transform: translateY(-1px);
         }
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+            padding: 0.75rem;
+            margin-right: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            height: 44px;
+        }
+
+        .btn-back:hover {
+            background: var(--bg-accent);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            transform: translateX(-2px);
+        }
+
+        .btn-back i {
+            font-size: 1rem;
+        }
 
         .main-container {
             max-width: 1400px;
@@ -646,7 +672,7 @@
     </style>
 </head>
 <body>
-    <header class="hero-section">
+    <header class="hero-section" id="heroSection">
     <nav class="nav-bar">
         <div class="nav-content">
             <div class="logo">
@@ -655,7 +681,7 @@
             </div>
             <div class="nav-actions">
                 <button class="btn btn-outline" onclick="showHelp()">Help</button>
-                <button class="btn btn-primary" onclick="exportChart()">Get Started</button>
+                <button class="btn btn-primary" onclick="scrollToUpload()">Get Started</button>
             </div>
         </div>
     </nav>
@@ -676,6 +702,22 @@
                 <span>Upload your data file to get started</span>
                 <div class="upload-hero-formats">CSV, Excel, or JSON files</div>
             </div>
+        </div>
+    </div>
+</header>
+
+<header class="header" id="dataHeader" style="display: none;">
+    <div class="header-content">
+        <div class="logo">
+            <button class="btn btn-back" onclick="goHome()" title="Back to Home">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
+            <span class="logo-text">ClearViz</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" onclick="showHelp()">Help</button>
+            <button class="btn btn-primary" onclick="exportChart()">Export Chart</button>
         </div>
     </div>
 </header>
@@ -1047,8 +1089,7 @@ function generateInsights(xColumn, yColumn, chartData) {
 
         function processFile(file) {
             showMessage(`Processing ${file.name}...`, 'success');
-            document.querySelector('.hero-section').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'grid';
+            showDataPage();
             
             const fileExtension = file.name.split('.').pop().toLowerCase();
             
@@ -1392,10 +1433,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Hero upload area functionality
 document.getElementById('heroUploadArea').addEventListener('click', function() {
-   // Hide hero immediately when clicked
-   document.querySelector('.hero-section').style.display = 'none';
-   document.getElementById('mainContainer').style.display = 'grid';
-   document.getElementById('fileInput').click();
+    document.getElementById('fileInput').click();
 });
 
 // Also update the existing drag and drop for hero area
@@ -1442,6 +1480,69 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.position = 'relative';
     }
 });
+
+// Page Navigation Functions
+function goHome() {
+    // Hide data visualization page
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('dataHeader').style.display = 'none';
+    
+    // Show home page
+    document.getElementById('heroSection').style.display = 'block';
+    
+    // Reset data and charts
+    currentData = null;
+    if (currentChart) {
+        currentChart.destroy();
+        currentChart = null;
+    }
+    
+    // Reset form
+    document.getElementById('fileInput').value = '';
+    document.getElementById('xAxis').innerHTML = '<option value="">Select column...</option>';
+    document.getElementById('yAxis').innerHTML = '<option value="">Select column...</option>';
+    
+    // Hide sections
+    document.getElementById('chartTypeSection').style.display = 'none';
+    document.getElementById('axisSection').style.display = 'none';
+    document.getElementById('previewCard').style.display = 'none';
+    document.getElementById('insightsCard').style.display = 'none';
+    document.getElementById('fileInfo').classList.add('hidden');
+    
+    // Reset chart container
+    const chartContainer = document.getElementById('chartContainer');
+    const emptyState = chartContainer.querySelector('.empty-state');
+    if (emptyState) {
+        emptyState.innerHTML = `
+            <div class="empty-state-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="empty-state-title">No Data Yet</div>
+            <div class="empty-state-text">Upload a data file to get started with your visualization</div>
+        `;
+    }
+    document.getElementById('chart').style.display = 'none';
+    
+    // Clear status messages
+    document.getElementById('statusMessage').innerHTML = '';
+    
+    showMessage('Returned to home page', 'success');
+}
+
+function scrollToUpload() {
+    document.getElementById('heroUploadArea').scrollIntoView({ 
+        behavior: 'smooth' 
+    });
+}
+
+function showDataPage() {
+    // Hide home page
+    document.getElementById('heroSection').style.display = 'none';
+    
+    // Show data visualization page
+    document.getElementById('dataHeader').style.display = 'block';
+    document.getElementById('mainContainer').style.display = 'grid';
+}
 
 </script>
 </body>
