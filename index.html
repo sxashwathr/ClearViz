@@ -17,8 +17,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --bg-primary: #0a0b0d;
-            --bg-secondary: #111317;
+            --bg-primary: #0a0b0d; /* Darker background */
+            --bg-secondary: #111317; /* Slightly lighter secondary */
             --bg-tertiary: #21262d;
             --bg-accent: #1c2128;
             --text-primary: #f0f6fc;
@@ -46,10 +46,54 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            background: var(--bg-primary); /* Use the darker primary background */
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 32px; /* Adjust size as needed */
+            height: 32px;
+            /* background removed */
+            /* border-radius removed */
+            /* display: flex removed */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
         .btn {
@@ -86,170 +130,6 @@
             transform: translateY(-1px);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-primary);
-            color: var(--text-secondary);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        .hero-section {
-            min-height: 100vh;
-            background: var(--bg-primary);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(188, 140, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(63, 185, 80, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .nav-bar {
-            position: relative;
-            z-index: 10;
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--border-primary);
-        }
-
-        .nav-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .logo-text {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.375rem 0.75rem;
-            background: rgba(88, 166, 255, 0.1);
-            border: 1px solid rgba(88, 166, 255, 0.3);
-            border-radius: 20px;
-            color: var(--accent-blue);
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-bottom: 2rem;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            line-height: 1.1;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-highlight {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            line-height: 1.6;
-        }
-
-        .upload-hero-area {
-            background: var(--bg-secondary);
-            border: 2px dashed var(--border-primary);
-            border-radius: 12px;
-            padding: 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .upload-hero-area:hover {
-            border-color: var(--accent-blue);
-            background: rgba(88, 166, 255, 0.05);
-        }
-
-        .upload-hero-area.dragover {
-            border-color: var(--accent-blue);
-            background: rgba(88, 166, 255, 0.1);
-        }
-
-        .upload-hero-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .upload-hero-icon {
-            font-size: 2rem;
-            color: var(--accent-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .upload-hero-formats {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -270,6 +150,65 @@
             gap: 1.5rem;
             align-items: end;
             width: 100%;
+        }
+
+        .sidebar {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .sidebar-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-primary);
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--bg-tertiary);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-blue);
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtext {
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
 
         .form-group {
@@ -357,7 +296,7 @@
             padding: 1.5rem;
             border-bottom: 1px solid var(--border-primary);
             display: flex;
-            justify-content: space-between;
+            justify-content: between;
             align-items: center;
         }
 
@@ -477,11 +416,6 @@
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
         }
 
         .empty-state-icon {
@@ -499,6 +433,55 @@
 
         .empty-state-text {
             font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .header-content {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.25rem;
+            }
+            
+            .header-actions {
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+            
+            .chart-types {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .flourish-glow {
+            background: var(--gradient-primary);
+            background-size: 200% 200%;
+            animation: flourishGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes flourishGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .chart-loading {
@@ -524,226 +507,540 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Hero Section Styles */
+.hero-section {
+    min-height: 100vh;
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
 
-        @media (max-width: 1024px) {
-            .main-container {
-                padding: 1rem;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-        }
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(188, 140, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(63, 185, 80, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
 
-        @media (max-width: 768px) {
-            .nav-bar {
-                padding: 1rem;
-            }
-            
-            .logo {
-                font-size: 1.25rem;
-            }
-            
-            .nav-actions {
-                gap: 0.5rem;
-            }
-            
-            .btn {
-                padding: 0.5rem;
-                font-size: 0.75rem;
-            }
-            
-            .chart-types {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .hero-content {
-                padding: 4rem 1rem 2rem;
-            }
-        }
+.nav-bar {
+    position: relative;
+    z-index: 10;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.logo-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    border-radius: 20px;
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+}
+
+.hero-highlight {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.upload-hero-area {
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-primary);
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.upload-hero-area:hover {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+.upload-hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-hero-icon {
+    font-size: 2rem;
+    color: var(--accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.upload-hero-formats {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
     </style>
 </head>
 <body>
-    <header class="hero-section" id="heroSection">
-        <nav class="nav-bar">
-            <div class="nav-content">
-                <div class="logo">
-                    <div class="logo-icon">
+    <header class="hero-section">
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="logo">
+                <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
+                <span class="logo-text">ClearViz</span>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="showHelp()">Help</button>
+                <button class="btn btn-primary" onclick="exportChart()">Get Started</button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-chart-line"></i>
+            100% DATA-DRIVEN
+        </div>
+        <h1 class="hero-title"><span class="hero-highlight">ClearViz</span>, Data Reimagined.</h1>
+        <p class="hero-subtitle">
+            ClearViz transforms your raw data into beautiful, insightful visualizations
+        </p>
+        
+        <div class="upload-hero-area" id="heroUploadArea">
+            <div class="upload-hero-content">
+                <i class="fas fa-cloud-upload-alt upload-hero-icon"></i>
+                <span>Upload your data file to get started</span>
+                <div class="upload-hero-formats">CSV, Excel, or JSON files</div>
+            </div>
+        </div>
+    </div>
+</header>
+    <div class="main-container" id="mainContainer" style="display: none;">
+        
+
+<main class="main-content">
+    <div id="statusMessage"></div>
+
+    <div class="content-card" id="chartCard">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-chart-area"></i>
+                Visualization
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="chartContainer" class="chart-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <span class="logo-text">ClearViz</span>
+                    <div class="empty-state-title">No Data Yet</div>
+                    <div class="empty-state-text">Upload a data file to get started with your visualization</div>
                 </div>
-                <div class="nav-actions">
-                    <button class="btn btn-outline" onclick="showHelp()">Help</button>
-                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Get Started</button>
+                <canvas id="chart" style="display: none;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-bar" id="settingsBar" style="display: none;">
+        <div class="form-group">
+            <label class="form-label">Chart Type</label>
+            <div class="chart-types">
+                <div class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar')">
+                    <i class="fas fa-chart-bar"></i>
+                    Bar Chart
                 </div>
-            </div>
-        </nav>
-        
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fas fa-chart-line"></i>
-                100% DATA-DRIVEN
-            </div>
-            <h1 class="hero-title"><span class="hero-highlight">ClearViz</span>, Data Reimagined.</h1>
-            <p class="hero-subtitle">
-                ClearViz transforms your raw data into beautiful, insightful visualizations
-            </p>
-            
-            <div class="upload-hero-area" id="heroUploadArea">
-                <div class="upload-hero-content">
-                    <i class="fas fa-cloud-upload-alt upload-hero-icon"></i>
-                    <span>Upload your data file to get started</span>
-                    <div class="upload-hero-formats">CSV, Excel, or JSON files</div>
+                <div class="chart-type-btn" data-type="line" onclick="selectChartType('line')">
+                    <i class="fas fa-chart-line"></i>
+                    Line Chart
+                </div>
+                <div class="chart-type-btn" data-type="pie" onclick="selectChartType('pie')">
+                    <i class="fas fa-chart-pie"></i>
+                    Pie Chart
+                </div>
+                <div class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut')">
+                    <i class="fas fa-dot-circle"></i>
+                    Doughnut
                 </div>
             </div>
         </div>
-    </header>
-    
-    <div class="main-container" id="mainContainer" style="display: none;">
-        <main class="main-content">
-            <div id="statusMessage"></div>
-
-            <div class="content-card" id="chartCard">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-chart-area"></i>
-                        Visualization
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="chartContainer" class="chart-container">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="empty-state-title">No Data Yet</div>
-                            <div class="empty-state-text">Upload a data file to get started with your visualization</div>
-                        </div>
-                        <canvas id="chart" style="display: none;"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="settings-bar" id="settingsBar" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label">Chart Type</label>
-                    <div class="chart-types">
-                        <div class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar')">
-                            <i class="fas fa-chart-bar"></i>
-                            Bar Chart
-                        </div>
-                        <div class="chart-type-btn" data-type="line" onclick="selectChartType('line')">
-                            <i class="fas fa-chart-line"></i>
-                            Line Chart
-                        </div>
-                        <div class="chart-type-btn" data-type="pie" onclick="selectChartType('pie')">
-                            <i class="fas fa-chart-pie"></i>
-                            Pie Chart
-                        </div>
-                        <div class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut')">
-                            <i class="fas fa-dot-circle"></i>
-                            Doughnut
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="xAxis">X-Axis (Categories)</label>
-                    <select id="xAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="yAxis">Y-Axis (Values)</label>
-                    <select id="yAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="maxRows">Max Rows</label>
-                    <input type="number" id="maxRows" class="form-input" value="20" min="5" max="100" onchange="updateChart()">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Upload New File</label>
-                    <button class="btn" onclick="document.getElementById('fileInput').click()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        Choose File
-                    </button>
-                </div>
-            </div>
-
-            <div class="content-card" id="previewCard" style="display: none;">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-table"></i>
-                        Data Preview
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="previewTable"></div>
-                </div>
-            </div>
-
-            <div class="content-card" id="insightsCard" style="display: none;">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Insights
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="insightsContainer" class="insights-grid"></div>
-                </div>
-            </div>
-        </main>
+        <div class="form-group">
+            <label class="form-label" for="xAxis">X-Axis (Categories)</label>
+            <select id="xAxis" class="form-select" onchange="updateChart()">
+                <option value="">Select column...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="yAxis">Y-Axis (Values)</label>
+            <select id="yAxis" class="form-select" onchange="updateChart()">
+                <option value="">Select column...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="maxRows">Max Rows</label>
+            <input type="number" id="maxRows" class="form-input" value="20" min="5" max="100" onchange="updateChart()">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Upload New File</label>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Choose File
+            </button>
+        </div>
     </div>
-    
-    <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
+
+    <div class="content-card" id="previewCard" style="display: none;">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-table"></i>
+                Data Preview
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="previewTable"></div>
+        </div>
+    </div>
+
+    <div class="content-card" id="insightsCard" style="display: none;">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-lightbulb"></i>
+                Insights
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="insightsContainer" class="insights-grid"></div>
+        </div>
+    </div>
+</main>
+    </div>
 
     <script>
         let currentData = null;
         let currentChart = null;
         let selectedChartType = 'bar';
+        // 1. ADD this isValidDataForChart function right after the global variables section
+function isValidDataForChart(xColumn, yColumn, chartType) {
+    if (!currentData || currentData.length === 0) {
+        showMessage('No data available for chart', 'error');
+        return false;
+    }
+    
+    if (!xColumn || !yColumn) {
+        showMessage('Please select both X and Y axis columns', 'error');
+        return false;
+    }
+    
+    // Check if columns exist in data
+    const columns = Object.keys(currentData[0]);
+    if (!columns.includes(xColumn) || !columns.includes(yColumn)) {
+        showMessage('Selected columns not found in data', 'error');
+        return false;
+    }
+    
+    // For pie and doughnut charts, Y column should be numeric
+    if (['pie', 'doughnut'].includes(chartType)) {
+        const yValues = currentData.slice(0, 5).map(row => row[yColumn]);
+        const numericCount = yValues.filter(val => {
+            if (typeof val === 'number') return true;
+            if (typeof val === 'string') {
+                const num = parseFloat(val.replace(/[,$%]/g, ''));
+                return !isNaN(num) && isFinite(num);
+            }
+            return false;
+        }).length;
+        
+        if (numericCount === 0) {
+            showMessage('Y-axis column must contain numeric values for this chart type', 'error');
+            return false;
+        }
+    }
+    
+    return true;
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
+// 2. ADD this prepareChartData function right after isValidDataForChart
+function prepareChartData(xColumn, yColumn, chartType, maxRows = 20) {
+    if (!currentData || currentData.length === 0) return null;
+    
+    // Limit and clean data
+    let processedData = currentData.slice(0, maxRows);
+    
+    // Group data by x-axis values and sum y-axis values
+    const groupedData = {};
+    
+    processedData.forEach(row => {
+        const xValue = String(row[xColumn] || 'Unknown');
+        const yValue = row[yColumn];
+        
+        // Convert y value to number
+        let numericY = 0;
+        if (typeof yValue === 'number') {
+            numericY = yValue;
+        } else if (typeof yValue === 'string') {
+            const parsed = parseFloat(yValue.replace(/[,$%]/g, ''));
+            numericY = !isNaN(parsed) && isFinite(parsed) ? parsed : 0;
+        }
+        
+        if (groupedData[xValue]) {
+            groupedData[xValue] += numericY;
+        } else {
+            groupedData[xValue] = numericY;
+        }
+    });
+    
+    // Convert to arrays for Chart.js
+    const labels = Object.keys(groupedData);
+    const values = Object.values(groupedData);
+    
+    // Generate colors
+    const colors = generateColors(labels.length);
+    
+    return {
+        labels: labels,
+        datasets: [{
+            label: yColumn,
+            data: values,
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            borderWidth: 2,
+            tension: 0.4
+        }]
+    };
+}
+
+// 3. ADD this generateColors helper function
+function generateColors(count) {
+    const baseColors = [
+        'rgba(88, 166, 255, 0.8)',   // Blue
+        'rgba(188, 140, 255, 0.8)',  // Purple
+        'rgba(63, 185, 80, 0.8)',    // Green
+        'rgba(248, 81, 73, 0.8)',    // Red
+        'rgba(210, 153, 34, 0.8)',   // Yellow
+        'rgba(255, 99, 132, 0.8)',   // Pink
+        'rgba(54, 162, 235, 0.8)',   // Light Blue
+        'rgba(255, 159, 64, 0.8)'    // Orange
+    ];
+    
+    const borderColors = [
+        'rgba(88, 166, 255, 1)',
+        'rgba(188, 140, 255, 1)',
+        'rgba(63, 185, 80, 1)',
+        'rgba(248, 81, 73, 1)',
+        'rgba(210, 153, 34, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 159, 64, 1)'
+    ];
+    
+    const background = [];
+    const border = [];
+    
+    for (let i = 0; i < count; i++) {
+        background.push(baseColors[i % baseColors.length]);
+        border.push(borderColors[i % borderColors.length]);
+    }
+    
+    return { background, border };
+}
+
+// 4. ADD this renderChart function (the most important missing piece)
+function renderChart(chartType, chartData) {
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
+    
+    // Destroy existing chart
+    if (currentChart) {
+        currentChart.destroy();
+    }
+    
+    // Chart configuration
+    const config = {
+        type: chartType,
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#f0f6fc'
+                    }
+                }
+            },
+            scales: {}
+        }
+    };
+    
+    // Configure scales based on chart type
+    if (['bar', 'line'].includes(chartType)) {
+        config.options.scales = {
+            x: {
+                ticks: { color: '#8b949e' },
+                grid: { color: '#30363d' }
+            },
+            y: {
+                ticks: { color: '#8b949e' },
+                grid: { color: '#30363d' }
+            }
+        };
+    }
+    
+    // Create new chart
+    currentChart = new Chart(ctx, config);
+}
+
+// 5. ADD this generateInsights function
+function generateInsights(xColumn, yColumn, chartData) {
+    if (!chartData || !chartData.datasets || chartData.datasets.length === 0) return;
+    
+    const values = chartData.datasets[0].data;
+    const labels = chartData.labels;
+    
+    if (!values || values.length === 0) return;
+    
+    // Calculate insights
+    const total = values.reduce((sum, val) => sum + val, 0);
+    const average = total / values.length;
+    const max = Math.max(...values);
+    const min = Math.min(...values);
+    const maxIndex = values.indexOf(max);
+    const minIndex = values.indexOf(min);
+    
+    // Generate insights HTML
+    const insights = [
+        {
+            value: total.toLocaleString(),
+            label: `Total ${yColumn}`
+        },
+        {
+            value: average.toFixed(2),
+            label: `Average ${yColumn}`
+        },
+        {
+            value: labels[maxIndex],
+            label: `Highest: ${labels[maxIndex]} (${max.toLocaleString()})`
+        },
+        {
+            value: labels[minIndex],
+            label: `Lowest: ${labels[minIndex]} (${min.toLocaleString()})`
+        },
+        {
+            value: values.length,
+            label: 'Data Points'
+        },
+        {
+            value: ((max - min) / average * 100).toFixed(1) + '%',
+            label: 'Variation Range'
+        }
+    ];
+    
+    const insightsContainer = document.getElementById('insightsContainer');
+    insightsContainer.innerHTML = insights.map(insight => `
+        <div class="insight-card">
+            <div class="insight-value">${insight.value}</div>
+            <div class="insight-label">${insight.label}</div>
+        </div>
+    `).join('');
+}
+
+        // File upload and processing
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
         });
 
-        function setupEventListeners() {
-            const heroUploadArea = document.getElementById('heroUploadArea');
-            const fileInput = document.getElementById('fileInput');
-            
-            // Click events
-            heroUploadArea.addEventListener('click', () => {
-                fileInput.click();
-            });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
 
-            // Drag and drop events
-            heroUploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                heroUploadArea.classList.add('dragover');
-            });
-
-            heroUploadArea.addEventListener('dragleave', () => {
-                heroUploadArea.classList.remove('dragover');
-            });
-
-            heroUploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                heroUploadArea.classList.remove('dragover');
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    processFile(files[0]);
-                }
-            });
-
-            // File input change
-            fileInput.addEventListener('change', handleFile);
-        }
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        });
 
         function handleFile(event) {
             const file = event.target.files[0];
@@ -754,8 +1051,8 @@
 
         function processFile(file) {
             showMessage(`Processing ${file.name}...`, 'success');
-            document.getElementById('heroSection').style.display = 'none';
-            document.getElementById('mainContainer').style.display = 'block';
+            document.querySelector('.hero-section').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'grid';
             
             const fileExtension = file.name.split('.').pop().toLowerCase();
             
@@ -777,7 +1074,25 @@
                         showMessage('Error parsing CSV: ' + results.errors[0].message, 'error');
                         return;
                     }
-                    const cleanData = cleanAndProcessData(results.data);
+                    const cleanData = results.data.filter(row => {
+                        return Object.values(row).some(value => value !== null && value !== undefined && value !== '');
+                    }).map(row => {
+                        const cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            const value = row[key];
+                            if (typeof value === 'string' && value.trim() !== '') {
+                                const numValue = parseFloat(value.replace(/[,$%]/g, ''));
+                                if (!isNaN(numValue) && isFinite(numValue)) {
+                                    cleanRow[key.trim()] = numValue;
+                                } else {
+                                    cleanRow[key.trim()] = value.trim();
+                                }
+                            } else {
+                                cleanRow[key.trim()] = value;
+                            }
+                        });
+                        return cleanRow;
+                    });
                     processData(cleanData, file.name);
                 },
                 header: true,
@@ -797,7 +1112,25 @@
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                    const cleanData = cleanAndProcessData(jsonData);
+                    const cleanData = jsonData.filter(row => {
+                        return row && typeof row === 'object' && Object.keys(row).length > 0;
+                    }).map(row => {
+                        const cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            const value = row[key];
+                            if (typeof value === 'string' && value.trim() !== '') {
+                                const numValue = parseFloat(value.replace(/[,$%]/g, ''));
+                                if (!isNaN(numValue) && isFinite(numValue)) {
+                                    cleanRow[key.trim()] = numValue;
+                                } else {
+                                    cleanRow[key.trim()] = value.trim();
+                                }
+                            } else {
+                                cleanRow[key.trim()] = value;
+                            }
+                        });
+                        return cleanRow;
+                    });
                     processData(cleanData, file.name);
                 } catch (error) {
                     showMessage('Error parsing Excel file: ' + error.message, 'error');
@@ -812,8 +1145,26 @@
                 try {
                     const jsonData = JSON.parse(e.target.result);
                     if (Array.isArray(jsonData)) {
-                        const cleanData = cleanAndProcessData(jsonData);
-                        processData(cleanData, file.name);
+                        const cleanData = jsonData.filter(row => {
+                        return row && typeof row === 'object' && Object.keys(row).length > 0;
+                    }).map(row => {
+                        const cleanRow = {};
+                        Object.keys(row).forEach(key => {
+                            const value = row[key];
+                            if (typeof value === 'string' && value.trim() !== '') {
+                                const numValue = parseFloat(value.replace(/[,$%]/g, ''));
+                                if (!isNaN(numValue) && isFinite(numValue)) {
+                                    cleanRow[key.trim()] = numValue;
+                                } else {
+                                    cleanRow[key.trim()] = value.trim();
+                                }
+                            } else {
+                                cleanRow[key.trim()] = value;
+                            }
+                        });
+                        return cleanRow;
+                    });
+                    processData(cleanData, file.name);
                     } else {
                         showMessage('JSON file must contain an array of objects', 'error');
                     }
@@ -824,40 +1175,34 @@
             reader.readAsText(file);
         }
 
-        function cleanAndProcessData(data) {
-            return data.filter(row => {
-                return row && typeof row === 'object' && Object.keys(row).length > 0;
-            }).map(row => {
-                const cleanRow = {};
-                Object.keys(row).forEach(key => {
-                    const value = row[key];
-                    if (typeof value === 'string' && value.trim() !== '') {
-                        const numValue = parseFloat(value.replace(/[,$%]/g, ''));
-                        if (!isNaN(numValue) && isFinite(numValue)) {
-                            cleanRow[key.trim()] = numValue;
-                        } else {
-                            cleanRow[key.trim()] = value.trim();
-                        }
-                    } else {
-                        cleanRow[key.trim()] = value;
-                    }
-                });
-                return cleanRow;
-            });
-        }
-
         function processData(data, filename) {
             if (!data || data.length === 0) {
                 showMessage('No data found in the file', 'error');
                 return;
             }
 
-            currentData = data;
-            showMessage(`Successfully loaded ${data.length} rows from ${filename}`, 'success');
+            const validRows = data.filter(row => row && typeof row === 'object' && Object.keys(row).length > 0);
             
+            if (validRows.length === 0) {
+                showMessage('No valid data rows found in the file', 'error');
+                return;
+            }
+
+            currentData = validRows;
+            showMessage(`Successfully loaded ${validRows.length} rows from ${filename}`, 'success');
+            
+            // Update file info
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `<div class="status-message status-success"><i class="fas fa-check-circle"></i>File loaded: ${filename} (${validRows.length} rows)</div>`;
+            fileInfo.classList.remove('hidden');
+            
+            // Show controls
             document.getElementById('settingsBar').style.display = 'grid';
+
+            
             populateColumnSelectors();
             showDataPreview();
+            document.getElementById('mainContainer').style.display = 'grid';
         }
 
         function populateColumnSelectors() {
@@ -870,10 +1215,29 @@
             if (!currentData || currentData.length === 0) return;
 
             const columns = Object.keys(currentData[0]);
+            const columnTypes = {};
             
             columns.forEach(column => {
-                const option1 = new Option(column, column);
-                const option2 = new Option(column, column);
+                const sampleValues = currentData.slice(0, 10).map(row => row[column]);
+                const numericValues = sampleValues.filter(val => {
+                    if (typeof val === 'number') return true;
+                    if (typeof val === 'string') {
+                        const num = parseFloat(val.replace(/[,$%]/g, ''));
+                        return !isNaN(num) && isFinite(num);
+                    }
+                    return false;
+                });
+                columnTypes[column] = {
+                    isNumeric: numericValues.length > sampleValues.length * 0.5,
+                    sampleValue: sampleValues.find(v => v !== null && v !== undefined) || 'N/A'
+                };
+            });
+            
+            columns.forEach(column => {
+                const type = columnTypes[column];
+                const typeLabel = type.isNumeric ? 'Number' : 'Text';
+                const option1 = new Option(`${column} (${typeLabel})`, column);
+                const option2 = new Option(`${column} (${typeLabel})`, column);
                 xSelect.add(option1);
                 ySelect.add(option2);
             });
@@ -890,4 +1254,199 @@
 
             let html = '<table class="preview-table"><thead><tr>';
             columns.forEach(col => {
-                html += `<th>${col}</th>
+                html += `<th>${col}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            previewRows.forEach(row => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    const value = row[col];
+                    const displayValue = (value === null || value === undefined) ? '' : String(value);
+                    html += `<td>${displayValue}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+
+            previewTable.innerHTML = html;
+            previewCard.style.display = 'block';
+        }
+
+        function selectChartType(type) {
+            selectedChartType = type;
+            
+            // Update UI
+            document.querySelectorAll('.chart-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            
+            updateChart();
+        }
+
+        function updateChart() {
+            const xColumn = document.getElementById('xAxis').value;
+            const yColumn = document.getElementById('yAxis').value;
+            const maxRows = parseInt(document.getElementById('maxRows').value);
+
+            if (!xColumn || !yColumn || !currentData) {
+                return;
+            }
+
+            if (!isValidDataForChart(xColumn, yColumn, selectedChartType)) {
+                return;
+            }
+
+            showChartLoading();
+            
+            setTimeout(() => {
+                const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
+                renderChart(selectedChartType, chartData);
+                generateInsights(xColumn, yColumn, chartData);
+                
+                // Show chart
+                document.getElementById('chart').style.display = 'block';
+                document.querySelector('.empty-state').style.display = 'none';
+                document.getElementById('insightsCard').style.display = 'block';
+            }, 500);
+        }
+
+        function showChartLoading() {
+            const chartContainer = document.getElementById('chartContainer');
+            const emptyState = chartContainer.querySelector('.empty-state');
+            
+            emptyState.innerHTML = `
+                <div class="chart-loading">
+                    <div class="spinner"></div>
+                    <div class="empty-state-title">Generating Chart...</div>
+                    <div class="empty-state-text">Processing your data</div>
+                </div>
+            `;
+            emptyState.style.display = 'block'
+        }
+
+function showChartLoading() {
+    const chartContainer = document.getElementById('chartContainer');
+    const emptyState = chartContainer.querySelector('.empty-state');
+    
+    if (emptyState) {
+        emptyState.innerHTML = `
+            <div class="chart-loading">
+                <div class="spinner"></div>
+                <div class="empty-state-title">Generating Chart...</div>
+                <div class="empty-state-text">Processing your data</div>
+            </div>
+        `;
+        emptyState.style.display = 'flex';
+    }
+}
+
+// 2. ADD missing exportChart function
+function exportChart() {
+    if (!currentChart) {
+        showMessage('No chart to export', 'error');
+        return;
+    }
+    
+    const canvas = document.getElementById('chart');
+    const url = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'chart.png';
+    link.href = url;
+    link.click();
+    
+    showMessage('Chart exported successfully', 'success');
+}
+
+// 3. ADD missing showHelp function
+function showHelp() {
+    const helpText = `
+How to use this tool:
+1. Upload a CSV, Excel, or JSON file
+2. Select columns for X and Y axes
+3. Choose your chart type
+4. View your visualization and insights
+
+Supported formats: .csv, .xlsx, .xls, .json
+    `;
+    alert(helpText);
+}
+
+// 4. FIX the canvas sizing issue (VERY IMPORTANT)
+function fixCanvasSize() {
+    const canvas = document.getElementById('chart');
+    const container = document.getElementById('chartContainer');
+    
+    // Set explicit dimensions
+    canvas.style.width = '100%';
+    canvas.style.height = '400px';
+    
+    // Force container dimensions
+    container.style.width = '100%';
+    container.style.height = '500px';
+    container.style.position = 'relative';
+}
+
+// 5. CALL fixCanvasSize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, fixing canvas size...');
+    fixCanvasSize();
+});
+
+// Hero upload area functionality
+document.getElementById('heroUploadArea').addEventListener('click', function() {
+   // Hide hero immediately when clicked
+   document.querySelector('.hero-section').style.display = 'none';
+   document.getElementById('mainContainer').style.display = 'grid';
+   document.getElementById('fileInput').click();
+});
+
+// Also update the existing drag and drop for hero area
+const heroUploadArea = document.getElementById('heroUploadArea');
+if (heroUploadArea) {
+   heroUploadArea.addEventListener('dragover', (e) => {
+       e.preventDefault();
+       heroUploadArea.style.borderColor = 'var(--accent-blue)';
+       heroUploadArea.style.background = 'rgba(88, 166, 255, 0.05)';
+   });
+
+   heroUploadArea.addEventListener('dragleave', () => {
+       heroUploadArea.style.borderColor = 'var(--border-primary)';
+       heroUploadArea.style.background = 'var(--bg-secondary)';
+   });
+
+   heroUploadArea.addEventListener('drop', (e) => {
+       e.preventDefault();
+       heroUploadArea.style.borderColor = 'var(--border-primary)';
+       heroUploadArea.style.background = 'var(--bg-secondary)';
+       const files = e.dataTransfer.files;
+       if (files.length > 0) {
+           processFile(files[0]);
+       }
+   });
+}
+
+function showMessage(message, type) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    
+    setTimeout(() => {
+        statusDiv.innerHTML = '';
+    }, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('chart');
+    const container = document.getElementById('chartContainer');
+    
+    if (canvas && container) {
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        container.style.position = 'relative';
+    }
+});
+
+</script>
+</body>
+</html>
