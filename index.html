@@ -134,10 +134,22 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
-            display: grid;
-            grid-template-columns: 320px 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
             min-height: calc(100vh - 80px);
+        }
+
+        .settings-bar {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+            width: 100%;
         }
 
         .sidebar {
@@ -305,8 +317,9 @@
             background: var(--bg-primary);
             border-radius: 8px;
             padding: 2rem;
-            min-height: 500px;
+            min-height: 400px;
             position: relative;
+            width: 100%;
         }
 
         .preview-table {
@@ -679,113 +692,104 @@
         </div>
     </div>
 </header>
-
     <div class="main-container" id="mainContainer" style="display: none;">
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <h3 class="section-title">Data Source</h3>
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <div class="upload-text">Upload your data</div>
-                    <div class="upload-subtext">CSV, Excel, or JSON files</div>
-                </div>
-                <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
-                <div id="fileInfo" class="hidden"></div>
-            </div>
+        
 
-            <div class="sidebar-section" id="chartTypeSection" style="display: none;">
-                <h3 class="section-title">Chart Type</h3>
-                <div class="chart-types">
-                    <div class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar')">
-                        <i class="fas fa-chart-bar"></i>
-                        Bar Chart
-                    </div>
-                    <div class="chart-type-btn" data-type="line" onclick="selectChartType('line')">
+<main class="main-content">
+    <div id="statusMessage"></div>
+
+    <div class="content-card" id="chartCard">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-chart-area"></i>
+                Visualization
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="chartContainer" class="chart-container">
+                <div class="empty-state">
+                    <div class="empty-state-icon">
                         <i class="fas fa-chart-line"></i>
-                        Line Chart
                     </div>
-                    <div class="chart-type-btn" data-type="pie" onclick="selectChartType('pie')">
-                        <i class="fas fa-chart-pie"></i>
-                        Pie Chart
-                    </div>
-                    <div class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut')">
-                        <i class="fas fa-dot-circle"></i>
-                        Doughnut
-                    </div>
+                    <div class="empty-state-title">No Data Yet</div>
+                    <div class="empty-state-text">Upload a data file to get started with your visualization</div>
+                </div>
+                <canvas id="chart" style="display: none;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-bar" id="settingsBar" style="display: none;">
+        <div class="form-group">
+            <label class="form-label">Chart Type</label>
+            <div class="chart-types">
+                <div class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar')">
+                    <i class="fas fa-chart-bar"></i>
+                    Bar Chart
+                </div>
+                <div class="chart-type-btn" data-type="line" onclick="selectChartType('line')">
+                    <i class="fas fa-chart-line"></i>
+                    Line Chart
+                </div>
+                <div class="chart-type-btn" data-type="pie" onclick="selectChartType('pie')">
+                    <i class="fas fa-chart-pie"></i>
+                    Pie Chart
+                </div>
+                <div class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut')">
+                    <i class="fas fa-dot-circle"></i>
+                    Doughnut
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="xAxis">X-Axis (Categories)</label>
+            <select id="xAxis" class="form-select" onchange="updateChart()">
+                <option value="">Select column...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="yAxis">Y-Axis (Values)</label>
+            <select id="yAxis" class="form-select" onchange="updateChart()">
+                <option value="">Select column...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="maxRows">Max Rows</label>
+            <input type="number" id="maxRows" class="form-input" value="20" min="5" max="100" onchange="updateChart()">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Upload New File</label>
+            <button class="btn" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                Choose File
+            </button>
+        </div>
+    </div>
 
-            <div class="sidebar-section" id="axisSection" style="display: none;">
-                <h3 class="section-title">Data Mapping</h3>
-                <div class="form-group">
-                    <label class="form-label" for="xAxis">X-Axis (Categories)</label>
-                    <select id="xAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="yAxis">Y-Axis (Values)</label>
-                    <select id="yAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="maxRows">Max Rows</label>
-                    <input type="number" id="maxRows" class="form-input" value="20" min="5" max="100" onchange="updateChart()">
-                </div>
-            </div>
-        </aside>
+    <div class="content-card" id="previewCard" style="display: none;">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-table"></i>
+                Data Preview
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="previewTable"></div>
+        </div>
+    </div>
 
-        <main class="main-content">
-            <div id="statusMessage"></div>
-
-            <div class="content-card" id="chartCard">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-chart-area"></i>
-                        Visualization
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="chartContainer" class="chart-container">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="empty-state-title">No Data Yet</div>
-                            <div class="empty-state-text">Upload a data file to get started with your visualization</div>
-                        </div>
-                        <canvas id="chart" style="display: none;"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-card" id="previewCard" style="display: none;">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-table"></i>
-                        Data Preview
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="previewTable"></div>
-                </div>
-            </div>
-
-            <div class="content-card" id="insightsCard" style="display: none;">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-lightbulb"></i>
-                        Insights
-                    </h2>
-                </div>
-                <div class="card-content">
-                    <div id="insightsContainer" class="insights-grid"></div>
-                </div>
-            </div>
-        </main>
+    <div class="content-card" id="insightsCard" style="display: none;">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fas fa-lightbulb"></i>
+                Insights
+            </h2>
+        </div>
+        <div class="card-content">
+            <div id="insightsContainer" class="insights-grid"></div>
+        </div>
+    </div>
+</main>
     </div>
 
     <script>
@@ -1193,8 +1197,8 @@ function generateInsights(xColumn, yColumn, chartData) {
             fileInfo.classList.remove('hidden');
             
             // Show controls
-            document.getElementById('chartTypeSection').style.display = 'block';
-            document.getElementById('axisSection').style.display = 'block';
+            document.getElementById('settingsBar').style.display = 'grid';
+
             
             populateColumnSelectors();
             showDataPreview();
