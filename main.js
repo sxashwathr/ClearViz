@@ -20,6 +20,8 @@ function getIconPath() {
   console.log('Icon path:', iconPath);
   return iconPath;
 }
+app.setIcon(getIconPath());
+
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -121,7 +123,6 @@ function createMenu() {
 
 // App event handlers
 app.whenReady().then(() => {
-  app.setName('ClearViz');
   createWindow();
 
 app.on('activate', () => {
