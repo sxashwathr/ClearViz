@@ -24,3 +24,5 @@ pids
 
 # Optional eslint cache
 .eslintcache
+
+web/manifest.json
