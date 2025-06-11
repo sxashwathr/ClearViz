@@ -7,20 +7,16 @@ app.getName = () => 'ClearViz';
 let mainWindow;
 function getIconPath() {
   const appPath = app.getAppPath();
-  let iconPath;
   
   if (process.platform === 'darwin') {
-    iconPath = path.join(appPath, 'assets', 'icon.icns'); // macOS
+    return path.join(appPath, 'assets', 'icon.icns');
   } else if (process.platform === 'win32') {
-    iconPath = path.join(appPath, 'assets', 'icon.ico'); // Windows
+    return path.join(appPath, 'assets', 'icon.ico');
   } else {
-    iconPath = path.join(appPath, 'assets', 'icon.png'); // Linux
+    return path.join(appPath, 'assets', 'icon.png');
   }
-  
-  console.log('Icon path:', iconPath);
-  return iconPath;
 }
-app.setIcon(getIconPath());
+
 
 
 function createWindow() {
@@ -34,9 +30,25 @@ function createWindow() {
       enableRemoteModule: true,
       webSecurity: false 
     },
-    show: false // Don't show until ready
+    show: false
   });
 
+ if (process.platform === 'darwin') {
+    app.dock.setIcon(getIconPath());
+  }
+
+  mainWindow.loadFile('index.html'); 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  
+  createMenu();
+}
+  
   mainWindow.loadFile('index.html'); 
 
   mainWindow.once('ready-to-show', () => {
