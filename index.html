@@ -516,10 +516,82 @@
             margin-bottom: 1rem;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hero Animation Styles */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.nav-bar {
+    position: relative;
+    z-index: 10;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-primary);
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: fadeInDown 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-badge {
+    animation-delay: 0.2s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.hero-title {
+    animation-delay: 0.4s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.hero-subtitle {
+    animation-delay: 0.6s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.upload-hero-area {
+    animation-delay: 0.8s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Reset animations when showing data page */
+.hero-section.hide-animations * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+}
         /* Hero Section Styles */
 .hero-section {
     min-height: 100vh;
@@ -611,6 +683,10 @@
     font-size: 0.75rem;
     font-weight: 500;
     margin-bottom: 2rem;
+    animation-delay: 0.2s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .hero-title {
@@ -620,6 +696,10 @@
     color: var(--text-primary);
     margin-bottom: 1.5rem;
     white-space: nowrap;
+    animation-delay: 0.4s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .hero-highlight {
@@ -634,6 +714,10 @@
     color: var(--text-secondary);
     margin-bottom: 3rem;
     line-height: 1.6;
+    animation-delay: 0.6s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .upload-hero-area {
@@ -645,6 +729,10 @@
     transition: all 0.3s ease;
     max-width: 500px;
     margin: 0 auto;
+    animation-delay: 0.8s;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .upload-hero-area:hover {
@@ -1487,8 +1575,43 @@ function goHome() {
     document.getElementById('mainContainer').style.display = 'none';
     document.getElementById('dataHeader').style.display = 'none';
     
-    // Show home page
-    document.getElementById('heroSection').style.display = 'block';
+    // Reset hero section for animation
+    const heroSection = document.getElementById('heroSection');
+    heroSection.classList.add('hide-animations');
+    heroSection.style.display = 'block';
+    
+    // Force a reflow to ensure the class is applied
+    heroSection.offsetHeight;
+    
+    // Remove the class to trigger animations
+    setTimeout(() => {
+        heroSection.classList.remove('hide-animations');
+        
+        // Reset individual elements for animation
+        const elementsToAnimate = [
+            '.nav-bar',
+            '.hero-content',
+            '.hero-badge',
+            '.hero-title', 
+            '.hero-subtitle',
+            '.upload-hero-area'
+        ];
+        
+        elementsToAnimate.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.opacity = '0';
+                element.style.transform = selector === '.nav-bar' ? 'translateY(-30px)' : 'translateY(30px)';
+                element.style.animation = 'none';
+                
+                // Force reflow
+                element.offsetHeight;
+                
+                // Re-enable animation
+                element.style.animation = '';
+            }
+        });
+    }, 50);
     
     // Reset data and charts
     currentData = null;
@@ -1536,8 +1659,12 @@ function scrollToUpload() {
 }
 
 function showDataPage() {
+    // Add class to disable animations when hiding
+    const heroSection = document.getElementById('heroSection');
+    heroSection.classList.add('hide-animations');
+    
     // Hide home page
-    document.getElementById('heroSection').style.display = 'none';
+    heroSection.style.display = 'none';
     
     // Show data visualization page
     document.getElementById('dataHeader').style.display = 'block';
