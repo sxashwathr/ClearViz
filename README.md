@@ -71,4 +71,3 @@ The application will automatically open in your default browser.
 
 ## License
 
-ClearViz is licensed under GNU General Public License version 3.0. For further details, please refer to [LICENSE](./LICENSE). 
