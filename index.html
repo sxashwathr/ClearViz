@@ -261,6 +261,109 @@
             color: var(--text-primary);
         }
 
+        .axis-selectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .axis-selector-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .claude-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .claude-dropdown-button {
+            background: #111317;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            min-height: 48px;
+        }
+
+        .claude-dropdown-button:hover {
+            background: #1c2128;
+            border-color: #58a6ff;
+        }
+
+        .claude-dropdown-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .claude-dropdown-title {
+            color: #f0f6fc;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .claude-dropdown-arrow {
+            color: #8b949e;
+            font-size: 0.75rem;
+            transition: transform 0.2s ease;
+        }
+
+        .claude-dropdown.open .claude-dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .claude-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #111317;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 24px rgba(1, 4, 9, 0.5);
+        }
+
+        .claude-dropdown-menu.show {
+            display: block;
+        }
+
+        .claude-dropdown-option {
+            padding: 0.75rem;
+            color: #f0f6fc;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #21262d;
+            font-size: 0.875rem;
+        }
+
+        .claude-dropdown-option:last-child {
+            border-bottom: none;
+        }
+
+        .claude-dropdown-option:hover {
+            background: #1c2128;
+        }
+
+        .claude-dropdown-option.selected {
+            background: rgba(88, 166, 255, 0.1);
+            color: #58a6ff;
+        }
+
+        .claude-dropdown-option.selected::after {
+            content: "✓";
+            float: right;
+            color: #58a6ff;
+        }
+
         .chart-types {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -864,24 +967,42 @@
             </div>
 
             <div class="sidebar-section" id="axisSection" style="display: none;">
-                <h3 class="section-title">Data Mapping</h3>
-                <div class="form-group">
-                    <label class="form-label" for="xAxis">X-Axis (Categories)</label>
-                    <select id="xAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
+    <h3 class="section-title">Data Mapping</h3>
+    <div class="axis-selectors">
+        <div class="axis-selector-group">
+            <label class="form-label">X-Axis (Categories)</label>
+            <div class="claude-dropdown" id="xAxisDropdown">
+                <div class="claude-dropdown-button" onclick="toggleDropdown('xAxis')">
+                    <div class="claude-dropdown-content">
+                        <div class="claude-dropdown-title" id="xAxisSelected">Select column...</div>
+                    </div>
+                    <div class="claude-dropdown-arrow">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="yAxis">Y-Axis (Values)</label>
-                    <select id="yAxis" class="form-select" onchange="updateChart()">
-                        <option value="">Select column...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="maxRows">Max Rows</label>
-                    <input type="number" id="maxRows" class="form-input" value="20" min="5" max="100" onchange="updateChart()">
+                <div class="claude-dropdown-menu" id="xAxisMenu">
+                    <!-- Options will be populated here -->
                 </div>
             </div>
+        </div>
+        <div class="axis-selector-group">
+            <label class="form-label">Y-Axis (Values)</label>
+            <div class="claude-dropdown" id="yAxisDropdown">
+                <div class="claude-dropdown-button" onclick="toggleDropdown('yAxis')">
+                    <div class="claude-dropdown-content">
+                        <div class="claude-dropdown-title" id="yAxisSelected">Select column...</div>
+                    </div>
+                    <div class="claude-dropdown-arrow">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="claude-dropdown-menu" id="yAxisMenu">
+                    <!-- Options will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         </aside>
 
         <main class="main-content">
@@ -1333,40 +1454,27 @@ function generateInsights(xColumn, yColumn, chartData) {
         }
 
         function populateColumnSelectors() {
-            const xSelect = document.getElementById('xAxis');
-            const ySelect = document.getElementById('yAxis');
-            
-            xSelect.innerHTML = '<option value="">Select column...</option>';
-            ySelect.innerHTML = '<option value="">Select column...</option>';
+            const xMenu = document.getElementById('xAxisMenu');
+            const yMenu = document.getElementById('yAxisMenu');
+    
+            xMenu.innerHTML = '';
+            yMenu.innerHTML = '';
 
             if (!currentData || currentData.length === 0) return;
 
             const columns = Object.keys(currentData[0]);
-            const columnTypes = {};
-            
+    
             columns.forEach(column => {
-                const sampleValues = currentData.slice(0, 10).map(row => row[column]);
-                const numericValues = sampleValues.filter(val => {
-                    if (typeof val === 'number') return true;
-                    if (typeof val === 'string') {
-                        const num = parseFloat(val.replace(/[,$%]/g, ''));
-                        return !isNaN(num) && isFinite(num);
-                    }
-                    return false;
-                });
-                columnTypes[column] = {
-                    isNumeric: numericValues.length > sampleValues.length * 0.5,
-                    sampleValue: sampleValues.find(v => v !== null && v !== undefined) || 'N/A'
-                };
-            });
-            
-            columns.forEach(column => {
-                const type = columnTypes[column];
-                const typeLabel = type.isNumeric ? 'Number' : 'Text';
-                const option1 = new Option(`${column} (${typeLabel})`, column);
-                const option2 = new Option(`${column} (${typeLabel})`, column);
-                xSelect.add(option1);
-                ySelect.add(option2);
+                const xOption = document.createElement('div');
+                xOption.className = 'claude-dropdown-option';
+                xOption.textContent = column;
+                xOption.onclick = () => selectColumn('xAxis', column);
+                xMenu.appendChild(xOption);
+                const yOption = document.createElement('div');
+                yOption.className = 'claude-dropdown-option';
+                yOption.textContent = column;
+                yOption.onclick = () => selectColumn('yAxis', column);
+                yMenu.appendChild(yOption);
             });
         }
 
@@ -1413,9 +1521,9 @@ function generateInsights(xColumn, yColumn, chartData) {
         }
 
         function updateChart() {
-            const xColumn = document.getElementById('xAxis').value;
-            const yColumn = document.getElementById('yAxis').value;
-            const maxRows = parseInt(document.getElementById('maxRows').value);
+            const xColumn = selectedXAxis;
+            const yColumn = selectedYAxis
+            const maxRows = 20;
 
             if (!xColumn || !yColumn || !currentData) {
                 return;
@@ -1624,8 +1732,12 @@ function goHome() {
     
     // Reset form
     document.getElementById('fileInput').value = '';
-    document.getElementById('xAxis').innerHTML = '<option value="">Select column...</option>';
-    document.getElementById('yAxis').innerHTML = '<option value="">Select column...</option>';
+    selectedXAxis = '';
+    selectedYAxis = '';
+    document.getElementById('xAxisSelected').textContent = 'Select column...';
+    document.getElementById('yAxisSelected').textContent = 'Select column...';
+    document.getElementById('xAxisMenu').innerHTML = '';
+    document.getElementById('yAxisMenu').innerHTML = '';
     
     // Hide sections
     document.getElementById('chartTypeSection').style.display = 'none';
@@ -1671,6 +1783,69 @@ function showDataPage() {
     document.getElementById('dataHeader').style.display = 'block';
     document.getElementById('mainContainer').style.display = 'grid';
 }
+
+let selectedXAxis = '';
+let selectedYAxis = '';
+
+function toggleDropdown(axis) {
+    const dropdown = document.getElementById(`${axis}Dropdown`);
+    const menu = document.getElementById(`${axis}Menu`);
+    
+    // Close other dropdown
+    const otherAxis = axis === 'xAxis' ? 'yAxis' : 'xAxis';
+    const otherDropdown = document.getElementById(`${otherAxis}Dropdown`);
+    const otherMenu = document.getElementById(`${otherAxis}Menu`);
+    otherDropdown.classList.remove('open');
+    otherMenu.classList.remove('show');
+    
+    // Toggle current dropdown
+    dropdown.classList.toggle('open');
+    menu.classList.toggle('show');
+}
+
+function selectColumn(axis, column) {
+    if (axis === 'xAxis') {
+        selectedXAxis = column;
+        document.getElementById('xAxisSelected').textContent = column;
+        
+        // Update selected state
+        document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.textContent === column) {
+                opt.classList.add('selected');
+            }
+        });
+    } else {
+        selectedYAxis = column;
+        document.getElementById('yAxisSelected').textContent = column;
+        
+        // Update selected state
+        document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.textContent === column) {
+                opt.classList.add('selected');
+            }
+        });
+    }
+    
+    // Close dropdown
+    document.getElementById(`${axis}Dropdown`).classList.remove('open');
+    document.getElementById(`${axis}Menu`).classList.remove('show');
+    
+    updateChart();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.claude-dropdown')) {
+        document.querySelectorAll('.claude-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('open');
+        });
+        document.querySelectorAll('.claude-dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    }
+});
 
 </script>
 </body>
