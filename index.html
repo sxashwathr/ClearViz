@@ -450,7 +450,8 @@
             background: var(--bg-primary);
             border-radius: 8px;
             padding: 2rem;
-            height: 500px;
+            max-height: 500px;
+            height: 100%;
             position: relative;
         }
         .chart-container canvas {
@@ -1193,7 +1194,8 @@ function renderChart(chartType, chartData) {
         data: chartData,
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
             plugins: {
                 legend: {
                     labels: {
@@ -1629,6 +1631,7 @@ function fixCanvasSize() {
     // Set explicit dimensions
     canvas.style.width = '100%';
     canvas.style.height = '400px';
+    canvas.height = 400;
     
     // Force container dimensions
     container.style.width = '100%';
