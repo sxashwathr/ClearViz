@@ -1768,54 +1768,19 @@ function fixCanvasSize() {
     container.style.height = '500px';
     container.style.position = 'relative';
 }
-
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, fixing canvas size...');
     fixCanvasSize();
+});
 
-    const heroUpload = document.getElementById('heroUploadArea');
-    const fileInput = document.getElementById('fileInput');
-
-    // Click handler for upload area
-    if (heroUpload) {
-        heroUpload.addEventListener('click', function (e) {
-            if (fileInput) {
-                fileInput.click();
-            }
-        });
-    }
-
-    // File input change handler
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                processFile(files[0]);
-            }
-        });
-    }
-
-    // Drag and drop handlers
-    if (heroUpload) {
-        heroUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            heroUpload.style.borderColor = 'var(--accent-blue)';
-            heroUpload.style.background = 'rgba(88, 166, 255, 0.05)';
-        });
-
-        heroUpload.addEventListener('dragleave', () => {
-            heroUpload.style.borderColor = 'var(--border-primary)';
-            heroUpload.style.background = 'var(--bg-secondary)';
-        });
-
-        heroUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            heroUpload.style.borderColor = 'var(--border-primary)';
-            heroUpload.style.background = 'var(--bg-secondary)';
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                processFile(files[0]);
-            }
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('chart');
+    const container = document.getElementById('chartContainer');
+    
+    if (canvas && container) {
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        container.style.position = 'relative';
     }
 });
 
@@ -1828,6 +1793,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Hero upload area functionality
+document.getElementById('heroUploadArea').addEventListener('click', function() {
+    document.getElementById('fileInput').click();
+});
 
 // Also update the existing drag and drop for hero area
 const heroUploadArea = document.getElementById('heroUploadArea');
@@ -1862,6 +1831,17 @@ function showMessage(message, type) {
         statusDiv.innerHTML = '';
     }, 5000);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const canvas = document.getElementById('chart');
+    const container = document.getElementById('chartContainer');
+    
+    if (canvas && container) {
+        canvas.style.width = '100%';
+        canvas.style.height = '400px';
+        container.style.position = 'relative';
+    }
+});
 
 // Page Navigation Functions
 function goHome() {
