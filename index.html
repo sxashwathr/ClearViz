@@ -1773,26 +1773,6 @@ document.addEventListener('DOMContentLoaded', function() {
     fixCanvasSize();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('chart');
-    const container = document.getElementById('chartContainer');
-    
-    if (canvas && container) {
-        canvas.style.width = '100%';
-        canvas.style.height = '400px';
-        container.style.position = 'relative';
-    }
-});
-
-    const canvas = document.getElementById('chart');
-    const container = document.getElementById('chartContainer');
-    if (canvas && container) {
-        canvas.style.width = '100%';
-        canvas.style.height = '400px';
-        container.style.position = 'relative';
-    }
-});
-
 // Hero upload area functionality
 document.getElementById('heroUploadArea').addEventListener('click', function() {
     document.getElementById('fileInput').click();
@@ -1822,7 +1802,6 @@ if (heroUploadArea) {
        }
    });
 }
-
 function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
     statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
@@ -1831,7 +1810,7 @@ function showMessage(message, type) {
         statusDiv.innerHTML = '';
     }, 5000);
 }
-
+        
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('chart');
     const container = document.getElementById('chartContainer');
@@ -1842,6 +1821,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.style.position = 'relative';
     }
 });
+
 
 // Page Navigation Functions
 function goHome() {
@@ -1927,12 +1907,6 @@ function goHome() {
     document.getElementById('statusMessage').innerHTML = '';
     
     showMessage('Returned to home page', 'success');
-}
-
-function scrollToUpload() {
-    document.getElementById('heroUploadArea').scrollIntoView({ 
-        behavior: 'smooth' 
-    });
 }
 
 function showDataPage() {
