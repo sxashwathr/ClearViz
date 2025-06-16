@@ -1368,41 +1368,41 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
         </div>
     `).join('');
     else if (chartType === 'regression' || chartType === 'scatter') {
-    const points = chartData.datasets[0].data;
-    const n = points.length;
+        const points = chartData.datasets[0].data;
+        const n = points.length;
 
-    const xs = points.map(p => p.x);
-    const ys = points.map(p => p.y);
+        const xs = points.map(p => p.x);
+        const ys = points.map(p => p.y);
 
-    const xMean = xs.reduce((a, b) => a + b, 0) / n;
-    const yMean = ys.reduce((a, b) => a + b, 0) / n;
+        const xMean = xs.reduce((a, b) => a + b, 0) / n;
+        const yMean = ys.reduce((a, b) => a + b, 0) / n;
 
-    const ssXX = xs.reduce((sum, x) => sum + Math.pow(x - xMean, 2), 0);
-    const ssYY = ys.reduce((sum, y) => sum + Math.pow(y - yMean, 2), 0);
-    const ssXY = xs.reduce((sum, x, i) => sum + (x - xMean) * (ys[i] - yMean), 0);
+        const ssXX = xs.reduce((sum, x) => sum + Math.pow(x - xMean, 2), 0);
+        const ssYY = ys.reduce((sum, y) => sum + Math.pow(y - yMean, 2), 0);
+        const ssXY = xs.reduce((sum, x, i) => sum + (x - xMean) * (ys[i] - yMean), 0);
 
-    const slope = ssXY / ssXX;
-    const intercept = yMean - slope * xMean;
+        const slope = ssXY / ssXX;
+        const intercept = yMean - slope * xMean;
 
-    const predictedYs = xs.map(x => slope * x + intercept);
-    const residuals = ys.map((y, i) => y - predictedYs[i]);
+        const predictedYs = xs.map(x => slope * x + intercept);
+        const residuals = ys.map((y, i) => y - predictedYs[i]);
 
-    const se = Math.sqrt(residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2));
-    const seSlope = se / Math.sqrt(ssXX);
-    const seIntercept = se * Math.sqrt((1 / n) + (xMean ** 2 / ssXX));
+        const se = Math.sqrt(residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2));
+        const seSlope = se / Math.sqrt(ssXX);
+        const seIntercept = se * Math.sqrt((1 / n) + (xMean ** 2 / ssXX));
 
-    const r = ssXY / Math.sqrt(ssXX * ssYY);
-    const r2 = r * r;
+        const r = ssXY / Math.sqrt(ssXX * ssYY);
+        const r2 = r * r;
 
-    insights = [
-        { value: r.toFixed(4), label: `r-value` },
-        { value: r2.toFixed(4), label: `r² value` },
-        { value: slope.toFixed(4), label: `Slope (β)` },
-        { value: intercept.toFixed(4), label: `Y-intercept` },
-        { value: seSlope.toFixed(4), label: `SE of Slope` },
-        { value: seIntercept.toFixed(4), label: `SE of Intercept` }
-    ];
-}
+        insights = [
+            { value: r.toFixed(4), label: `r-value` },
+            { value: r2.toFixed(4), label: `r² value` },
+            { value: slope.toFixed(4), label: `Slope (β)` },
+            { value: intercept.toFixed(4), label: `Y-intercept` },
+            { value: seSlope.toFixed(4), label: `SE of Slope` },
+            { value: seIntercept.toFixed(4), label: `SE of Intercept` }
+        ];
+    }
 }
 
 
