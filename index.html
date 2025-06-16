@@ -1766,14 +1766,17 @@ function fixCanvasSize() {
     container.style.position = 'relative';
 }
 
-// 5. CALL fixCanvasSize when page loads
 document.addEventListener('DOMContentLoaded', function () {
     fixCanvasSize();
 
-    // Upload click from hero area
-    document.getElementById('heroUploadArea')?.addEventListener('click', () => {
-        document.getElementById('fileInput')?.click();
-    });
+    const heroUpload = document.getElementById('heroUploadArea');
+    const fileInput = document.getElementById('fileInput');
+
+    if (heroUpload && fileInput) {
+        heroUpload.addEventListener('click', function () {
+            fileInput.click();
+        });
+    }
 });
 
 
