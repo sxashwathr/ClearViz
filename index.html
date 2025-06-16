@@ -980,9 +980,9 @@
                         <i class="fas fa-chart-pie"></i>
                         Pie Chart
                     </div>
-                    <div class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut')">
-                        <i class="fas fa-dot-circle"></i>
-                        Doughnut
+                    <div class="chart-type-btn" data-type="regression" onclick="selectChartType('regression')">
+                        <i class="fas fa-chart-line"></i>
+                        Regression
                     </div>
                 </div>
             </div>
@@ -1030,11 +1030,15 @@
             <div id="statusMessage"></div>
 
             <div class="content-card full-height" id="chartCard">
-                <div class="card-header">
+                <div class="card-header" style="justify-content: space-between;">
                     <h2 class="card-title">
                         <i class="fas fa-chart-area"></i>
                         Visualization
                     </h2>
+                    <label style="font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" id="toggleRegression" onchange="updateChart()" />
+                        Show Regression Line
+                    </label>
                 </div>
                 <div class="card-content">
                     <div id="chartContainer" class="chart-container">
@@ -1243,56 +1247,92 @@ function renderChart(chartType, chartData) {
             }
         };
     }
+    if (chartType === 'regression' && document.getElementById('toggleRegression').checked) {
+        const regression = calculateLinearRegression(chartData.labels, chartData.datasets[0].data);
+        chartData.datasets.push({
+            label: 'Regression Line',
+            data: regression.yValues,
+            type: 'line',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+        });
+    }
+    function calculateLinearRegression(xLabels, yValues) {
+        const xs = xLabels.map((_, i) => i);
+        const ys = yValues;
+
+        const n = xs.length;
+        const xMean = xs.reduce((a, b) => a + b, 0) / n;
+        const yMean = ys.reduce((a, b) => a + b, 0) / n;
+
+        const slope = xs.reduce((sum, x, i) => sum + ((x - xMean) * (ys[i] - yMean)), 0) /
+                  xs.reduce((sum, x) => sum + ((x - xMean) ** 2), 0);
+        const intercept = yMean - slope * xMean;
+
+        const yPredicted = xs.map(x => slope * x + intercept);
+        return { yValues: yPredicted };
+    }
     
     // Create new chart
     currentChart = new Chart(ctx, config);
 }
 
-// 5. ADD this generateInsights function
-function generateInsights(xColumn, yColumn, chartData) {
+function generateInsights(chartType, xColumn, yColumn, chartData) {
     if (!chartData || !chartData.datasets || chartData.datasets.length === 0) return;
-    
+
     const values = chartData.datasets[0].data;
     const labels = chartData.labels;
-    
     if (!values || values.length === 0) return;
-    
-    // Calculate insights
-    const total = values.reduce((sum, val) => sum + val, 0);
-    const average = total / values.length;
-    const max = Math.max(...values);
-    const min = Math.min(...values);
-    const maxIndex = values.indexOf(max);
-    const minIndex = values.indexOf(min);
-    
-    // Generate insights HTML
-    const insights = [
-        {
-            value: total.toLocaleString(),
-            label: `Total ${yColumn}`
-        },
-        {
-            value: average.toFixed(2),
-            label: `Average ${yColumn}`
-        },
-        {
-            value: labels[maxIndex],
-            label: `Highest: ${labels[maxIndex]} (${max.toLocaleString()})`
-        },
-        {
-            value: labels[minIndex],
-            label: `Lowest: ${labels[minIndex]} (${min.toLocaleString()})`
-        },
-        {
-            value: values.length,
-            label: 'Data Points'
-        },
-        {
-            value: ((max - min) / average * 100).toFixed(1) + '%',
-            label: 'Variation Range'
-        }
-    ];
-    
+
+    let insights = [];
+
+    if (chartType === 'bar') {
+        const avg = values.reduce((a, b) => a + b, 0) / values.length;
+        const stdDev = Math.sqrt(values.map(v => (v - avg) ** 2).reduce((a, b) => a + b) / values.length);
+        const max = Math.max(...values);
+        const maxLabel = labels[values.indexOf(max)];
+        const range = parseFloat(labels[labels.length - 1]) - parseFloat(labels[0]);
+
+        insights = [
+            { value: avg.toFixed(2), label: `Average ${yColumn}` },
+            { value: max.toFixed(2), label: `Highest ${yColumn}` },
+            { value: stdDev.toFixed(2), label: `Std Dev of ${yColumn}` },
+            { value: isNaN(range) ? 'N/A' : range.toFixed(2), label: `Data Range (X)` },
+            { value: values.length, label: 'Total Points' },
+            { value: (max / avg).toFixed(2), label: 'Max/Average Ratio' }
+        ];
+    } else if (chartType === 'pie') {
+        const max = Math.max(...values);
+        const maxLabel = labels[values.indexOf(max)];
+        const total = values.reduce((a, b) => a + b, 0);
+        const avg = total / values.length;
+
+        insights = [
+            { value: maxLabel, label: `Largest Sector` },
+            { value: max.toFixed(2), label: `Largest Value` },
+            { value: total.toFixed(2), label: `Total ${yColumn}` },
+            { value: avg.toFixed(2), label: `Average ${yColumn}` },
+            { value: labels.length, label: `Categories` },
+            { value: (max / total * 100).toFixed(1) + '%', label: `% of Largest` }
+        ];
+    } else if (chartType === 'line' || chartType === 'regression') {
+        const diffs = values.slice(1).map((v, i) => v - values[i]);
+        const avgDiff = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+        const slope = ((values.at(-1) - values[0]) / values.length).toFixed(2);
+
+        insights = [
+            { value: slope, label: `Avg Slope` },
+            { value: values[0].toFixed(2), label: `Start ${yColumn}` },
+            { value: values.at(-1).toFixed(2), label: `End ${yColumn}` },
+            { value: avgDiff.toFixed(2), label: `Avg Change/Point` },
+            { value: values.length, label: 'Total Points' },
+            { value: labels.length, label: 'X Range' }
+        ];
+    }
+
     const insightsContainer = document.getElementById('insightsContainer');
     insightsContainer.innerHTML = insights.map(insight => `
         <div class="insight-card">
@@ -1301,6 +1341,7 @@ function generateInsights(xColumn, yColumn, chartData) {
         </div>
     `).join('');
 }
+
 
         // File upload and processing
         const uploadArea = document.getElementById('uploadArea');
@@ -1569,8 +1610,8 @@ function generateInsights(xColumn, yColumn, chartData) {
             setTimeout(() => {
                 const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
                 renderChart(selectedChartType, chartData);
-                generateInsights(xColumn, yColumn, chartData);
-                
+                generateInsights(selectedChartType, xColumn, yColumn, chartData);
+
                 // Show chart
                 document.getElementById('chart').style.display = 'block';
                 document.querySelector('.empty-state').style.display = 'none';
