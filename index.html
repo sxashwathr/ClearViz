@@ -1767,15 +1767,15 @@ function fixCanvasSize() {
 }
 
 // 5. CALL fixCanvasSize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, fixing canvas size...');
+document.addEventListener('DOMContentLoaded', function () {
     fixCanvasSize();
+
+    // Upload click from hero area
+    document.getElementById('heroUploadArea')?.addEventListener('click', () => {
+        document.getElementById('fileInput')?.click();
+    });
 });
 
-// Hero upload area functionality
-document.getElementById('heroUploadArea').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
-});
 
 // Also update the existing drag and drop for hero area
 const heroUploadArea = document.getElementById('heroUploadArea');
