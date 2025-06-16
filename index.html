@@ -164,6 +164,7 @@
             grid-template-columns: 400px 1fr;
             gap: 2rem;
             min-height: calc(100vh - 80px);
+            align-items: start;
         }
 
         .sidebar {
@@ -356,6 +357,19 @@
         .claude-dropdown-option.selected {
             background: rgba(88, 166, 255, 0.1);
             color: #58a6ff;
+        }
+        #insightsContainer {
+            max-height: 300px;
+            overflow-x: auto;
+            overflow-y: auto;
+            padding-right: 0.5rem; 
+        }
+
+        .insights-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            min-width: 300px
         }
 
         .claude-dropdown-option.selected::after {
@@ -1043,7 +1057,9 @@
                     </h2>
                 </div>
                 <div class="card-content">
-                    <div id="insightsContainer" class="insights-grid"></div>
+                    <div id="insightsScrollWrapper" style="max-height: 300px; overflow: auto;">
+                        <div id="insightsContainer" class="insights-grid"></div>
+                    </div>
                 </div>
             </div>
         </main>
