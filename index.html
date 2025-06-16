@@ -1773,21 +1773,24 @@ document.addEventListener('DOMContentLoaded', function () {
     fixCanvasSize();
 
     const heroUpload = document.getElementById('heroUploadArea');
-    const fileInput = document.getElementById('fileInput');
+const fileInput = document.getElementById('fileInput');
 
-    if (heroUpload && fileInput) {
-        heroUpload.addEventListener('click', function (e) {
-            e.preventDefault();
-            fileInput.click();
-        });
-        const getStartedBtn = document.getElementById('getStartedBtn');
+if (heroUpload && fileInput) {
+    heroUpload.addEventListener('click', function (e) {
+        e.preventDefault();
+        fileInput.click();
+    });
+}
+
+const getStartedBtn = document.getElementById('getStartedBtn');
 if (getStartedBtn && fileInput) {
     getStartedBtn.addEventListener('click', function (e) {
         e.preventDefault();
         fileInput.click();
     });
 }
-        if (fileInput) {
+
+if (fileInput) {
     fileInput.addEventListener('change', function(e) {
         const files = e.target.files;
         if (files.length > 0) {
@@ -1795,6 +1798,7 @@ if (getStartedBtn && fileInput) {
         }
     });
 }
+
 
         heroUpload.addEventListener('dragover', (e) => {
             e.preventDefault();
