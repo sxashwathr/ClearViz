@@ -1361,16 +1361,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             { value: values.length, label: 'Total Points' },
             { value: labels.length, label: 'X Range' }
         ];
-    }
-
-    const insightsContainer = document.getElementById('insightsContainer');
-    insightsContainer.innerHTML = insights.map(insight => `
-        <div class="insight-card">
-            <div class="insight-value">${insight.value}</div>
-            <div class="insight-label">${insight.label}</div>
-        </div>
-    `).join('');
-    else if (chartType === 'regression' || chartType === 'scatter') {
+    } else if (chartType === 'regression' || chartType === 'scatter') {
         const points = chartData.datasets[0].data;
         const n = points.length;
 
@@ -1405,8 +1396,16 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             { value: seSlope.toFixed(4), label: `SE of Slope` },
             { value: seIntercept.toFixed(4), label: `SE of Intercept` }
         ];
+    const insightsContainer = document.getElementById('insightsContainer');
+    insightsContainer.innerHTML = insights.map(insight => `
+        <div class="insight-card">
+            <div class="insight-value">${insight.value}</div>
+            <div class="insight-label">${insight.label}</div>
+        </div>
+    `).join('');
     }
 }
+
 
 
         // File upload and processing
@@ -1692,20 +1691,6 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
 
         }
 
-        function showChartLoading() {
-            const chartContainer = document.getElementById('chartContainer');
-            const emptyState = chartContainer.querySelector('.empty-state');
-            
-            emptyState.innerHTML = `
-                <div class="chart-loading">
-                    <div class="spinner"></div>
-                    <div class="empty-state-title">Generating Chart...</div>
-                    <div class="empty-state-text">Processing your data</div>
-                </div>
-            `;
-            emptyState.style.display = 'block'
-        }
-
 function showChartLoading() {
     const chartContainer = document.getElementById('chartContainer');
     const emptyState = chartContainer.querySelector('.empty-state');
@@ -1774,8 +1759,22 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Hero upload area functionality
-document.getElementById('heroUploadArea').addEventListener('click', function() {
-    document.getElementById('fileInput').click();
+document.addEventListener('DOMContentLoaded', function() {
+    const heroUploadArea = document.getElementById('heroUploadArea');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (heroUploadArea && fileInput) {
+        heroUploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+    }
+});
+// Help button functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const helpButton = document.querySelector('[onclick="showHelp()"]');
+    if (helpButton) {
+        helpButton.addEventListener('click', showHelp);
+    }
 });
 
 // Also update the existing drag and drop for hero area
