@@ -1349,7 +1349,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             { value: labels.length, label: `Categories` },
             { value: (max / total * 100).toFixed(1) + '%', label: `% of Largest` }
         ];
-    } else if (chartType === 'line' || chartType === 'regression') {
+    } else if (chartType === 'line') {
         const diffs = values.slice(1).map((v, i) => v - values[i]);
         const avgDiff = diffs.reduce((a, b) => a + b, 0) / diffs.length;
         const slope = ((values.at(-1) - values[0]) / values.length).toFixed(2);
@@ -1397,6 +1397,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             { value: seSlope.toFixed(4), label: `SE of Slope` },
             { value: seIntercept.toFixed(4), label: `SE of Intercept` }
         ];
+    }
     const insightsContainer = document.getElementById('insightsContainer');
     insightsContainer.innerHTML = insights.map(insight => `
         <div class="insight-card">
@@ -1404,7 +1405,6 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             <div class="insight-label">${insight.label}</div>
         </div>
     `).join('');
-    }
 }
 
 
