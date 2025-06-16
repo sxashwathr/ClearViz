@@ -1776,9 +1776,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('fileInput');
 
     if (heroUpload && fileInput) {
-        heroUpload.addEventListener('click', function () {
+        heroUpload.addEventListener('click', function (e) {
+            e.preventDefault();
             fileInput.click();
         });
+        const getStartedBtn = document.getElementById('getStartedBtn');
+if (getStartedBtn && fileInput) {
+    getStartedBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        fileInput.click();
+    });
+}
+        if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+            processFile(files[0]);
+        }
+    });
+}
 
         heroUpload.addEventListener('dragover', (e) => {
             e.preventDefault();
