@@ -447,21 +447,21 @@
         }
 
         .chart-container {
-    background: var(--bg-primary);
-    border-radius: 8px;
-    padding: 2rem;
-    height: 600px;
-    position: relative;
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column;
-}
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 2rem;
+            height: 600px;
+            position: relative;
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+        }
         .chart-container canvas {
-    max-height: 100% !important;
-    max-width: 100% !important;
-    height: 100% !important;
-    width: 100% !important;
-}
+            max-height: 100% !important;
+            max-width: 100% !important;
+            height: 100% !important;
+            width: 100% !important;
+        }
 
         .preview-table {
             width: 100%;
@@ -1204,7 +1204,14 @@ function renderChart(chartType, chartData) {
                     }
                 }
             },
-            scales: {}
+            scales: {
+                y: {
+                    maxHeight: 500
+                },
+                x: {
+                    maxHeight: 500
+                }
+            }
         }
     };
     
