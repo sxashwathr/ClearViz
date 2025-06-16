@@ -1035,10 +1035,10 @@
                         <i class="fas fa-chart-area"></i>
                         Visualization
                     </h2>
-                    <label style="font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <div id="regressionToggleWrapper" style="display: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
                         <input type="checkbox" id="toggleRegression" onchange="updateChart()" />
                         Show Regression Line
-                    </label>
+                    </div>
                 </div>
                 <div class="card-content">
                     <div id="chartContainer" class="chart-container">
@@ -1207,7 +1207,34 @@ function renderChart(chartType, chartData) {
     if (currentChart) {
         currentChart.destroy();
     }
-    
+
+    if (chartType === 'regression') {
+        chartType = 'scatter';
+
+        chartData.datasets[0].data = chartData.labels.map((label, index) => ({
+            x: index,
+            y: chartData.datasets[0].data[index]
+        }));
+
+        chartData.datasets[0].showLine = false;
+        chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
+        chartData.datasets[0].pointRadius = 4;
+    }
+
+    if (chartType === 'scatter' && document.getElementById('toggleRegression').checked) {
+        const regression = calculateLinearRegression(chartData.datasets[0].data);
+
+        chartData.datasets.push({
+            label: 'Regression Line',
+            data: regression.points,
+            type: 'line',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+        });
+    }
     // Chart configuration
     const config = {
         type: chartType,
@@ -1340,6 +1367,42 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             <div class="insight-label">${insight.label}</div>
         </div>
     `).join('');
+    else if (chartType === 'regression' || chartType === 'scatter') {
+    const points = chartData.datasets[0].data;
+    const n = points.length;
+
+    const xs = points.map(p => p.x);
+    const ys = points.map(p => p.y);
+
+    const xMean = xs.reduce((a, b) => a + b, 0) / n;
+    const yMean = ys.reduce((a, b) => a + b, 0) / n;
+
+    const ssXX = xs.reduce((sum, x) => sum + Math.pow(x - xMean, 2), 0);
+    const ssYY = ys.reduce((sum, y) => sum + Math.pow(y - yMean, 2), 0);
+    const ssXY = xs.reduce((sum, x, i) => sum + (x - xMean) * (ys[i] - yMean), 0);
+
+    const slope = ssXY / ssXX;
+    const intercept = yMean - slope * xMean;
+
+    const predictedYs = xs.map(x => slope * x + intercept);
+    const residuals = ys.map((y, i) => y - predictedYs[i]);
+
+    const se = Math.sqrt(residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2));
+    const seSlope = se / Math.sqrt(ssXX);
+    const seIntercept = se * Math.sqrt((1 / n) + (xMean ** 2 / ssXX));
+
+    const r = ssXY / Math.sqrt(ssXX * ssYY);
+    const r2 = r * r;
+
+    insights = [
+        { value: r.toFixed(4), label: `r-value` },
+        { value: r2.toFixed(4), label: `r² value` },
+        { value: slope.toFixed(4), label: `Slope (β)` },
+        { value: intercept.toFixed(4), label: `Y-intercept` },
+        { value: seSlope.toFixed(4), label: `SE of Slope` },
+        { value: seIntercept.toFixed(4), label: `SE of Intercept` }
+    ];
+}
 }
 
 
@@ -1590,6 +1653,14 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             document.querySelector(`[data-type="${type}"]`).classList.add('active');
             
             updateChart();
+
+            const regressionToggle = document.getElementById('regressionToggleWrapper');
+                if (type === 'regression') {
+                    regressionToggle.style.display = 'flex';
+                } else {
+                    regressionToggle.style.display = 'none';
+                    document.getElementById('toggleRegression').checked = false;
+                }
         }
 
         function updateChart() {
@@ -1606,17 +1677,16 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             }
 
             showChartLoading();
-            
-            setTimeout(() => {
-                const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
-                renderChart(selectedChartType, chartData);
-                generateInsights(selectedChartType, xColumn, yColumn, chartData);
 
-                // Show chart
-                document.getElementById('chart').style.display = 'block';
-                document.querySelector('.empty-state').style.display = 'none';
-                document.getElementById('insightsCard').style.display = 'block';
-            }, 500);
+            const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
+            renderChart(selectedChartType, chartData);
+            generateInsights(selectedChartType, xColumn, yColumn, chartData
+
+            
+            document.getElementById('chart').style.display = 'block';
+            document.querySelector('.empty-state').style.display = 'none';
+            document.getElementById('insightsCard').style.display = 'block';
+
         }
 
         function showChartLoading() {
@@ -1919,6 +1989,24 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
+function calculateLinearRegression(dataPoints) {
+    const n = dataPoints.length;
+    const xMean = dataPoints.reduce((sum, p) => sum + p.x, 0) / n;
+    const yMean = dataPoints.reduce((sum, p) => sum + p.y, 0) / n;
+
+    const numerator = dataPoints.reduce((sum, p) => sum + (p.x - xMean) * (p.y - yMean), 0);
+    const denominator = dataPoints.reduce((sum, p) => sum + (p.x - xMean) ** 2, 0);
+    const slope = numerator / denominator;
+    const intercept = yMean - slope * xMean;
+
+    const points = dataPoints.map(p => ({
+        x: p.x,
+        y: slope * p.x + intercept
+    }));
+
+    return { slope, intercept, points };
+}
 
 </script>
 </body>
