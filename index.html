@@ -2010,6 +2010,12 @@ function calculateLinearRegression(dataPoints) {
 
     return { slope, intercept, points };
 }
+function scrollToUpload() {
+    const upload = document.getElementById('heroUploadArea');
+    if (upload) {
+        upload.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 
 </script>
 </body>
