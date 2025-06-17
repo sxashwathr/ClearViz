@@ -45,20 +45,19 @@ cd ClearViz
 ```bash
 npm install
 ```
-3. **Start the application locally:**
+3. **Pull the latest repo version**
+```bash
+git pull origin main
+```
+4. **Start the application locally:**
 ```bash
 npm start
+```
 
-```
-4. **Navigate to your main browser (ports may vary):**
-```bash
-http://localhost:3000
-```
-The application will automatically open in your default browser.
+The application will automatically open in your default browser/electron.
 
 ### Troubleshooting
 - If you get permission errors, try `sudo npm install` (Mac/Linux) or run as administrator (Windows)
-- If port 3000 is busy, the app will use the next available port (Note: you're port might not be 3000)
 - Make sure Node.js is installed: `node --version`
 
 ### More coming soon with the release of AI insights...
