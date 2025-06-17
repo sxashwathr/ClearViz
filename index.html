@@ -1876,6 +1876,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
     }
 
 function updateChart() {
+    // Save current file settings
     if (uploadedFiles[currentFileIndex]) {
         uploadedFiles[currentFileIndex].xAxisTitle = document.getElementById('xAxisTitle').value || '';
         uploadedFiles[currentFileIndex].yAxisTitle = document.getElementById('yAxisTitle').value || '';
@@ -1885,7 +1886,9 @@ function updateChart() {
     const yColumn = selectedYAxis;
     const maxRows = 20;
 
+    // Show empty state if no axes selected
     if (!xColumn || !yColumn || !currentData) {
+        showEmptyChart();
         return;
     }
 
@@ -1899,7 +1902,33 @@ function updateChart() {
     renderChart(selectedChartType, chartData);
     generateInsights(selectedChartType, xColumn, yColumn, chartData);
 }
-
+function showEmptyChart() {
+    const chartContainer = document.getElementById('chartContainer');
+    const canvas = document.getElementById('chart');
+    const emptyState = chartContainer.querySelector('.empty-state');
+    
+    // Hide canvas and destroy existing chart
+    canvas.style.display = 'none';
+    if (currentChart) {
+        currentChart.destroy();
+        currentChart = null;
+    }
+    
+    // Show empty state
+    if (emptyState) {
+        emptyState.innerHTML = `
+            <div class="empty-state-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="empty-state-title">Choose Axis Options</div>
+            <div class="empty-state-text">Select both X and Y axis columns to view your visualization</div>
+        `;
+        emptyState.style.display = 'flex';
+    }
+    
+    // Clear insights
+    document.getElementById('insightsContainer').innerHTML = '';
+}
 function showChartLoading() {
     const chartContainer = document.getElementById('chartContainer');
     const emptyState = chartContainer.querySelector('.empty-state');
@@ -2270,7 +2299,6 @@ function addFileToList(data, filename) {
     switchToFile(currentFileIndex);
     showDataPage();
 }
-
 function updateFileList() {
     const fileList = document.getElementById('fileList');
     
@@ -2286,7 +2314,8 @@ function updateFileList() {
 
 function switchToFile(index) {
     if (index < 0 || index >= uploadedFiles.length) return;
-
+    
+    // Save current file settings before switching
     if (uploadedFiles[currentFileIndex]) {
         uploadedFiles[currentFileIndex].chartType = selectedChartType;
         uploadedFiles[currentFileIndex].xAxis = selectedXAxis;
@@ -2297,50 +2326,69 @@ function switchToFile(index) {
     
     currentFileIndex = index;
     const fileData = uploadedFiles[index];
- 
+    
+    // Update global state from file data
     currentData = fileData.data;
     selectedChartType = fileData.chartType;
     selectedXAxis = fileData.xAxis;
     selectedYAxis = fileData.yAxis;
-
+    
+    // Update UI
     updateFileList();
     populateColumnSelectors();
     
+    // Update chart type selection
     document.querySelectorAll('.chart-type-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`[data-type="${fileData.chartType}"]`)?.classList.add('active');
-
+    
+    // Update axis selections
     document.getElementById('xAxisSelected').textContent = fileData.xAxis || 'Select column...';
     document.getElementById('yAxisSelected').textContent = fileData.yAxis || 'Select column...';
     document.getElementById('xAxisTitle').value = fileData.xAxisTitle || '';
     document.getElementById('yAxisTitle').value = fileData.yAxisTitle || '';
     
+    // Clear all column selections first
     document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
         opt.classList.remove('selected');
-        if (opt.textContent === fileData.xAxis) {
-            opt.classList.add('selected');
-        }
     });
     document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
         opt.classList.remove('selected');
-        if (opt.textContent === fileData.yAxis) {
-            opt.classList.add('selected');
-        }
     });
-
+    
+    // Only set selections if file has them
+    if (fileData.xAxis) {
+        document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
+            if (opt.textContent === fileData.xAxis) {
+                opt.classList.add('selected');
+            }
+        });
+    }
+    
+    if (fileData.yAxis) {
+        document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
+            if (opt.textContent === fileData.yAxis) {
+                opt.classList.add('selected');
+            }
+        });
+    }
+    
+    // Show/hide regression toggle
     const regressionToggle = document.getElementById('regressionToggleWrapper');
     if (fileData.chartType === 'regression') {
         regressionToggle.style.display = 'flex';
     } else {
         regressionToggle.style.display = 'none';
     }
-
-    updateChart();
-
+    
+    // Show sections
     document.getElementById('chartTypeSection').style.display = 'block';
     document.getElementById('axisSection').style.display = 'block';
     document.getElementById('insightsCard').style.display = 'block';
+    
+    // Update chart (will show empty state if no axes selected)
+    updateChart();
 }
 
 function confirmDeleteFile(index) {
