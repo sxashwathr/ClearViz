@@ -1875,25 +1875,30 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
         }
     }
 
-        function updateChart() {
-            const xColumn = selectedXAxis;
-            const yColumn = selectedYAxis
-            const maxRows = 20;
+function updateChart() {
+    if (uploadedFiles[currentFileIndex]) {
+        uploadedFiles[currentFileIndex].xAxisTitle = document.getElementById('xAxisTitle').value || '';
+        uploadedFiles[currentFileIndex].yAxisTitle = document.getElementById('yAxisTitle').value || '';
+    }
+    
+    const xColumn = selectedXAxis;
+    const yColumn = selectedYAxis;
+    const maxRows = 20;
 
-            if (!xColumn || !yColumn || !currentData) {
-                return;
-            }
+    if (!xColumn || !yColumn || !currentData) {
+        return;
+    }
 
-            if (!isValidDataForChart(xColumn, yColumn, selectedChartType)) {
-                return;
-            }
+    if (!isValidDataForChart(xColumn, yColumn, selectedChartType)) {
+        return;
+    }
 
-            showChartLoading();
+    showChartLoading();
 
-            const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
-            renderChart(selectedChartType, chartData);
-            generateInsights(selectedChartType, xColumn, yColumn, chartData);
-        }
+    const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
+    renderChart(selectedChartType, chartData);
+    generateInsights(selectedChartType, xColumn, yColumn, chartData);
+}
 
 function showChartLoading() {
     const chartContainer = document.getElementById('chartContainer');
@@ -2281,44 +2286,58 @@ function updateFileList() {
 
 function switchToFile(index) {
     if (index < 0 || index >= uploadedFiles.length) return;
+
+    if (uploadedFiles[currentFileIndex]) {
+        uploadedFiles[currentFileIndex].chartType = selectedChartType;
+        uploadedFiles[currentFileIndex].xAxis = selectedXAxis;
+        uploadedFiles[currentFileIndex].yAxis = selectedYAxis;
+        uploadedFiles[currentFileIndex].xAxisTitle = document.getElementById('xAxisTitle').value || '';
+        uploadedFiles[currentFileIndex].yAxisTitle = document.getElementById('yAxisTitle').value || '';
+    }
     
     currentFileIndex = index;
     const fileData = uploadedFiles[index];
-    
-    // Update global state
+ 
     currentData = fileData.data;
     selectedChartType = fileData.chartType;
     selectedXAxis = fileData.xAxis;
     selectedYAxis = fileData.yAxis;
-    
-    // Update UI
+
     updateFileList();
     populateColumnSelectors();
     
-    // Update chart type selection
     document.querySelectorAll('.chart-type-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`[data-type="${fileData.chartType}"]`)?.classList.add('active');
-    
-    // Update axis selections
+
     document.getElementById('xAxisSelected').textContent = fileData.xAxis || 'Select column...';
     document.getElementById('yAxisSelected').textContent = fileData.yAxis || 'Select column...';
     document.getElementById('xAxisTitle').value = fileData.xAxisTitle || '';
     document.getElementById('yAxisTitle').value = fileData.yAxisTitle || '';
     
-    // Show/hide regression toggle
+    document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.textContent === fileData.xAxis) {
+            opt.classList.add('selected');
+        }
+    });
+    document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.textContent === fileData.yAxis) {
+            opt.classList.add('selected');
+        }
+    });
+
     const regressionToggle = document.getElementById('regressionToggleWrapper');
     if (fileData.chartType === 'regression') {
         regressionToggle.style.display = 'flex';
     } else {
         regressionToggle.style.display = 'none';
     }
-    
-    // Update chart
+
     updateChart();
-    
-    // Show sections
+
     document.getElementById('chartTypeSection').style.display = 'block';
     document.getElementById('axisSection').style.display = 'block';
     document.getElementById('insightsCard').style.display = 'block';
