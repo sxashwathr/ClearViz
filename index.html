@@ -917,6 +917,45 @@
     font-size: 0.875rem;
     color: var(--text-muted);
 }
+
+#toggleRegression {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+#toggleRegression:hover {
+    border-color: var(--accent-blue);
+    background: var(--bg-accent);
+}
+
+#toggleRegression:checked {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+#toggleRegression:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#regressionToggleWrapper {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
@@ -1239,21 +1278,21 @@ function renderChart(chartType, chartData) {
         chartData.datasets[0].showLine = false;
         chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
         chartData.datasets[0].pointRadius = 4;
-    }
 
-    if (chartType === 'scatter' && document.getElementById('toggleRegression').checked) {
-        const regression = calculateLinearRegression(chartData.datasets[0].data);
+        if (document.getElementById('toggleRegression').checked) {
+            const regression = calculateLinearRegression(chartData.datasets[0].data);
 
-        chartData.datasets.push({
-            label: 'Regression Line',
-            data: regression.points,
-            type: 'line',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0
-        });
+            chartData.datasets.push({
+                label: 'Regression Line',
+                data: regression.points,
+                type: 'line',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0,
+                tension: 0
+            });
+        }
     }
     // Chart configuration
     const config = {
@@ -2009,6 +2048,11 @@ function calculateLinearRegression(dataPoints) {
 
     const numerator = dataPoints.reduce((sum, p) => sum + (p.x - xMean) * (p.y - yMean), 0);
     const denominator = dataPoints.reduce((sum, p) => sum + (p.x - xMean) ** 2, 0);
+    
+    if (denominator === 0) {
+        return { slope: 0, intercept: yMean, points: dataPoints.map(p => ({x: p.x, y: yMean})) };
+    }
+    
     const slope = numerator / denominator;
     const intercept = yMean - slope * xMean;
 
