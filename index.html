@@ -2238,8 +2238,18 @@ function scrollToUpload() {
     }
 }
 function addFileToList(data, filename) {
+    let displayName = filename;
+    let counter = 1;
+    
+    while (uploadedFiles.some(file => file.name === displayName)) {
+        const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+        const extension = filename.substring(filename.lastIndexOf('.'));
+        displayName = `${nameWithoutExt} (${counter})${extension}`;
+        counter++;
+    }
+    
     const fileData = {
-        name: filename,
+        name: displayName,
         data: data,
         chartType: 'bar',
         xAxis: '',
