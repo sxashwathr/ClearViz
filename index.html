@@ -1082,6 +1082,16 @@
             </div>
         </div>
     </div>
+    <div class="axis-selectors" style="margin-top: 1rem;">
+        <div class="axis-selector-group">
+            <label class="form-label">X-Axis Title</label>
+            <input type="text" class="form-input" id="xAxisTitle" placeholder="X-Axis Title" onchange="updateChart()">
+        </div>
+        <div class="axis-selector-group">
+            <label class="form-label">Y-Axis Title</label>
+            <input type="text" class="form-input" id="yAxisTitle" placeholder="Y-Axis Title" onchange="updateChart()">
+        </div>
+    </div>
 </div>
         </aside>
 
@@ -1262,10 +1272,12 @@ function renderChart(chartType, chartData) {
     const canvas = document.getElementById('chart');
     const ctx = canvas.getContext('2d');
     
-    // Destroy existing chart
     if (currentChart) {
         currentChart.destroy();
     }
+
+    document.querySelector('.empty-state').style.display = 'none';
+    canvas.style.display = 'block';
 
     if (chartType === 'regression') {
         chartType = 'scatter';
@@ -1296,29 +1308,45 @@ function renderChart(chartType, chartData) {
     }
     // Chart configuration
     const config = {
-        type: chartType,
-        data: chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            aspectRatio: 2,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#f0f6fc'
+    type: chartType,
+    data: chartData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                maxHeight: 500,
+                title: {
+                    display: true,
+                    text: yTitle,
+                    color: '#f0f6fc',
+                    font: {
+                        size: 14,
+                        weight: '500'
                     }
                 }
             },
-            scales: {
-                y: {
-                    maxHeight: 500
-                },
-                x: {
-                    maxHeight: 500
+            x: {
+                maxHeight: 500,
+                title: {
+                    display: true,
+                    text: xTitle,
+                    color: '#f0f6fc',
+                    font: {
+                        size: 14,
+                        weight: '500'
+                    }
                 }
             }
         }
-    };
+    }
+};
     
     // Configure scales based on chart type
     if (['bar', 'line'].includes(chartType)) {
@@ -1641,6 +1669,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             // Show controls
             document.getElementById('chartTypeSection').style.display = 'block';
             document.getElementById('axisSection').style.display = 'block';
+            document.getElementById('regressionToggleWrapper').style.display = 'none';
             
             populateColumnSelectors();
             document.getElementById('mainContainer').style.display = 'grid';
@@ -1741,10 +1770,6 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
             renderChart(selectedChartType, chartData);
             generateInsights(selectedChartType, xColumn, yColumn, chartData);
-
-            
-            document.getElementById('chart').style.display = 'block';
-            document.querySelector('.empty-state').style.display = 'none';
         }
 
 function showChartLoading() {
@@ -2001,7 +2026,8 @@ function selectColumn(axis, column) {
     if (axis === 'xAxis') {
         selectedXAxis = column;
         document.getElementById('xAxisSelected').textContent = column;
-        
+        document.getElementById('xAxisTitle').value = column;
+    
         // Update selected state
         document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
             opt.classList.remove('selected');
@@ -2009,18 +2035,19 @@ function selectColumn(axis, column) {
                 opt.classList.add('selected');
             }
         });
-    } else {
-        selectedYAxis = column;
-        document.getElementById('yAxisSelected').textContent = column;
-        
-        // Update selected state
-        document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
-            opt.classList.remove('selected');
-            if (opt.textContent === column) {
-                opt.classList.add('selected');
-            }
-        });
-    }
+} else {
+    selectedYAxis = column;
+    document.getElementById('yAxisSelected').textContent = column;
+    document.getElementById('yAxisTitle').value = column;
+    
+    // Update selected state
+    document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.textContent === column) {
+            opt.classList.add('selected');
+        }
+    });
+}
     
     // Close dropdown
     document.getElementById(`${axis}Dropdown`).classList.remove('open');
