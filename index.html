@@ -17,8 +17,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-    --bg-primary: #0a0b0d; /* Darker background */
-    --bg-secondary: #111317; /* Slightly lighter secondary */
+    --bg-primary: #0a0b0d; 
+    --bg-secondary: #111317; 
     --bg-tertiary: #21262d;
     --bg-accent: #1c2128;
     --text-primary: #f0f6fc;
@@ -417,6 +417,11 @@
             height: fit-content;
             min-height: calc(100vh - 120px);
             gap: 2rem;
+            position: relative;
+        }
+        .main-content.has-message {
+            margin-top: 60px;
+            transition: margin-top 0.3s ease;
         }
 
         .main-content .content-card:first-child {
@@ -1971,9 +1976,14 @@ function exportChart() {
     const baseName = currentFile.name.replace(/\.[^/.]+$/, ""); 
     link.download = `${baseName}_${currentFile.chartType}_chart.png`;
     link.href = url;
-    link.click();
     
-    showMessage(`Chart exported: ${baseName}_${currentFile.chartType}_chart.png`, 'success');
+    link.onclick = function() {
+        setTimeout(() => {
+            showMessage(`Chart exported: ${baseName}_${currentFile.chartType}_chart.png`, 'success');
+        }, 100);
+    };
+    
+    link.click();
 }
 
 // 3. ADD missing showHelp function
@@ -2053,12 +2063,22 @@ if (heroUploadArea) {
        }
    });
 }
+        
 function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
+    const mainContent = document.querySelector('.main-content');
+    
     statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    
+    if (mainContent) {
+        mainContent.classList.add('has-message');
+    }
     
     setTimeout(() => {
         statusDiv.innerHTML = '';
+        if (mainContent) {
+            mainContent.classList.remove('has-message');
+        }
     }, 5000);
 }
         
