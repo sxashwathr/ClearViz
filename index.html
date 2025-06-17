@@ -874,7 +874,7 @@
 }
 
 .hero-highlight {
-    background: var(--gradient-primary);
+    background: var(--gradient-brand);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -2317,7 +2317,7 @@ function updateFileList() {
         <div class="file-tile ${index === currentFileIndex ? 'active' : ''}" onclick="switchToFile(${index})">
             <span class="file-tile-name">${file.name}</span>
             <button class="file-delete-btn" onclick="event.stopPropagation(); confirmDeleteFile(${index})" title="Delete file">
-                <i class="fas fa-trash"></i>
+                <i class="far fa-trash-alt"></i>
             </button>
         </div>
     `).join('');
