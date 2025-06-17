@@ -1307,6 +1307,8 @@ function renderChart(chartType, chartData) {
         }
     }
     // Chart configuration
+    const xTitle = document.getElementById('xAxisTitle')?.value || selectedXAxis || 'X-Axis';
+    const yTitle = document.getElementById('yAxisTitle')?.value || selectedYAxis || 'Y-Axis';
     const config = {
     type: chartType,
     data: chartData,
