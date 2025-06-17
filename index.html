@@ -2384,7 +2384,6 @@ function switchToFile(index) {
         });
     }
     
-    // Show/hide regression toggle
     const regressionToggle = document.getElementById('regressionToggleWrapper');
     if (fileData.chartType === 'regression') {
         regressionToggle.style.display = 'flex';
@@ -2392,12 +2391,10 @@ function switchToFile(index) {
         regressionToggle.style.display = 'none';
     }
     
-    // Show sections
     document.getElementById('chartTypeSection').style.display = 'block';
     document.getElementById('axisSection').style.display = 'block';
     document.getElementById('insightsCard').style.display = 'block';
     
-    // Update chart (will show empty state if no axes selected)
     updateChart();
 }
 
@@ -2436,16 +2433,18 @@ function deleteFile(index) {
         selectedYAxis = '';
         currentFileIndex = 0;
         
+        document.getElementById('fileList').innerHTML = '';
+        
         document.getElementById('chartTypeSection').style.display = 'none';
         document.getElementById('axisSection').style.display = 'none';
         document.getElementById('insightsCard').style.display = 'none';
+        
         document.getElementById('xAxisSelected').textContent = 'Select column...';
         document.getElementById('yAxisSelected').textContent = 'Select column...';
         document.getElementById('xAxisTitle').value = '';
         document.getElementById('yAxisTitle').value = '';
         
         showEmptyChart();
-        
         const emptyState = document.querySelector('.empty-state');
         if (emptyState) {
             emptyState.innerHTML = `
