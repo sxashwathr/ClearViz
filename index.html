@@ -1433,11 +1433,25 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             { value: labels.length, label: 'X Range' }
         ];
     } else if (chartType === 'regression' || chartType === 'scatter') {
-        const points = chartData.datasets[0].data;
-        const n = points.length;
-
-        const xs = points.map(p => p.x);
-        const ys = points.map(p => p.y);
+    // Create points from the chart data for regression calculation
+    const dataPoints = chartData.labels.map((label, index) => ({
+        x: index,
+        y: chartData.datasets[0].data[index]
+    }));
+    
+    const n = dataPoints.length;
+    if (n < 2) {
+        insights = [
+            { value: 'N/A', label: `r-value` },
+            { value: 'N/A', label: `r² value` },
+            { value: 'N/A', label: `Slope (β)` },
+            { value: 'N/A', label: `Y-intercept` },
+            { value: 'N/A', label: `SE of Slope` },
+            { value: 'N/A', label: `SE of Intercept` }
+        ];
+    } else {
+        const xs = dataPoints.map(p => p.x);
+        const ys = dataPoints.map(p => p.y);
 
         const xMean = xs.reduce((a, b) => a + b, 0) / n;
         const yMean = ys.reduce((a, b) => a + b, 0) / n;
@@ -1446,28 +1460,41 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
         const ssYY = ys.reduce((sum, y) => sum + Math.pow(y - yMean, 2), 0);
         const ssXY = xs.reduce((sum, x, i) => sum + (x - xMean) * (ys[i] - yMean), 0);
 
-        const slope = ssXY / ssXX;
-        const intercept = yMean - slope * xMean;
+        // Avoid division by zero
+        if (ssXX === 0 || ssYY === 0) {
+            insights = [
+                { value: '0.0000', label: `r-value` },
+                { value: '0.0000', label: `r² value` },
+                { value: ssXX === 0 ? 'Undefined' : '0.0000', label: `Slope (β)` },
+                { value: yMean.toFixed(4), label: `Y-intercept` },
+                { value: 'N/A', label: `SE of Slope` },
+                { value: 'N/A', label: `SE of Intercept` }
+            ];
+        } else {
+            const slope = ssXY / ssXX;
+            const intercept = yMean - slope * xMean;
 
-        const predictedYs = xs.map(x => slope * x + intercept);
-        const residuals = ys.map((y, i) => y - predictedYs[i]);
+            const predictedYs = xs.map(x => slope * x + intercept);
+            const residuals = ys.map((y, i) => y - predictedYs[i]);
 
-        const se = Math.sqrt(residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2));
-        const seSlope = se / Math.sqrt(ssXX);
-        const seIntercept = se * Math.sqrt((1 / n) + (xMean ** 2 / ssXX));
+            const se = n > 2 ? Math.sqrt(residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2)) : 0;
+            const seSlope = ssXX > 0 && se > 0 ? se / Math.sqrt(ssXX) : 0;
+            const seIntercept = se > 0 ? se * Math.sqrt((1 / n) + (xMean ** 2 / ssXX)) : 0;
 
-        const r = ssXY / Math.sqrt(ssXX * ssYY);
-        const r2 = r * r;
+            const r = ssXY / Math.sqrt(ssXX * ssYY);
+            const r2 = r * r;
 
-        insights = [
-            { value: r.toFixed(4), label: `r-value` },
-            { value: r2.toFixed(4), label: `r² value` },
-            { value: slope.toFixed(4), label: `Slope (β)` },
-            { value: intercept.toFixed(4), label: `Y-intercept` },
-            { value: seSlope.toFixed(4), label: `SE of Slope` },
-            { value: seIntercept.toFixed(4), label: `SE of Intercept` }
-        ];
+            insights = [
+                { value: isNaN(r) ? 'N/A' : r.toFixed(4), label: `r-value` },
+                { value: isNaN(r2) ? 'N/A' : r2.toFixed(4), label: `r² value` },
+                { value: isNaN(slope) ? 'N/A' : slope.toFixed(4), label: `Slope (β)` },
+                { value: isNaN(intercept) ? 'N/A' : intercept.toFixed(4), label: `Y-intercept` },
+                { value: isNaN(seSlope) || seSlope === 0 ? 'N/A' : seSlope.toFixed(4), label: `SE of Slope` },
+                { value: isNaN(seIntercept) || seIntercept === 0 ? 'N/A' : seIntercept.toFixed(4), label: `SE of Intercept` }
+            ];
+        }
     }
+}
     const insightsContainer = document.getElementById('insightsContainer');
     insightsContainer.innerHTML = insights.map(insight => `
         <div class="insight-card">
