@@ -170,7 +170,7 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border-primary);
             border-radius: 12px;
-            height: fit-content;
+            height: calc(100vh - 120px);
             max-height: calc(100vh - 120px);
             display: flex;
             flex-direction: column;
@@ -420,9 +420,11 @@
 
         .main-content .content-card:first-child {
             flex: 1; 
+            height: 400px;
         }
 
         .main-content .content-card:last-child {
+            
             margin-top: auto; 
         }
 
@@ -1603,6 +1605,8 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             
             populateColumnSelectors();
             document.getElementById('mainContainer').style.display = 'grid';
+            document.getElementById('insightsCard').style.display = 'block';
+
         }
 
         function populateColumnSelectors() {
@@ -1702,8 +1706,6 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             
             document.getElementById('chart').style.display = 'block';
             document.querySelector('.empty-state').style.display = 'none';
-            document.getElementById('insightsCard').style.display = 'block';
-
         }
 
 function showChartLoading() {
@@ -1902,6 +1904,7 @@ function goHome() {
     document.getElementById('axisSection').style.display = 'none';
     document.getElementById('insightsCard').style.display = 'none';
     document.getElementById('fileInfo').classList.add('hidden');
+    document.getElementById('insightsContainer').innerHTML = '';
     
     // Reset chart container
     const chartContainer = document.getElementById('chartContainer');
