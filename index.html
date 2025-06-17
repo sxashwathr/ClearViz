@@ -1661,7 +1661,8 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
             const file = event.target.files[0];
             if (file) {
                 processFile(file);
-            }
+                event.target.value = '';
+            }    
         }
 
         function processFile(file) {
@@ -1956,21 +1957,23 @@ function showChartLoading() {
     }
 }
 
-// 2. ADD missing exportChart function
 function exportChart() {
-    if (!currentChart) {
+    if (!currentChart || uploadedFiles.length === 0) {
         showMessage('No chart to export', 'error');
         return;
     }
     
+    const currentFile = uploadedFiles[currentFileIndex];
     const canvas = document.getElementById('chart');
     const url = canvas.toDataURL('image/png');
     const link = document.createElement('a');
-    link.download = 'chart.png';
+    
+    const baseName = currentFile.name.replace(/\.[^/.]+$/, ""); 
+    link.download = `${baseName}_${currentFile.chartType}_chart.png`;
     link.href = url;
     link.click();
     
-    showMessage('Chart exported successfully', 'success');
+    showMessage(`Chart exported: ${baseName}_${currentFile.chartType}_chart.png`, 'success');
 }
 
 // 3. ADD missing showHelp function
