@@ -1366,7 +1366,7 @@ const config = {
 };
     
     // Configure scales based on chart type
-    if (['bar', 'line'].includes(chartType)) {
+    if (['bar', 'line', 'scatter'].includes(chartType)) {
     config.options.scales.x = {
         ...config.options.scales.x,
         ticks: { color: '#8b949e' },
@@ -1378,36 +1378,6 @@ const config = {
         grid: { color: '#30363d' }
     };
 }
-    if (chartType === 'regression' && document.getElementById('toggleRegression').checked) {
-        const regression = calculateLinearRegression(chartData.labels, chartData.datasets[0].data);
-        chartData.datasets.push({
-            label: 'Regression Line',
-            data: regression.yValues,
-            type: 'line',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0
-        });
-    }
-    function calculateLinearRegression(xLabels, yValues) {
-        const xs = xLabels.map((_, i) => i);
-        const ys = yValues;
-
-        const n = xs.length;
-        const xMean = xs.reduce((a, b) => a + b, 0) / n;
-        const yMean = ys.reduce((a, b) => a + b, 0) / n;
-
-        const slope = xs.reduce((sum, x, i) => sum + ((x - xMean) * (ys[i] - yMean)), 0) /
-                  xs.reduce((sum, x) => sum + ((x - xMean) ** 2), 0);
-        const intercept = yMean - slope * xMean;
-
-        const yPredicted = xs.map(x => slope * x + intercept);
-        return { yValues: yPredicted };
-    }
-    
-    // Create new chart
     currentChart = new Chart(ctx, config);
 }
 
