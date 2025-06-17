@@ -1099,6 +1099,9 @@
     z-index: 10;
     margin-bottom: 0;
 }
+.status-message {
+    margin-bottom: 1.5rem;
+}   
     </style>
 </head>
 <body>
@@ -2077,7 +2080,7 @@ if (heroUploadArea) {
 function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
     const mainContent = document.querySelector('.main-content');
-    statusDiv.innerHTML = `<div class="status-message status-${type}" style="margin-bottom: 1rem;"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
     
     // Add class to adjust spacing
     if (mainContent) {
