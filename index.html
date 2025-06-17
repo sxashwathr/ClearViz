@@ -1280,34 +1280,43 @@ function renderChart(chartType, chartData) {
     canvas.style.display = 'block';
 
     if (chartType === 'regression') {
-    chartType = 'scatter';
-
-    // Convert to scatter plot data format
-    const scatterPoints = chartData.labels.map((label, index) => ({
-        x: index,
-        y: chartData.datasets[0].data[index]
-    }));
-
-    chartData.datasets[0].data = scatterPoints;
-    chartData.datasets[0].showLine = false;
-    chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
-    chartData.datasets[0].pointRadius = 4;
+    chartType = 'line';
 
     // Add regression line if checkbox is checked
     if (document.getElementById('toggleRegression').checked) {
-        const regression = calculateLinearRegression(scatterPoints);
+        // Calculate regression for the original data
+        const points = chartData.labels.map((label, index) => ({
+            x: index,
+            y: chartData.datasets[0].data[index]
+        }));
         
+        const regression = calculateLinearRegression(points);
+        const regressionYValues = chartData.labels.map((label, index) => 
+            regression.slope * index + regression.intercept
+        );
+        
+        // Make original data show as points only
+        chartData.datasets[0].showLine = false;
+        chartData.datasets[0].pointRadius = 4;
+        chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
+        
+        // Add regression line as second dataset
         chartData.datasets.push({
             label: 'Regression Line',
-            data: regression.points,
-            type: 'line',
+            data: regressionYValues,
             borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0)',
             borderWidth: 3,
             fill: false,
             pointRadius: 0,
-            pointHoverRadius: 0,
+            showLine: true,
             tension: 0
         });
+    } else {
+        // Just scatter points without line
+        chartData.datasets[0].showLine = false;
+        chartData.datasets[0].pointRadius = 4;
+        chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
     }
 }
     // Chart configuration
