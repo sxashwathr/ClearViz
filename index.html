@@ -1282,29 +1282,31 @@ function renderChart(chartType, chartData) {
     if (chartType === 'regression') {
     chartType = 'scatter';
 
-    chartData.datasets[0].data = chartData.labels.map((label, index) => ({
+    // Convert to scatter plot data format
+    const scatterPoints = chartData.labels.map((label, index) => ({
         x: index,
         y: chartData.datasets[0].data[index]
     }));
 
+    chartData.datasets[0].data = scatterPoints;
     chartData.datasets[0].showLine = false;
     chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
     chartData.datasets[0].pointRadius = 4;
 
+    // Add regression line if checkbox is checked
     if (document.getElementById('toggleRegression').checked) {
-        const scatterData = chartData.datasets[0].data;
-        const regression = calculateLinearRegression(scatterData);
-
+        const regression = calculateLinearRegression(scatterPoints);
+        
         chartData.datasets.push({
             label: 'Regression Line',
             data: regression.points,
             type: 'line',
             borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 2,
+            borderWidth: 3,
             fill: false,
             pointRadius: 0,
-            tension: 0,
-            showLine: true
+            pointHoverRadius: 0,
+            tension: 0
         });
     }
 }
@@ -2075,7 +2077,11 @@ document.addEventListener('click', function(event) {
 });
 
 function calculateLinearRegression(dataPoints) {
+    console.log('Calculating regression for points:', dataPoints);
+    
     const n = dataPoints.length;
+    if (n < 2) return { slope: 0, intercept: 0, points: [] };
+    
     const xMean = dataPoints.reduce((sum, p) => sum + p.x, 0) / n;
     const yMean = dataPoints.reduce((sum, p) => sum + p.y, 0) / n;
 
@@ -2083,17 +2089,26 @@ function calculateLinearRegression(dataPoints) {
     const denominator = dataPoints.reduce((sum, p) => sum + (p.x - xMean) ** 2, 0);
     
     if (denominator === 0) {
-        return { slope: 0, intercept: yMean, points: dataPoints.map(p => ({x: p.x, y: yMean})) };
+        return { 
+            slope: 0, 
+            intercept: yMean, 
+            points: dataPoints.map(p => ({x: p.x, y: yMean})) 
+        };
     }
     
     const slope = numerator / denominator;
     const intercept = yMean - slope * xMean;
 
-    const points = dataPoints.map(p => ({
-        x: p.x,
-        y: slope * p.x + intercept
-    }));
+    // Create line points spanning the full range
+    const xMin = Math.min(...dataPoints.map(p => p.x));
+    const xMax = Math.max(...dataPoints.map(p => p.x));
+    
+    const points = [
+        { x: xMin, y: slope * xMin + intercept },
+        { x: xMax, y: slope * xMax + intercept }
+    ];
 
+    console.log('Regression result:', { slope, intercept, points });
     return { slope, intercept, points };
 }
 function scrollToUpload() {
