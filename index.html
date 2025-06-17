@@ -586,12 +586,22 @@
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 300px;
         }
+
 
         .empty-state-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .empty-state-title {
@@ -2421,10 +2431,32 @@ function deleteFile(index) {
     uploadedFiles.splice(index, 1);
     
     if (uploadedFiles.length === 0) {
-        // No files left, go back to home
-        goHome();
+        currentData = null;
+        selectedXAxis = '';
+        selectedYAxis = '';
+        currentFileIndex = 0;
+        
+        document.getElementById('chartTypeSection').style.display = 'none';
+        document.getElementById('axisSection').style.display = 'none';
+        document.getElementById('insightsCard').style.display = 'none';
+        document.getElementById('xAxisSelected').textContent = 'Select column...';
+        document.getElementById('yAxisSelected').textContent = 'Select column...';
+        document.getElementById('xAxisTitle').value = '';
+        document.getElementById('yAxisTitle').value = '';
+        
+        showEmptyChart();
+        
+        const emptyState = document.querySelector('.empty-state');
+        if (emptyState) {
+            emptyState.innerHTML = `
+                <div class="empty-state-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="empty-state-title">No Data Yet</div>
+                <div class="empty-state-text">Upload a data file to get started with your visualization</div>
+            `;
+        }
     } else {
-        // Adjust current index if needed
         if (currentFileIndex >= uploadedFiles.length) {
             currentFileIndex = uploadedFiles.length - 1;
         }
