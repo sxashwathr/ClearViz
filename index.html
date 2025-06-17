@@ -420,12 +420,13 @@
             position: relative;
         }
         .main-content {
-    transition: margin-top 0.3s ease;
-}
+            transition: margin-top 0.3s ease;
+            margin-top: 0;
+        }
 
-.main-content.has-message {
-    margin-top: 0;
-}
+        .main-content.has-message {
+            margin-top: -1rem;
+        }
 
         .main-content .content-card:first-child {
             flex: 1; 
@@ -2071,8 +2072,9 @@ function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
     const mainContent = document.querySelector('.main-content');
     
-    statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    statusDiv.innerHTML = `<div class="status-message status-${type}" style="margin-bottom: 2rem;"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
     
+    // Add class to adjust spacing
     if (mainContent) {
         mainContent.classList.add('has-message');
     }
