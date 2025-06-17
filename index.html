@@ -956,6 +956,123 @@
     color: var(--text-secondary);
     font-weight: 500;
 }
+.file-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-tile {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.file-tile:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-blue);
+}
+
+.file-tile.active {
+    background: rgba(88, 166, 255, 0.1);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.file-tile-name {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.file-tile.active .file-tile-name {
+    color: var(--accent-blue);
+}
+
+.file-delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent-orange);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+}
+
+.file-delete-btn:hover {
+    background: rgba(248, 81, 73, 0.1);
+    color: #ff6b6b;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--shadow-primary);
+}
+
+.modal-title {
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.modal-text {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+}
+
+.btn-delete {
+    background: var(--accent-orange);
+    border: none;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #ff6b6b;
+}
     </style>
 </head>
 <body>
@@ -1017,11 +1134,11 @@
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    <div class="upload-text">Upload your data</div>
+                    <div class="upload-text">Upload more data</div>
                     <div class="upload-subtext">CSV, Excel, or JSON files</div>
                 </div>
                 <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
-                <div id="fileInfo" class="hidden"></div>
+                <div id="fileList" class="file-list"></div>
             </div>
 
             <div class="sidebar-section" id="chartTypeSection" style="display: none;">
@@ -1142,6 +1259,8 @@
         let currentData = null;
         let currentChart = null;
         let selectedChartType = 'bar';
+        let uploadedFiles = [];
+        let currentFileIndex = 0;
         // 1. ADD this isValidDataForChart function right after the global variables section
 function isValidDataForChart(xColumn, yColumn, chartType) {
     if (!currentData || currentData.length === 0) {
@@ -1674,20 +1793,7 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
 
             currentData = validRows;
             showMessage(`Successfully loaded ${validRows.length} rows from ${filename}`, 'success');
-            
-            // Update file info
-            const fileInfo = document.getElementById('fileInfo');
-            fileInfo.innerHTML = `<div class="status-message status-success"><i class="fas fa-check-circle"></i>File loaded: ${filename} (${validRows.length} rows)</div>`;
-            fileInfo.classList.remove('hidden');
-            
-            // Show controls
-            document.getElementById('chartTypeSection').style.display = 'block';
-            document.getElementById('axisSection').style.display = 'block';
-            document.getElementById('regressionToggleWrapper').style.display = 'none';
-            
-            populateColumnSelectors();
-            document.getElementById('mainContainer').style.display = 'grid';
-            document.getElementById('insightsCard').style.display = 'block';
+            addFileToList(validRows, filename);
 
         }
 
@@ -1747,24 +1853,27 @@ function generateInsights(chartType, xColumn, yColumn, chartData) {
         }
 
         function selectChartType(type) {
-            selectedChartType = type;
-            
-            // Update UI
-            document.querySelectorAll('.chart-type-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-type="${type}"]`).classList.add('active');
-            
-            updateChart();
+        selectedChartType = type;
+    
+            if (uploadedFiles[currentFileIndex]) {
+                uploadedFiles[currentFileIndex].chartType = type;
+            }
+    
+        document.querySelectorAll('.chart-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+        updateChart();
 
-            const regressionToggle = document.getElementById('regressionToggleWrapper');
-                if (type === 'regression') {
-                    regressionToggle.style.display = 'flex';
-                } else {
-                    regressionToggle.style.display = 'none';
-                    document.getElementById('toggleRegression').checked = false;
-                }
+        const regressionToggle = document.getElementById('regressionToggleWrapper');
+        if (type === 'regression') {
+            regressionToggle.style.display = 'flex';
+        } else {
+            regressionToggle.style.display = 'none';
+            document.getElementById('toggleRegression').checked = false;
         }
+    }
 
         function updateChart() {
             const xColumn = selectedXAxis;
@@ -1968,20 +2077,21 @@ function goHome() {
         currentChart = null;
     }
     
-    // Reset form
     document.getElementById('fileInput').value = '';
+    uploadedFiles = [];
+    currentFileIndex = 0;
     selectedXAxis = '';
     selectedYAxis = '';
     document.getElementById('xAxisSelected').textContent = 'Select column...';
     document.getElementById('yAxisSelected').textContent = 'Select column...';
     document.getElementById('xAxisMenu').innerHTML = '';
     document.getElementById('yAxisMenu').innerHTML = '';
+    document.getElementById('fileList').innerHTML = '';
     
     // Hide sections
     document.getElementById('chartTypeSection').style.display = 'none';
     document.getElementById('axisSection').style.display = 'none';
     document.getElementById('insightsCard').style.display = 'none';
-    document.getElementById('fileInfo').classList.add('hidden');
     document.getElementById('insightsContainer').innerHTML = '';
     
     // Reset chart container
@@ -2030,8 +2140,7 @@ function toggleDropdown(axis) {
     const otherMenu = document.getElementById(`${otherAxis}Menu`);
     otherDropdown.classList.remove('open');
     otherMenu.classList.remove('show');
-    
-    // Toggle current dropdown
+ 
     dropdown.classList.toggle('open');
     menu.classList.toggle('show');
 }
@@ -2041,35 +2150,40 @@ function selectColumn(axis, column) {
         selectedXAxis = column;
         document.getElementById('xAxisSelected').textContent = column;
         document.getElementById('xAxisTitle').value = column;
-    
-        // Update selected state
+
+        if (uploadedFiles[currentFileIndex]) {
+            uploadedFiles[currentFileIndex].xAxis = column;
+            uploadedFiles[currentFileIndex].xAxisTitle = column;
+        }
+
         document.querySelectorAll('#xAxisMenu .claude-dropdown-option').forEach(opt => {
             opt.classList.remove('selected');
             if (opt.textContent === column) {
                 opt.classList.add('selected');
             }
         });
-} else {
-    selectedYAxis = column;
-    document.getElementById('yAxisSelected').textContent = column;
-    document.getElementById('yAxisTitle').value = column;
-    
-    // Update selected state
-    document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
-        opt.classList.remove('selected');
-        if (opt.textContent === column) {
-            opt.classList.add('selected');
+    } else {
+        selectedYAxis = column;
+        document.getElementById('yAxisSelected').textContent = column;
+        document.getElementById('yAxisTitle').value = column;
+
+        if (uploadedFiles[currentFileIndex]) {
+            uploadedFiles[currentFileIndex].yAxis = column;
+            uploadedFiles[currentFileIndex].yAxisTitle = column;
         }
-    });
-}
-    
-    // Close dropdown
+        
+        document.querySelectorAll('#yAxisMenu .claude-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+            if (opt.textContent === column) {
+                opt.classList.add('selected');
+            }
+        });
+    }
     document.getElementById(`${axis}Dropdown`).classList.remove('open');
     document.getElementById(`${axis}Menu`).classList.remove('show');
     
     updateChart();
 }
-
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(event) {
     if (!event.target.closest('.claude-dropdown')) {
@@ -2122,6 +2236,126 @@ function scrollToUpload() {
     if (upload) {
         upload.scrollIntoView({ behavior: 'smooth' });
     }
+}
+function addFileToList(data, filename) {
+    const fileData = {
+        name: filename,
+        data: data,
+        chartType: 'bar',
+        xAxis: '',
+        yAxis: '',
+        xAxisTitle: '',
+        yAxisTitle: ''
+    };
+    
+    uploadedFiles.push(fileData);
+    currentFileIndex = uploadedFiles.length - 1;
+    
+    updateFileList();
+    switchToFile(currentFileIndex);
+    showDataPage();
+}
+
+function updateFileList() {
+    const fileList = document.getElementById('fileList');
+    
+    fileList.innerHTML = uploadedFiles.map((file, index) => `
+        <div class="file-tile ${index === currentFileIndex ? 'active' : ''}" onclick="switchToFile(${index})">
+            <span class="file-tile-name">${file.name}</span>
+            <button class="file-delete-btn" onclick="event.stopPropagation(); confirmDeleteFile(${index})" title="Delete file">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+function switchToFile(index) {
+    if (index < 0 || index >= uploadedFiles.length) return;
+    
+    currentFileIndex = index;
+    const fileData = uploadedFiles[index];
+    
+    // Update global state
+    currentData = fileData.data;
+    selectedChartType = fileData.chartType;
+    selectedXAxis = fileData.xAxis;
+    selectedYAxis = fileData.yAxis;
+    
+    // Update UI
+    updateFileList();
+    populateColumnSelectors();
+    
+    // Update chart type selection
+    document.querySelectorAll('.chart-type-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-type="${fileData.chartType}"]`)?.classList.add('active');
+    
+    // Update axis selections
+    document.getElementById('xAxisSelected').textContent = fileData.xAxis || 'Select column...';
+    document.getElementById('yAxisSelected').textContent = fileData.yAxis || 'Select column...';
+    document.getElementById('xAxisTitle').value = fileData.xAxisTitle || '';
+    document.getElementById('yAxisTitle').value = fileData.yAxisTitle || '';
+    
+    // Show/hide regression toggle
+    const regressionToggle = document.getElementById('regressionToggleWrapper');
+    if (fileData.chartType === 'regression') {
+        regressionToggle.style.display = 'flex';
+    } else {
+        regressionToggle.style.display = 'none';
+    }
+    
+    // Update chart
+    updateChart();
+    
+    // Show sections
+    document.getElementById('chartTypeSection').style.display = 'block';
+    document.getElementById('axisSection').style.display = 'block';
+    document.getElementById('insightsCard').style.display = 'block';
+}
+
+function confirmDeleteFile(index) {
+    const filename = uploadedFiles[index].name;
+    
+    const modalHTML = `
+        <div class="modal-overlay" id="deleteModal">
+            <div class="modal">
+                <div class="modal-title">Delete File</div>
+                <div class="modal-text">Are you sure you want to delete "${filename}"? This action cannot be undone.</div>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                    <button class="btn btn-delete" onclick="deleteFile(${index})">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function deleteFile(index) {
+    uploadedFiles.splice(index, 1);
+    
+    if (uploadedFiles.length === 0) {
+        // No files left, go back to home
+        goHome();
+    } else {
+        // Adjust current index if needed
+        if (currentFileIndex >= uploadedFiles.length) {
+            currentFileIndex = uploadedFiles.length - 1;
+        }
+        switchToFile(currentFileIndex);
+    }
+    
+    closeDeleteModal();
+    showMessage('File deleted successfully', 'success');
 }
 
 </script>
