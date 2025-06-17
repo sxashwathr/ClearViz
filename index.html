@@ -1280,36 +1280,40 @@ function renderChart(chartType, chartData) {
     canvas.style.display = 'block';
 
     if (chartType === 'regression') {
-        chartType = 'scatter';
+    chartType = 'scatter';
 
-        chartData.datasets[0].data = chartData.labels.map((label, index) => ({
-            x: index,
-            y: chartData.datasets[0].data[index]
-        }));
+    chartData.datasets[0].data = chartData.labels.map((label, index) => ({
+        x: index,
+        y: chartData.datasets[0].data[index]
+    }));
 
-        chartData.datasets[0].showLine = false;
-        chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
-        chartData.datasets[0].pointRadius = 4;
+    chartData.datasets[0].showLine = false;
+    chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
+    chartData.datasets[0].pointRadius = 4;
 
-        if (document.getElementById('toggleRegression').checked) {
-            const regression = calculateLinearRegression(chartData.datasets[0].data);
+    if (document.getElementById('toggleRegression').checked) {
+        const scatterData = chartData.datasets[0].data;
+        const regression = calculateLinearRegression(scatterData);
 
-            chartData.datasets.push({
-                label: 'Regression Line',
-                data: regression.points,
-                type: 'line',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                fill: false,
-                pointRadius: 0,
-                tension: 0
-            });
-        }
+        chartData.datasets.push({
+            label: 'Regression Line',
+            data: regression.points,
+            type: 'line',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0,
+            showLine: true
+        });
     }
+}
     // Chart configuration
     const xTitle = document.getElementById('xAxisTitle')?.value || selectedXAxis || 'X-Axis';
     const yTitle = document.getElementById('yAxisTitle')?.value || selectedYAxis || 'Y-Axis';
-    const config = {
+    const showAxes = !['pie', 'doughnut'].includes(chartType);
+
+const config = {
     type: chartType,
     data: chartData,
     options: {
@@ -1321,7 +1325,7 @@ function renderChart(chartType, chartData) {
                 display: false
             }
         },
-        scales: {
+        scales: showAxes ? {
             y: {
                 maxHeight: 500,
                 title: {
@@ -1346,23 +1350,23 @@ function renderChart(chartType, chartData) {
                     }
                 }
             }
-        }
+        } : {}
     }
 };
     
     // Configure scales based on chart type
     if (['bar', 'line'].includes(chartType)) {
-        config.options.scales = {
-            x: {
-                ticks: { color: '#8b949e' },
-                grid: { color: '#30363d' }
-            },
-            y: {
-                ticks: { color: '#8b949e' },
-                grid: { color: '#30363d' }
-            }
-        };
-    }
+    config.options.scales.x = {
+        ...config.options.scales.x,
+        ticks: { color: '#8b949e' },
+        grid: { color: '#30363d' }
+    };
+    config.options.scales.y = {
+        ...config.options.scales.y,
+        ticks: { color: '#8b949e' },
+        grid: { color: '#30363d' }
+    };
+}
     if (chartType === 'regression' && document.getElementById('toggleRegression').checked) {
         const regression = calculateLinearRegression(chartData.labels, chartData.datasets[0].data);
         chartData.datasets.push({
