@@ -106,21 +106,28 @@
 
         .btn {
     padding: 0.6rem 1.2rem;
-    border: 1px solid var(--border-primary);
-    border-radius: 10px;
-    background: var(--bg-tertiary);
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(33, 38, 45, 0.9) 100%);
     color: var(--text-primary);
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
     min-height: 40px;
     position: relative;
-    box-shadow: 0 1px 3px rgba(1, 4, 9, 0.12);
+    box-shadow: 0 4px 12px rgba(1, 4, 9, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(1, 4, 9, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, var(--bg-accent) 0%, rgba(28, 33, 40, 0.95) 100%);
 }
 
 .btn:focus {
@@ -227,16 +234,55 @@
         }
 
         .upload-area {
-    border: 2.5px dashed var(--border-primary);
-    border-radius: 14px;
-    padding: 2.8rem 1.8rem;
+    border: 2px dashed rgba(88, 166, 255, 0.4);
+    border-radius: 16px;
+    padding: 3rem 2rem;
     text-align: center;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(33, 38, 45, 0.6) 100%);
+    background: 
+        linear-gradient(135deg, rgba(88, 166, 255, 0.03) 0%, rgba(33, 38, 45, 0.8) 100%),
+        radial-gradient(circle at center, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.upload-area::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(88, 166, 255, 0.05) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.upload-area:hover {
+    border-color: var(--accent-blue);
+    background: 
+        linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(33, 38, 45, 0.9) 100%),
+        radial-gradient(circle at center, rgba(88, 166, 255, 0.2) 0%, transparent 70%);
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 32px rgba(1, 4, 9, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.upload-area.dragover {
+    border-color: var(--accent-green);
+    background: 
+        linear-gradient(135deg, rgba(63, 185, 80, 0.15) 0%, rgba(33, 38, 45, 0.9) 100%),
+        radial-gradient(circle at center, rgba(63, 185, 80, 0.2) 0%, transparent 70%);
+    transform: scale(1.02);
 }
 
 .upload-area:hover {
@@ -294,15 +340,31 @@
 
         .form-select, .form-input {
     width: 100%;
-    padding: 0.85rem 1rem;
-    background: var(--bg-tertiary);
-    border: 1.5px solid var(--border-primary);
-    border-radius: 10px;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(33, 38, 45, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     color: var(--text-primary);
     font-size: 0.875rem;
     font-weight: 500;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: 48px;
+    box-shadow: 
+        0 2px 8px rgba(1, 4, 9, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+.form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.05) 0%, rgba(33, 38, 45, 0.95) 100%);
+    box-shadow: 
+        0 0 0 3px rgba(88, 166, 255, 0.2),
+        0 4px 16px rgba(1, 4, 9, 0.3),
+        0 0 12px rgba(88, 166, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
 }
 
 .form-select:focus, .form-input:focus {
@@ -462,21 +524,60 @@
         }
 
         .chart-type-btn {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
     background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(33, 38, 45, 0.8) 100%);
-    border: 1px solid var(--border-primary);
-    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 600;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(8px);
+    box-shadow: 
+        0 4px 16px rgba(1, 4, 9, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.chart-type-btn i {
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.chart-type-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(88, 166, 255, 0.5);
+    color: var(--accent-blue);
+    box-shadow: 
+        0 12px 32px rgba(1, 4, 9, 0.4),
+        0 0 20px rgba(88, 166, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(33, 38, 45, 0.9) 100%);
+}
+
+.chart-type-btn:hover i {
+    color: var(--accent-blue);
+    transform: scale(1.1);
+}
+
+.chart-type-btn.active {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.2) 0%, rgba(99, 102, 241, 0.15) 100%);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    box-shadow: 
+        0 8px 24px rgba(1, 4, 9, 0.4),
+        0 0 16px rgba(88, 166, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.chart-type-btn.active i {
+    color: var(--accent-blue);
 }
 
 .chart-type-btn::before {
@@ -528,14 +629,37 @@
         }
 
 .content-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: 18px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(17, 19, 23, 0.95) 100%);
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(1, 4, 9, 0.35), 0 1px 4px rgba(1, 4, 9, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(1, 4, 9, 0.6),
+        0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     height: 100%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(8px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+    position: relative;
+}
+
+.content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.5), transparent);
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 16px 48px rgba(1, 4, 9, 0.7),
+        0 0 0 1px rgba(88, 166, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: rgba(88, 166, 255, 0.4);
 }
 
 .content-card:hover {
