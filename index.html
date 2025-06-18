@@ -1301,6 +1301,23 @@
 *:focus {
     transition: outline 0.15s ease;
 }
+
+.regression-equation {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(17, 19, 23, 0.9);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(1, 4, 9, 0.3);
+    z-index: 10;
+}
     </style>
 </head>
 <body>
@@ -1385,7 +1402,7 @@
                         Pie Chart
                     </div>
                     <div class="chart-type-btn" data-type="regression" onclick="selectChartType('regression')">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-function"></i>
                         Regression
                     </div>
                 </div>
@@ -1454,17 +1471,16 @@
                         Show Regression Line
                     </div>
                 </div>
-                <div class="card-content">
-                    <div id="chartContainer" class="chart-container">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="empty-state-title">No Data Yet</div>
-                            <div class="empty-state-text">Upload a data file to get started with your visualization</div>
+                <div id="chartContainer" class="chart-container">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-chart-line"></i>
                         </div>
-                        <canvas id="chart""></canvas>
+                        <div class="empty-state-title">No Data Yet</div>
+                        <div class="empty-state-text">Upload a data file to get started with your visualization</div>
                     </div>
+                    <canvas id="chart""></canvas>
+                    <div id="regressionEquation" class="regression-equation" style="display: none;"></div>
                 </div>
             </div>
             <div class="content-card" id="insightsCard" style="display: none;">
@@ -1659,12 +1675,16 @@ function renderChart(chartType, chartData) {
             showLine: true,
             tension: 0
         });
+
+        showRegressionEquation(regression.slope, regression.intercept);
     } else {
-        // Just scatter points without line
         chartData.datasets[0].showLine = false;
         chartData.datasets[0].pointRadius = 4;
         chartData.datasets[0].backgroundColor = 'rgba(88, 166, 255, 1)';
+        hideRegressionEquation();
     }
+} else {
+    hideRegressionEquation();
 }
     // Chart configuration
     const xTitle = document.getElementById('xAxisTitle')?.value || selectedXAxis || 'X-Axis';
@@ -1711,8 +1731,7 @@ const config = {
         } : {}
     }
 };
-    
-    // Configure scales based on chart type
+
     if (['bar', 'line', 'scatter'].includes(chartType)) {
     config.options.scales.x = {
         ...config.options.scales.x,
@@ -2475,7 +2494,24 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+function showRegressionEquation(slope, intercept) {
+    const equationDiv = document.getElementById('regressionEquation');
+    
+    // Format the equation as y = mx + b
+    const m = slope.toFixed(3);
+    const b = intercept.toFixed(3);
+    const sign = intercept >= 0 ? '+' : '';
+    
+    equationDiv.innerHTML = `y = ${m}x ${sign} ${b}`;
+    equationDiv.style.display = 'block';
+}
 
+function hideRegressionEquation() {
+    const equationDiv = document.getElementById('regressionEquation');
+    if (equationDiv) {
+        equationDiv.style.display = 'none';
+    }
+}
 function calculateLinearRegression(dataPoints) {
     console.log('Calculating regression for points:', dataPoints);
     
