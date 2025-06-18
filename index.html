@@ -902,10 +902,21 @@
 }
 
 .hero-subtitle {
-    animation-delay: 0.6s;
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.animated-subtitle {
     opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(20px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.animated-subtitle.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .upload-hero-area {
