@@ -157,15 +157,16 @@
             font-size: 1rem;
         }
 
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 2rem;
-            align-items: start;
-        }
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 2rem;
+    align-items: start;
+    position: relative;
+}
 
         .sidebar {
             background: var(--bg-secondary);
@@ -419,7 +420,6 @@
             gap: 2rem;
             position: relative;
             margin-top: 0;
-            padding-top: 60px;
         }
 
         .main-content .content-card:first-child {
@@ -1089,9 +1089,9 @@
 }
 #statusMessage {
     position: absolute;
-    top: 2rem;
-    left: 2rem;
-    right: 2rem;
+    top: -80px;
+    left: 0;
+    right: 0;
     z-index: 10;
     margin: 0;
     padding: 0;
