@@ -413,14 +413,15 @@
         }
 
         .main-content {
-            display: flex;
-            flex-direction: column;
-            height: fit-content;
-            min-height: calc(100vh - 120px);
-            gap: 2rem;
-            position: relative;
-            margin-top: 0;
-        }
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    min-height: calc(100vh - 120px);
+    gap: 2rem;
+    position: relative;
+    margin-top: 0;
+    transition: margin-top 0.3s ease;
+}
 
         .main-content .content-card:first-child {
             flex: 1; 
@@ -1088,12 +1089,9 @@
     background: #ff6b6b;
 }
 #statusMessage {
-    position: absolute;
-    top: -80px;
-    left: 0;
-    right: 0;
+    position: relative;
     z-index: 10;
-    margin: 0;
+    margin: 0 0 1.5rem 0;
     padding: 0;
 }
 .status-message {
@@ -2076,10 +2074,19 @@ if (heroUploadArea) {
         
 function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
+    const mainContent = document.querySelector('.main-content');
+    
     statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
+    
+    if (mainContent) {
+        mainContent.style.marginTop = '0';
+    }
     
     setTimeout(() => {
         statusDiv.innerHTML = '';
+        if (mainContent) {
+            mainContent.style.marginTop = '-60px';
+        }
     }, 5000);
 }
         
