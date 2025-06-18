@@ -1318,6 +1318,30 @@
     box-shadow: 0 4px 12px rgba(1, 4, 9, 0.3);
     z-index: 10;
 }
+.typing-text {
+    display: inline-block;
+}
+
+.typing-cursor {
+    display: inline-block;
+    animation: blink 1s infinite;
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.data-reimagined {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.data-reimagined.show {
+    opacity: 1;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
     </style>
 </head>
 <body>
@@ -1340,7 +1364,9 @@
             <i class="fas fa-chart-line"></i>
             100% DATA-DRIVEN
         </div>
-        <h1 class="hero-title"><span class="hero-highlight">ClearViz</span>, Data Reimagined.</h1>
+        <h1 class="hero-title">
+            <span class="hero-highlight typing-text" id="typingText"></span><span class="typing-cursor">|</span><span class="data-reimagined">, Data Reimagined.</span>
+        </h1>
         <p class="hero-subtitle">
             ClearViz transforms your raw data into beautiful, insightful visualizations
         </p>
@@ -2749,6 +2775,30 @@ function deleteFile(index) {
     closeDeleteModal();
     showMessage('File deleted successfully', 'success');
 }
+document.addEventListener('DOMContentLoaded', function() {
+    const typingText = document.getElementById('typingText');
+    const dataReimaginedSpan = document.querySelector('.data-reimagined');
+    const cursor = document.querySelector('.typing-cursor');
+    const text = 'ClearViz';
+    let index = 0;
+    
+    function typeText() {
+        if (index < text.length) {
+            typingText.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeText, 150); 
+        } else {
+            setTimeout(() => {
+                cursor.style.display = 'none'; 
+                dataReimaginedSpan.classList.add('show'); 
+            }, 500);
+        }
+    }
+
+    setTimeout(() => {
+        typeText();
+    }, 1200); 
+});
 
 </script>
 </body>
