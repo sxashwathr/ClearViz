@@ -1327,6 +1327,8 @@
     animation: blink 1s infinite;
     color: var(--accent-blue);
     font-weight: 700;
+    font-size: 0.8em;
+    line-height: 1;
 }
 
 .data-reimagined {
@@ -1342,6 +1344,7 @@
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
 }
+
     </style>
 </head>
 <body>
@@ -2786,18 +2789,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (index < text.length) {
             typingText.textContent += text.charAt(index);
             index++;
-            setTimeout(typeText, 150); 
+            setTimeout(typeText, 150);
         } else {
             setTimeout(() => {
-                cursor.style.display = 'none'; 
-                dataReimaginedSpan.classList.add('show'); 
-            }, 500);
+                cursor.style.display = 'none';
+                dataReimaginedSpan.classList.add('show');
+            }, 1500);
         }
     }
-
+    
     setTimeout(() => {
         typeText();
-    }, 1200); 
+    }, 1200);
 });
 
 </script>
