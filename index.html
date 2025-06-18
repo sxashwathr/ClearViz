@@ -2449,11 +2449,12 @@ function goHome() {
         `;
     }
     document.getElementById('chart').style.display = 'none';
-    
-    // Clear status messages
+
     document.getElementById('statusMessage').innerHTML = '';
     
     showMessage('Returned to home page', 'success');
+
+    setTimeout(startTypingAnimation, 100);
 }
 
 function showDataPage() {
@@ -2780,10 +2781,17 @@ function deleteFile(index) {
     closeDeleteModal();
     showMessage('File deleted successfully', 'success');
 }
-document.addEventListener('DOMContentLoaded', function() {
+function startTypingAnimation() {
     const typingText = document.getElementById('typingText');
     const dataReimaginedSpan = document.querySelector('.data-reimagined');
     const cursor = document.querySelector('.typing-cursor');
+    
+    if (!typingText) return;
+    
+    typingText.textContent = '';
+    dataReimaginedSpan.classList.remove('show');
+    cursor.style.display = 'inline-block';
+    
     const text = 'ClearViz';
     let index = 0;
     
@@ -2796,14 +2804,16 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 cursor.style.display = 'none';
                 dataReimaginedSpan.classList.add('show');
-            }, 1500);
+            }, 600);
         }
     }
     
     setTimeout(() => {
         typeText();
     }, 1200);
-});
+}
+
+document.addEventListener('DOMContentLoaded', startTypingAnimation);
 
 </script>
 </body>
