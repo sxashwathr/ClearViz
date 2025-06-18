@@ -419,14 +419,7 @@
             gap: 2rem;
             position: relative;
             margin-top: 0;
-        }
-        .main-content {
-            transition: margin-top 0.3s ease;
-            margin-top: 0;
-        }
-
-        .main-content.has-message {
-            margin-top: 0;
+            padding-top: 60px;
         }
 
         .main-content .content-card:first-child {
@@ -1094,13 +1087,14 @@
 .btn-delete:hover {
     background: #ff6b6b;
 }
-
 #statusMessage {
-    position: relative;
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
     z-index: 10;
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-top: 0;
+    margin: 0;
+    padding: 0;
 }
 .status-message {
     margin-bottom: 1.5rem;
@@ -2082,19 +2076,10 @@ if (heroUploadArea) {
         
 function showMessage(message, type) {
     const statusDiv = document.getElementById('statusMessage');
-    const mainContent = document.querySelector('.main-content');
     statusDiv.innerHTML = `<div class="status-message status-${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>${message}</div>`;
-    
-    // Add class to adjust spacing
-    if (mainContent) {
-        mainContent.classList.add('has-message');
-    }
     
     setTimeout(() => {
         statusDiv.innerHTML = '';
-        if (mainContent) {
-            mainContent.classList.remove('has-message');
-        }
     }, 5000);
 }
         
