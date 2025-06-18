@@ -1332,12 +1332,16 @@
 }
 
 .data-reimagined {
+    display: inline-block;
+}
+
+.animated-subtitle {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
     transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
-.data-reimagined.show {
+.animated-subtitle.show {
     opacity: 1;
     transform: translateY(0);
 }
@@ -1346,7 +1350,6 @@
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
 }
-
     </style>
 </head>
 <body>
@@ -1372,7 +1375,7 @@
         <h1 class="hero-title">
             <span class="hero-highlight typing-text" id="typingText"></span><span class="typing-cursor">|</span><span class="data-reimagined">, Data Reimagined.</span>
         </h1>
-        <p class="hero-subtitle">
+        <p class="hero-subtitle animated-subtitle">
             ClearViz transforms your raw data into beautiful, insightful visualizations
         </p>
         
@@ -2783,13 +2786,13 @@ function deleteFile(index) {
 }
 function startTypingAnimation() {
     const typingText = document.getElementById('typingText');
-    const dataReimaginedSpan = document.querySelector('.data-reimagined');
+    const animatedSubtitle = document.querySelector('.animated-subtitle');
     const cursor = document.querySelector('.typing-cursor');
     
     if (!typingText) return;
     
     typingText.textContent = '';
-    dataReimaginedSpan.classList.remove('show');
+    animatedSubtitle.classList.remove('show');
     cursor.style.display = 'inline-block';
     
     const text = 'ClearViz';
@@ -2803,7 +2806,7 @@ function startTypingAnimation() {
         } else {
             setTimeout(() => {
                 cursor.style.display = 'none';
-                dataReimaginedSpan.classList.add('show');
+                animatedSubtitle.classList.add('show');
             }, 600);
         }
     }
