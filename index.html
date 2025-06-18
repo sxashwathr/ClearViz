@@ -1333,11 +1333,13 @@
 
 .data-reimagined {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transform: translateY(10px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
 }
 
 .data-reimagined.show {
     opacity: 1;
+    transform: translateY(0);
 }
 
 @keyframes blink {
