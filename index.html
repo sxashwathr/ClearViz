@@ -1402,7 +1402,7 @@
                         Pie Chart
                     </div>
                     <div class="chart-type-btn" data-type="regression" onclick="selectChartType('regression')">
-                        <i class="fas fa-function"></i>
+                        <i class="fas fa-trending-up"></i>
                         Regression
                     </div>
                 </div>
@@ -2208,11 +2208,23 @@ function exportChart() {
     link.download = `${baseName}_${currentFile.chartType}_chart.png`;
     link.href = url;
     
-    link.onclick = function() {
-        setTimeout(() => {
-            showMessage(`Chart exported: ${baseName}_${currentFile.chartType}_chart.png`, 'success');
-        }, 100);
+    let downloadStarted = false;
+    
+    link.addEventListener('click', function() {
+        downloadStarted = true;
+    });
+
+    const handleFocus = function() {
+        if (downloadStarted) {
+            setTimeout(() => {
+                showMessage(`Chart exported: ${baseName}_${currentFile.chartType}_chart.png`, 'success');
+                downloadStarted = false;
+                window.removeEventListener('focus', handleFocus);
+            }, 500);
+        }
     };
+    
+    window.addEventListener('focus', handleFocus);
     
     link.click();
 }
