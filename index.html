@@ -4048,9 +4048,14 @@ function startTypingAnimation() {
     
     if (!typingText) return;
     
+    // Reset elements
     typingText.textContent = '';
-    animatedSubtitle.classList.remove('show');
-    cursor.style.display = 'inline-block';
+    if (animatedSubtitle) {
+        animatedSubtitle.classList.remove('show');
+    }
+    if (cursor) {
+        cursor.style.display = 'inline-block';
+    }
     
     const text = 'ClearViz';
     let index = 0;
@@ -4061,17 +4066,29 @@ function startTypingAnimation() {
             index++;
             setTimeout(typeText, 150);
         } else {
+            // Animation complete
             setTimeout(() => {
-                cursor.style.display = 'none';
-                animatedSubtitle.classList.add('show');
+                if (cursor) {
+                    cursor.style.display = 'none';
+                }
+                if (animatedSubtitle) {
+                    animatedSubtitle.classList.add('show');
+                }
             }, 600);
         }
     }
     
+    // Start typing after a delay
     setTimeout(() => {
         typeText();
     }, 1200);
 }
+
+// Make sure the animation starts when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, starting typing animation...');
+    startTypingAnimation();
+});
 
 let selectedModel = 'llama3';
 let heroUploadedFile = null;
