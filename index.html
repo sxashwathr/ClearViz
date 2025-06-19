@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2800,14 +2801,10 @@ function startTypingAnimation() {
     const animatedSubtitle = document.querySelector('.animated-subtitle');
     const cursor = document.querySelector('.typing-cursor');
     
-    if (!typingText || !animatedSubtitle) return;
-    
-    animatedSubtitle.style.animation = 'none';
-    animatedSubtitle.style.opacity = '0';
-    animatedSubtitle.style.transform = 'translateY(20px)';
-    animatedSubtitle.classList.remove('show');
+    if (!typingText) return;
     
     typingText.textContent = '';
+    animatedSubtitle.classList.remove('show');
     cursor.style.display = 'inline-block';
     
     const text = 'ClearViz';
@@ -2830,6 +2827,7 @@ function startTypingAnimation() {
         typeText();
     }, 1200);
 }
+
 document.addEventListener('DOMContentLoaded', startTypingAnimation);
 
 </script>
