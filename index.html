@@ -1411,33 +1411,24 @@
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: 21px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        transparent,
-        rgba(168, 85, 247, 0.8),
-        rgba(168, 85, 247, 1),
-        rgba(168, 85, 247, 0.8),
-        transparent,
-        transparent
-    );
-    background-size: 400% 400%;
-    animation: movingBorder 3s linear infinite;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        rgba(88, 166, 255, 0.6) 0%, 
+        rgba(188, 140, 255, 0.6) 25%, 
+        rgba(63, 185, 80, 0.6) 50%, 
+        rgba(88, 166, 255, 0.6) 75%, 
+        rgba(188, 140, 255, 0.6) 100%);
+    border-radius: 20px;
     z-index: -1;
+    animation: borderGlow 4s ease-in-out infinite;
 }
 
-@keyframes movingBorder {
-    0% {
-        background-position: -400% 0;
-    }
-    100% {
-        background-position: 400% 0;
-    }
+@keyframes borderGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
@@ -1803,10 +1794,12 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     display: none;
+    pointer-events: none;
 }
 
 .sidebar-overlay.show {
     display: block;
+    pointer-events: auto;
 }
 
 .sidebar-header {
@@ -3326,6 +3319,42 @@ function processData(data, filename) {
         addFileToList(validRows, filename);
         currentChat.files = uploadedFiles;
     }
+    
+    // ADD THIS LINE TO SHOW INSIGHTS IMMEDIATELY:
+    showDataPreviewAndInsights();
+}
+function showDataPreviewAndInsights() {
+    if (!currentData || currentData.length === 0) return;
+    
+    // Show the insights card
+    document.getElementById('insightsCard').style.display = 'block';
+    
+    // Generate basic data insights without requiring chart
+    const columns = Object.keys(currentData[0]);
+    const rowCount = currentData.length;
+    const numericColumns = columns.filter(col => {
+        return currentData.slice(0, 5).some(row => {
+            const val = row[col];
+            return typeof val === 'number' || (typeof val === 'string' && !isNaN(parseFloat(val)));
+        });
+    });
+    
+    const insights = [
+        { value: rowCount.toLocaleString(), label: 'Total Rows' },
+        { value: columns.length, label: 'Total Columns' },
+        { value: numericColumns.length, label: 'Numeric Columns' },
+        { value: (columns.length - numericColumns.length), label: 'Text Columns' },
+        { value: columns[0] || 'N/A', label: 'First Column' },
+        { value: columns[columns.length - 1] || 'N/A', label: 'Last Column' }
+    ];
+    
+    const insightsContainer = document.getElementById('insightsContainer');
+    insightsContainer.innerHTML = insights.map(insight => `
+        <div class="insight-card">
+            <div class="insight-value">${insight.value}</div>
+            <div class="insight-label">${insight.label}</div>
+        </div>
+    `).join('');
 }
 
         function populateColumnSelectors() {
