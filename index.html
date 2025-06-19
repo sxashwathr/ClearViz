@@ -1411,30 +1411,33 @@
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 20px;
-    padding: 2px;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(147, 51, 234, 0.8) 25%, 
-        rgba(168, 85, 247, 1) 50%, 
-        rgba(147, 51, 234, 0.8) 75%, 
-        transparent 100%);
-    background-size: 200% 100%;
-    animation: movingLight 3s linear infinite;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: subtract;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask-composite: subtract;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 21px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        transparent,
+        rgba(168, 85, 247, 0.8),
+        rgba(168, 85, 247, 1),
+        rgba(168, 85, 247, 0.8),
+        transparent,
+        transparent
+    );
+    background-size: 400% 400%;
+    animation: movingBorder 3s linear infinite;
     z-index: -1;
 }
 
-@keyframes movingLight {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+@keyframes movingBorder {
+    0% {
+        background-position: -400% 0;
+    }
+    100% {
+        background-position: 400% 0;
+    }
 }
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
@@ -1661,17 +1664,13 @@
     background: rgba(248, 81, 73, 0.1);
 }
 .floating-chatbox {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
+    position: sticky;
+    bottom: 0;
     background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(17, 19, 23, 0.95) 100%);
     border: 2px solid rgba(88, 166, 255, 0.3);
     border-radius: 20px;
     padding: 1.5rem;
-    width: 90%;
-    max-width: 600px;
-    z-index: 1000;
+    margin: 2rem 0;
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-primary);
     transition: all 0.3s ease;
@@ -1866,11 +1865,6 @@
     color: var(--accent-blue);
 }
 
-.chat-item-title:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    padding: 2px 4px;
-}
 
 .sidebar-toggle-btn {
     background: transparent;
@@ -1936,6 +1930,14 @@
     transition: all 0.2s ease;
     display: inline-block;
     min-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.chat-title-text:focus {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--accent-blue);
+    white-space: nowrap;
 }
 
 .chat-title-text:hover {
@@ -2184,6 +2186,186 @@ body.sidebar-open .hero-section {
 .back-to-home-btn:hover {
     transform: translateX(-2px);
 }
+
+.chat-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.chat-item-title {
+    flex: 1;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.chat-item.active .chat-item-title {
+    color: var(--accent-blue);
+}
+
+.chat-item-menu {
+    padding: 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+}
+
+.chat-item:hover .chat-item-menu {
+    opacity: 1;
+}
+
+.chat-item-menu:hover {
+    background: var(--bg-accent);
+    color: var(--text-primary);
+}
+
+.chat-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    padding: 0.5rem;
+    z-index: 1000;
+    min-width: 120px;
+    box-shadow: var(--shadow-primary);
+    margin-top: 0.25rem;
+}
+
+.chat-menu-option {
+    padding: 0.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.chat-menu-option:hover {
+    background: var(--bg-accent);
+}
+
+.chat-menu-option.delete {
+    color: var(--accent-orange);
+}
+
+.chat-menu-option.delete:hover {
+    background: rgba(248, 81, 73, 0.1);
+}
+
+.chat-item {
+    position: relative;
+}
+
+.chat-item-title.editing {
+    background: var(--bg-accent);
+    border: 1px solid var(--accent-blue);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    outline: none;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 100px;
+}
+
+.chat-area {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.chat-log-bubbles {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+}
+
+.chat-bubble {
+    max-width: 70%;
+    padding: 1rem 1.5rem;
+    border-radius: 18px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.chat-bubble.user {
+    align-self: flex-end;
+    background: var(--accent-blue);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.ai {
+    align-self: flex-start;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.ai-bubble-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+}
+
+.ai-bubble-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ai-bubble-content {
+    flex: 1;
+}
+
+.chat-bubble-text {
+    line-height: 1.5;
+    margin: 0;
+}
+
+.bubble-copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 0.75rem;
+}
+
+.chat-bubble:hover .bubble-copy-btn {
+    opacity: 1;
+}
+
+.bubble-copy-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
         
     </style>
 </head>
@@ -2216,7 +2398,7 @@ body.sidebar-open .hero-section {
                 <span class="logo-text">ClearViz</span>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-outline" onclick="showHelp()">Help</button>
+                <button class="btn btn-outline" onclick="showHelpPage()">Help</button>
                 <button class="btn btn-primary" onclick="scrollToUpload()">Get Started</button>
             </div>
         </div>
@@ -2297,6 +2479,7 @@ body.sidebar-open .hero-section {
             </div>
         </div>
         <div class="header-actions">
+    <button class="btn btn-outline" onclick="showHelpPage()">Help</button>
     <button class="btn btn-outline export-chat-btn" onclick="exportChat()" title="Export Chat">
         <i class="fas fa-download"></i>
     </button>
@@ -2436,36 +2619,38 @@ body.sidebar-open .hero-section {
                 </div>
             </div>
             <div class="floating-chatbox" id="floatingChatbox" style="display: none;">
-    <div class="floating-chatbox-header">
-        <div class="chatbox-title">What insights/models can I provide you with?</div>
-    </div>
-    <div class="floating-chatbox-input">
-        <div class="chatbox-input-wrapper">
-            <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="dataPromptInput">
-            <div class="model-selector-btn" onclick="toggleDataModelDropdown()">
-    <span id="selectedDataModelText">Llama 3</span>
-    <i class="fas fa-chevron-down"></i>
-</div>
-            <button class="send-btn" onclick="sendDataMessage()">
-                <i class="fas fa-arrow-up"></i>
-            </button>
-        </div>
-        <div class="model-dropdown" id="dataModelDropdown">
-    <div class="model-option selected" data-model="llama3" onclick="selectDataModel('llama3')">
-        <i class="fas fa-check"></i> Llama 3
-    </div>
-    <div class="model-option" data-model="llama4-maverick" onclick="selectDataModel('llama4-maverick')">
-        <i class="fas fa-check"></i> Llama 4 Maverick
-    </div>
-    <div class="model-option" data-model="llama4-scout" onclick="selectDataModel('llama4-scout')">
-        <i class="fas fa-check"></i> Llama 4 Scout
-    </div>
-    <div class="model-option disabled">
-        <i class="fas fa-clock"></i> More models coming soon
-    </div>
-</div>
-    </div>
-</div>
+                <div class="floating-chatbox-header">
+                    <div class="chatbox-title">What insights/models can I provide you with?</div>
+                </div>
+                <div class="floating-chatbox-input">
+                    <div class="chatbox-input-wrapper">
+                        <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="dataPromptInput">
+                        <div class="model-selector-btn" onclick="toggleDataModelDropdown()">
+                            <span id="selectedDataModelText">Llama 3</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <button class="send-btn" onclick="sendDataMessage()">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                    </div>
+                    <div class="model-dropdown" id="dataModelDropdown">
+                        <div class="model-option selected" data-model="llama3" onclick="selectDataModel('llama3')">
+                            <i class="fas fa-check"></i> Llama 3
+                        </div>
+                        <div class="model-option" data-model="llama4-maverick" onclick="selectDataModel('llama4-maverick')">
+                            <i class="fas fa-check"></i> Llama 4 Maverick
+                        </div>
+                        <div class="model-option" data-model="llama4-scout" onclick="selectDataModel('llama4-scout')">
+                            <i class="fas fa-check"></i> Llama 4 Scout
+                        </div>
+                        <div class="model-option disabled">
+                            <i class="fas fa-clock"></i> More models coming soon
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-area" id="chatArea" style="display: none;">
+                <div id="chatLog" class="chat-log-bubbles"></div>
         </main>
     </div>
     <div class="help-page" id="helpPage" style="display: none;">
@@ -3531,6 +3716,7 @@ function showDataPage() {
     
     // Hide home page
     heroSection.style.display = 'none';
+    document.getElementById('helpPage').style.display = 'none';
     
     // Show data visualization page
     document.getElementById('dataHeader').style.display = 'block';
@@ -3539,6 +3725,7 @@ function showDataPage() {
     if (currentData || uploadedFiles.length > 0) {
         setTimeout(() => {
             document.getElementById('floatingChatbox').style.display = 'block';
+            document.getElementById('insightsCard').style.display = 'block'; 
         }, 500);
     }
 }
@@ -4044,6 +4231,27 @@ function sendHeroMessage() {
         return; // Don't proceed if no message and no file
     }
     
+    // Create new chat if we have a message
+    if (message) {
+        const chatId = Date.now().toString();
+        const newChat = {
+            id: chatId,
+            title: 'New Chat',
+            files: [],
+            messages: [],
+            createdAt: new Date()
+        };
+        
+        chatHistory.unshift(newChat);
+        currentChatId = chatId;
+        updateChatList();
+        
+        // Generate auto title based on message
+        setTimeout(() => {
+            generateChatTitleFromMessage(message);
+        }, 1000);
+    }
+    
     // Process file if uploaded
     if (heroUploadedFile) {
         const fileExtension = heroUploadedFile.name.split('.').pop().toLowerCase();
@@ -4054,17 +4262,113 @@ function sendHeroMessage() {
         }
     }
     
-    // Navigate to data page and start chat
+    // Navigate to data page
     showDataPage();
-    if (message || heroUploadedFile) {
-        startChat(message, heroUploadedFile);
+    
+    // Start chat with the message
+    if (message) {
+        setTimeout(() => {
+            startChatWithMessage(message, heroUploadedFile);
+        }, 500);
     }
     
     // Clear inputs
     input.value = '';
     removeHeroFile();
 }
-
+function generateChatTitleFromMessage(message) {
+    // Create a title based on the first few words of the message
+    const words = message.split(' ').slice(0, 4).join(' ');
+    let title = words;
+    
+    // If message is too short, add some context
+    if (words.length < 10) {
+        title = `Chat: ${words}`;
+    }
+    
+    // Limit title length
+    if (title.length > 30) {
+        title = title.substring(0, 27) + '...';
+    }
+    
+    if (currentChatId) {
+        const chat = chatHistory.find(c => c.id === currentChatId);
+        if (chat) {
+            chat.title = title;
+            updateChatList();
+            
+            // Animate typing the title
+            const titleDisplay = document.getElementById('chatTitleDisplay');
+            if (titleDisplay) {
+                titleDisplay.classList.add('typing-title');
+                titleDisplay.textContent = '';
+                
+                let i = 0;
+                const typeTitle = () => {
+                    if (i < title.length) {
+                        titleDisplay.textContent += title.charAt(i);
+                        i++;
+                        setTimeout(typeTitle, 100);
+                    } else {
+                        setTimeout(() => {
+                            titleDisplay.classList.remove('typing-title');
+                        }, 1000);
+                    }
+                };
+                
+                typeTitle();
+            }
+        }
+    }
+}
+function startChatWithMessage(message, file) {
+    // Initialize chat log
+    createChatLog();
+    
+    // Show floating chatbox
+    document.getElementById('floatingChatbox').style.display = 'block';
+    
+    // Add user message to chat
+    addToChatLog('user', message);
+    
+    // Simulate AI typing and response
+    setTimeout(() => {
+        let response = '';
+        
+        if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const supportedFormats = ['csv', 'xlsx', 'xls', 'json'];
+            
+            if (supportedFormats.includes(fileExtension)) {
+                response = `I can see you've uploaded a ${fileExtension.toUpperCase()} file. Let me help you analyze this data. You can use the visualization tools on the left to create charts, and I'll provide insights about your data.`;
+            } else {
+                response = `I see you've uploaded a file. For data visualization, please upload your data files using the upload area in the top left panel. I can help analyze CSV, Excel, or JSON files for creating charts and insights.`;
+            }
+        } else {
+            // Generate a response based on the message content
+            if (message.toLowerCase().includes('data') || message.toLowerCase().includes('chart') || message.toLowerCase().includes('visualization')) {
+                response = `I'd be happy to help you with data visualization! Please upload your data file using the upload area on the left, and I can help you create charts and provide insights about your data.`;
+            } else if (message.toLowerCase().includes('help')) {
+                response = `I'm here to help you visualize and analyze your data! You can upload CSV, Excel, or JSON files, and I'll help you create beautiful charts and discover insights. What would you like to explore?`;
+            } else {
+                response = `Hello! I'm your data visualization assistant. I can help you analyze data and create charts. To get started, please upload a data file (CSV, Excel, or JSON) using the upload area on the left. What specific analysis are you looking for?`;
+            }
+        }
+        
+        addToChatLog('ai', response);
+        
+        // Save message to chat history
+        if (currentChatId) {
+            const chat = chatHistory.find(c => c.id === currentChatId);
+            if (chat) {
+                chat.messages.push(
+                    { sender: 'user', message: message, timestamp: new Date() },
+                    { sender: 'ai', message: response, timestamp: new Date() }
+                );
+            }
+        }
+    }, 1500); // 1.5 second delay to simulate AI thinking
+}
 function sendDataMessage() {
     const input = document.getElementById('dataPromptInput');
     const message = input.value.trim();
@@ -4081,9 +4385,29 @@ function sendDataMessage() {
     
     // Simulate AI response
     setTimeout(() => {
-        addToChatLog('ai', 'I can help you analyze your data and provide insights. What specific analysis would you like me to perform?');
+        let response = '';
+        
+        if (currentData && uploadedFiles.length > 0) {
+            response = `I can help you analyze your data! Based on your uploaded data, I can provide insights, suggest different chart types, or help you explore specific patterns. What would you like to know about your data?`;
+        } else {
+            response = `I'd be happy to help! Please upload a data file using the upload area on the left so I can assist you with data analysis and visualization.`;
+        }
+        
+        addToChatLog('ai', response);
+        
+        // Save messages to chat history
+        if (currentChatId) {
+            const chat = chatHistory.find(c => c.id === currentChatId);
+            if (chat) {
+                chat.messages.push(
+                    { sender: 'user', message: message, timestamp: new Date() },
+                    { sender: 'ai', message: response, timestamp: new Date() }
+                );
+            }
+        }
     }, 1000);
 }
+
 
 function startChat(message, file) {
     // Initialize chat log if needed
@@ -4122,41 +4446,54 @@ function createChatLog() {
     const insightsCard = document.getElementById('insightsCard');
     insightsCard.parentNode.insertBefore(chatLog, insightsCard.nextSibling);
 }
-
 function addToChatLog(sender, message) {
-    const chatLog = document.getElementById('chatLog');
+    let chatLog = document.getElementById('chatLog');
     if (!chatLog) {
         createChatLog();
+        chatLog = document.getElementById('chatLog');
     }
     
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `chat-message ${sender}-message`;
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = `chat-bubble ${sender}`;
     
     if (sender === 'ai') {
-        messageDiv.innerHTML = `
-            <div class="message-avatar">
-                <img src="./assets/iconwhite.png" alt="AI" class="ai-avatar">
+        bubbleDiv.innerHTML = `
+            <div class="ai-bubble-avatar">
+                <img src="./assets/iconwhite.png" alt="AI">
             </div>
-            <div class="message-content">
-                <div class="message-text">${message}</div>
-                <button class="copy-btn" onclick="copyMessage(this)" title="Copy message">
-                    <i class="fas fa-copy"></i>
-                </button>
+            <div class="ai-bubble-content">
+                <div class="chat-bubble-text">${message}</div>
             </div>
+            <button class="bubble-copy-btn" onclick="copyBubbleMessage(this)" title="Copy message">
+                <i class="fas fa-copy"></i>
+            </button>
         `;
     } else {
-        messageDiv.innerHTML = `
-            <div class="message-content">
-                <div class="message-text">${message}</div>
-                <button class="copy-btn" onclick="copyMessage(this)" title="Copy message">
-                    <i class="fas fa-copy"></i>
-                </button>
-            </div>
+        bubbleDiv.innerHTML = `
+            <div class="chat-bubble-text">${message}</div>
+            <button class="bubble-copy-btn" onclick="copyBubbleMessage(this)" title="Copy message">
+                <i class="fas fa-copy"></i>
+            </button>
         `;
     }
     
-    chatLog.appendChild(messageDiv);
-    chatLog.scrollTop = chatLog.scrollHeight;
+    chatLog.appendChild(bubbleDiv);
+    
+    // Show chat area
+    document.getElementById('chatArea').style.display = 'block';
+    
+    // Scroll to bottom
+    bubbleDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyBubbleMessage(button) {
+    const messageText = button.parentNode.querySelector('.chat-bubble-text').textContent;
+    navigator.clipboard.writeText(messageText).then(() => {
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        setTimeout(() => {
+            button.innerHTML = '<i class="fas fa-copy"></i>';
+        }, 2000);
+    });
 }
 
 function copyMessage(button) {
@@ -4181,23 +4518,14 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Close dropdowns when clicking outside
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.model-selector-btn')) {
-        document.querySelectorAll('.model-dropdown').forEach(dropdown => {
-            dropdown.classList.remove('show');
-        });
-    }
-});
-
-// Handle Enter key in inputs
 document.addEventListener('DOMContentLoaded', () => {
     const heroInput = document.getElementById('heroPromptInput');
     const dataInput = document.getElementById('dataPromptInput');
     
     if (heroInput) {
         heroInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendHeroMessage();
             }
         });
@@ -4205,13 +4533,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (dataInput) {
         dataInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendDataMessage();
             }
         });
     }
 });
-        
 document.addEventListener('DOMContentLoaded', startTypingAnimation);
        
 let chatHistory = [];
@@ -4286,8 +4614,19 @@ function updateChatList() {
         chatItem.onclick = () => switchToChat(chat.id);
         
         chatItem.innerHTML = `
-            <div class="chat-item-title" contenteditable="true" onblur="updateChatTitle('${chat.id}', this.textContent)" onclick="event.stopPropagation();">
-                ${chat.title}
+            <div class="chat-item-content">
+                <div class="chat-item-title" id="title-${chat.id}">${chat.title}</div>
+                <div class="chat-item-menu" onclick="event.stopPropagation(); toggleChatMenu('${chat.id}')">
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+            <div class="chat-menu" id="menu-${chat.id}" style="display: none;">
+                <div class="chat-menu-option" onclick="event.stopPropagation(); renameChatStart('${chat.id}')">
+                    <i class="fas fa-edit"></i> Rename
+                </div>
+                <div class="chat-menu-option delete" onclick="event.stopPropagation(); confirmDeleteChat('${chat.id}')">
+                    <i class="fas fa-trash"></i> Delete
+                </div>
             </div>
         `;
         
@@ -4322,6 +4661,135 @@ function switchToChat(chatId) {
         closeSidebar();
     }
 }
+function toggleChatMenu(chatId) {
+    // Close all other menus
+    document.querySelectorAll('.chat-menu').forEach(menu => {
+        if (menu.id !== `menu-${chatId}`) {
+            menu.style.display = 'none';
+        }
+    });
+    
+    // Toggle current menu
+    const menu = document.getElementById(`menu-${chatId}`);
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function renameChatStart(chatId) {
+    // Close menu
+    document.getElementById(`menu-${chatId}`).style.display = 'none';
+    
+    // Make title editable
+    const titleElement = document.getElementById(`title-${chatId}`);
+    const originalTitle = titleElement.textContent;
+    titleElement.contentEditable = true;
+    titleElement.classList.add('editing');
+    titleElement.focus();
+    
+    // Select all text
+    const range = document.createRange();
+    range.selectNodeContents(titleElement);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Handle enter key and blur
+    const handleFinish = () => {
+        titleElement.contentEditable = false;
+        titleElement.classList.remove('editing');
+        const newTitle = titleElement.textContent.trim() || originalTitle;
+        titleElement.textContent = newTitle; // Ensure clean text
+        updateChatTitle(chatId, newTitle);
+        titleElement.removeEventListener('blur', handleFinish);
+        titleElement.removeEventListener('keydown', handleKeyDown);
+    };
+    
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent line break
+            titleElement.blur(); // This will trigger handleFinish
+        }
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            titleElement.textContent = originalTitle; // Restore original
+            titleElement.blur();
+        }
+    };
+    
+    titleElement.addEventListener('blur', handleFinish);
+    titleElement.addEventListener('keydown', handleKeyDown);
+}
+    
+    const handleEnter = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleFinish();
+        }
+    };
+    
+    titleElement.addEventListener('blur', handleFinish);
+    titleElement.addEventListener('keydown', handleEnter);
+}
+
+function confirmDeleteChat(chatId) {
+    // Close menu
+    document.getElementById(`menu-${chatId}`).style.display = 'none';
+    
+    const chat = chatHistory.find(c => c.id === chatId);
+    const chatTitle = chat ? chat.title : 'this chat';
+    
+    const modalHTML = `
+        <div class="modal-overlay" id="deleteChatModal">
+            <div class="modal">
+                <div class="modal-title">Delete Chat</div>
+                <div class="modal-text">Are you sure you want to delete "${chatTitle}"? This action cannot be undone.</div>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" onclick="closeChatDeleteModal()">Cancel</button>
+                    <button class="btn btn-delete" onclick="deleteChat('${chatId}')">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+function closeChatDeleteModal() {
+    const modal = document.getElementById('deleteChatModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function deleteChat(chatId) {
+    const chatIndex = chatHistory.findIndex(c => c.id === chatId);
+    if (chatIndex !== -1) {
+        chatHistory.splice(chatIndex, 1);
+        
+        // If deleting current chat, switch to another or go home
+        if (chatId === currentChatId) {
+            if (chatHistory.length > 0) {
+                switchToChat(chatHistory[0].id);
+            } else {
+                currentChatId = null;
+                goHome();
+            }
+        }
+        
+        updateChatList();
+        showMessage('Chat deleted successfully', 'success');
+    }
+    
+    closeChatDeleteModal();
+}
+
+// Close chat menus when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.chat-item-menu') && !event.target.closest('.chat-menu')) {
+        document.querySelectorAll('.chat-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+});
 
 function updateChatTitle(chatId, newTitle) {
     const chat = chatHistory.find(c => c.id === chatId);
@@ -4407,8 +4875,43 @@ function generateChartTitle(xColumn, yColumn, chartType) {
 }
 
 function enableTitleEdit(element) {
+    const originalTitle = element.textContent;
     element.focus();
-    element.select();
+    
+    // Select all text
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    // Handle enter key and blur
+    const handleFinish = () => {
+        const newTitle = element.textContent.trim() || originalTitle;
+        element.textContent = newTitle; // Ensure clean text
+        
+        if (currentChatId) {
+            updateChatTitle(currentChatId, newTitle);
+        }
+        
+        element.removeEventListener('blur', handleFinish);
+        element.removeEventListener('keydown', handleKeyDown);
+    };
+    
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent line break
+            element.blur(); // This will trigger handleFinish
+        }
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            element.textContent = originalTitle; // Restore original
+            element.blur();
+        }
+    };
+    
+    element.addEventListener('blur', handleFinish);
+    element.addEventListener('keydown', handleKeyDown);
 }
 
 function showHelpPage() {
