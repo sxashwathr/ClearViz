@@ -1411,26 +1411,31 @@
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        rgba(88, 166, 255, 0.6) 0%, 
-        rgba(188, 140, 255, 0.6) 25%, 
-        rgba(63, 185, 80, 0.6) 50%, 
-        rgba(88, 166, 255, 0.6) 75%, 
-        rgba(188, 140, 255, 0.6) 100%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(147, 51, 234, 0.8) 25%, 
+        rgba(168, 85, 247, 1) 50%, 
+        rgba(147, 51, 234, 0.8) 75%, 
+        transparent 100%);
+    background-size: 200% 100%;
+    animation: movingLight 3s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: subtract;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: subtract;
     z-index: -1;
-    animation: borderGlow 4s ease-in-out infinite;
 }
 
-@keyframes borderGlow {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+@keyframes movingLight {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }
-
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
     background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(17, 19, 23, 0.95) 100%);
@@ -1524,15 +1529,18 @@
     background: var(--bg-accent);
     border: 1px solid var(--border-primary);
     border-radius: 8px;
-    padding: 0.5rem;
+    padding: 0.5rem 0.75rem;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 36px;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-width: 120px;
     height: 36px;
     position: relative;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
 }
 
 .model-selector-btn:hover {
@@ -1541,8 +1549,8 @@
 }
 
 .send-btn {
-    background: var(--gradient-brand);
-    border: none;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
     border-radius: 8px;
     padding: 0.5rem;
     cursor: pointer;
@@ -1552,12 +1560,18 @@
     justify-content: center;
     min-width: 36px;
     height: 36px;
-    color: white;
+    color: var(--text-secondary);
 }
 
 .send-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.4);
+    background: var(--bg-accent);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+}
+
+.send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .model-dropdown {
@@ -2158,6 +2172,16 @@ body.sidebar-open .hero-section {
     color: var(--text-primary);
     font-weight: 500;
 }
+.back-to-home-btn {
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-to-home-btn:hover {
+    transform: translateX(-2px);
+}
         
     </style>
 </head>
@@ -2219,27 +2243,28 @@ body.sidebar-open .hero-section {
                 <i class="fas fa-paperclip"></i>
             </div>
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
-            <div class="model-selector-btn" onclick="toggleModelDropdown()">
-                <i class="fas fa-robot"></i>
-            </div>
+           <div class="model-selector-btn" onclick="toggleModelDropdown()">
+    <span id="selectedModelText">Claude Sonnet 4</span>
+    <i class="fas fa-chevron-down"></i>
+</div>
             <button class="send-btn" onclick="sendHeroMessage()">
                 <i class="fas fa-arrow-up"></i>
             </button>
         </div>
         <div class="model-dropdown" id="modelDropdown">
-            <div class="model-option selected" data-model="llama3">
-                <i class="fas fa-check"></i> Llama 3
-            </div>
-            <div class="model-option" data-model="llama4-maverick">
-                Llama 4 Maverick
-            </div>
-            <div class="model-option" data-model="llama4-scout">
-                Llama 4 Scout
-            </div>
-            <div class="model-option disabled">
-                More models coming soon
-            </div>
-        </div>
+    <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
+        <i class="fas fa-check"></i> Llama 3
+    </div>
+    <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
+        <i class="fas fa-check"></i> Llama 4 Maverick
+    </div>
+    <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
+        <i class="fas fa-check"></i> Llama 4 Scout
+    </div>
+    <div class="model-option disabled">
+        <i class="fas fa-clock"></i> More models coming soon
+    </div>
+</div>
     </div>
     <input type="file" id="heroFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.json,image/*,.pdf" onchange="handleHeroFile(event)">
     <div class="file-preview" id="heroFilePreview" style="display: none;">
@@ -2270,11 +2295,10 @@ body.sidebar-open .hero-section {
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn btn-outline" onclick="showHelpPage()">Help</button>
-            <button class="btn btn-outline export-chat-btn" onclick="exportChat()" title="Export Chat">
-                <i class="fas fa-download"></i>
-            </button>
-        </div>
+    <button class="btn btn-outline export-chat-btn" onclick="exportChat()" title="Export Chat">
+        <i class="fas fa-download"></i>
+    </button>
+</div>
     </div>
 </header>
 
@@ -2424,38 +2448,42 @@ body.sidebar-open .hero-section {
             </button>
         </div>
         <div class="model-dropdown" id="dataModelDropdown">
-            <div class="model-option selected" data-model="llama3">
-                <i class="fas fa-check"></i> Llama 3
-            </div>
-            <div class="model-option" data-model="llama4-maverick">
-                Llama 4 Maverick
-            </div>
-            <div class="model-option" data-model="llama4-scout">
-                Llama 4 Scout
-            </div>
-            <div class="model-option disabled">
-                More models coming soon
-            </div>
-        </div>
+    <div class="model-option selected" data-model="llama3" onclick="selectDataModel('llama3')">
+        <i class="fas fa-check"></i> Llama 3
+    </div>
+    <div class="model-option" data-model="llama4-maverick" onclick="selectDataModel('llama4-maverick')">
+        <i class="fas fa-check"></i> Llama 4 Maverick
+    </div>
+    <div class="model-option" data-model="llama4-scout" onclick="selectDataModel('llama4-scout')">
+        <i class="fas fa-check"></i> Llama 4 Scout
+    </div>
+    <div class="model-option disabled">
+        <i class="fas fa-clock"></i> More models coming soon
+    </div>
+</div>
     </div>
 </div>
         </main>
     </div>
     <div class="help-page" id="helpPage" style="display: none;">
     <header class="help-header">
-        <div class="help-header-content">
-            <div class="header-left">
-                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
-                <span class="logo-text">ClearViz</span>
-            </div>
-            <div class="header-center">
-                <h1 class="help-page-title">What is ClearViz?</h1>
-            </div>
+    <div class="help-header-content">
+        <div class="header-left">
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button class="btn btn-outline back-to-home-btn" onclick="goHome()" title="Back to Home">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
+            <span class="logo-text">ClearViz</span>
         </div>
-    </header>
+        <div class="header-center">
+            <h1 class="help-page-title">What is ClearViz?</h1>
+        </div>
+    </div>
+</header>
     
     <div class="help-content">
         <div class="help-section">
@@ -3862,6 +3890,73 @@ function toggleModelDropdown() {
     const dropdown = document.getElementById('modelDropdown');
     dropdown.classList.toggle('show');
 }
+function selectModel(modelName) {
+    selectedModel = modelName;
+    
+    // Update all model options
+    document.querySelectorAll('#modelDropdown .model-option').forEach(option => {
+        option.classList.remove('selected');
+        const check = option.querySelector('i');
+        if (check) {
+            check.style.opacity = '0';
+        }
+    });
+    
+    // Select the clicked model
+    document.querySelectorAll('#modelDropdown .model-option').forEach(option => {
+        if (option.dataset.model === modelName) {
+            option.classList.add('selected');
+            const check = option.querySelector('i');
+            if (check) {
+                check.style.opacity = '1';
+            }
+        }
+    });
+    
+    // Close dropdown
+    document.getElementById('modelDropdown').classList.remove('show');
+
+    updateModelButtonText(modelName);
+}
+
+function updateModelButtonText(modelName) {
+    const modelNames = {
+        'llama3': 'Llama 3',
+        'llama4-maverick': 'Llama 4 Maverick',
+        'llama4-scout': 'Llama 4 Scout'
+    };
+    
+    const buttonText = document.getElementById('selectedModelText');
+    if (buttonText) {
+        buttonText.textContent = modelNames[modelName] || 'Claude Sonnet 4';
+    }
+}
+function selectDataModel(modelName) {
+    selectedModel = modelName;
+    
+    // Update data page model options
+    document.querySelectorAll('#dataModelDropdown .model-option').forEach(option => {
+        option.classList.remove('selected');
+        const check = option.querySelector('i');
+        if (check) {
+            check.style.opacity = '0';
+        }
+    });
+    
+    // Select the clicked model
+    document.querySelectorAll('#dataModelDropdown .model-option').forEach(option => {
+        if (option.dataset.model === modelName) {
+            option.classList.add('selected');
+            const check = option.querySelector('i');
+            if (check) {
+                check.style.opacity = '1';
+            }
+        }
+    });
+    
+    // Close dropdown
+    document.getElementById('dataModelDropdown').classList.remove('show');
+}
 
 function toggleDataModelDropdown() {
     const dropdown = document.getElementById('dataModelDropdown');
@@ -4292,15 +4387,17 @@ function enableTitleEdit(element) {
 }
 
 function showHelpPage() {
-    // Hide other pages
+    // Hide all other pages
     document.getElementById('heroSection').style.display = 'none';
     document.getElementById('mainContainer').style.display = 'none';
     document.getElementById('dataHeader').style.display = 'none';
     
     // Show help page
     document.getElementById('helpPage').style.display = 'block';
+    
+    // Close sidebar if open
+    closeSidebar();
 }
-
 function exportChat() {
     if (!currentChatId) {
         showMessage('No active chat to export', 'error');
