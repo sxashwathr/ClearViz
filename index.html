@@ -1577,7 +1577,7 @@
 .model-dropdown {
     position: absolute;
     bottom: 100%;
-    right: 60px;
+    right: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--border-primary);
     border-radius: 12px;
@@ -1587,6 +1587,8 @@
     min-width: 200px;
     margin-bottom: 0.5rem;
     box-shadow: var(--shadow-primary);
+    max-height: 250px;
+    overflow-y: auto;
 }
 
 .model-dropdown.show {
@@ -2441,8 +2443,9 @@ body.sidebar-open .hero-section {
         <div class="chatbox-input-wrapper">
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="dataPromptInput">
             <div class="model-selector-btn" onclick="toggleDataModelDropdown()">
-                <i class="fas fa-robot"></i>
-            </div>
+    <span id="selectedDataModelText">Llama 3</span>
+    <i class="fas fa-chevron-down"></i>
+</div>
             <button class="send-btn" onclick="sendDataMessage()">
                 <i class="fas fa-arrow-up"></i>
             </button>
@@ -3885,7 +3888,17 @@ function startTypingAnimation() {
 
 let selectedModel = 'llama3';
 let heroUploadedFile = null;
-
+document.addEventListener('DOMContentLoaded', function() {
+    const heroModelText = document.getElementById('selectedModelText');
+    const dataModelText = document.getElementById('selectedDataModelText');
+    
+    if (heroModelText) {
+        heroModelText.textContent = 'Llama 3';
+    }
+    if (dataModelText) {
+        dataModelText.textContent = 'Llama 3';
+    }
+});
 function toggleModelDropdown() {
     const dropdown = document.getElementById('modelDropdown');
     dropdown.classList.toggle('show');
@@ -3956,6 +3969,7 @@ function selectDataModel(modelName) {
     
     // Close dropdown
     document.getElementById('dataModelDropdown').classList.remove('show');
+    updateDataModelButtonText(modelName);
 }
 
 function toggleDataModelDropdown() {
@@ -4010,7 +4024,18 @@ function handleHeroDrop(e) {
 function handleHeroDragLeave(e) {
     document.getElementById('aiChatboxHero').classList.remove('dragover');
 }
-
+function updateDataModelButtonText(modelName) {
+    const modelNames = {
+        'llama3': 'Llama 3',
+        'llama4-maverick': 'Llama 4 Maverick',
+        'llama4-scout': 'Llama 4 Scout'
+    };
+    
+    const buttonText = document.getElementById('selectedDataModelText');
+    if (buttonText) {
+        buttonText.textContent = modelNames[modelName] || 'Llama 3';
+    }
+}
 function sendHeroMessage() {
     const input = document.getElementById('heroPromptInput');
     const message = input.value.trim();
