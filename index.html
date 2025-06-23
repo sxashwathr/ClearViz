@@ -2345,7 +2345,11 @@ body.sidebar-open .hero-section {
     flex-shrink: 0;
     margin-top: 0.25rem;
 }
-
+.typing-text {
+    display: inline-block;
+    min-height: 1.2em;
+}
+        
 .ai-bubble-avatar img {
     width: 100%;
     height: 100%;
@@ -2445,7 +2449,7 @@ body.sidebar-open .hero-section {
             </div>
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
            <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
-    <span id="selectedModelText">Claude Sonnet 4</span>
+    <span id="selectedModelText">Llama 3</span>
     <i class="fas fa-chevron-down"></i>
 </div>
             <button class="send-btn" id="heroSendBtn" onclick="sendHeroMessage()">
@@ -3610,6 +3614,16 @@ document.addEventListener('DOMContentLoaded', function() {
         helpButton.addEventListener('click', showHelp);
     }
 });
+const heroHelpBtn = document.querySelector('.nav-actions .btn-outline');
+const heroGetStartedBtn = document.querySelector('.nav-actions .btn-primary');
+
+if (heroHelpBtn) {
+    heroHelpBtn.addEventListener('click', showHelpPage);
+}
+
+if (heroGetStartedBtn) {
+    heroGetStartedBtn.addEventListener('click', scrollToUpload);
+}
 
 // Also update the existing drag and drop for hero area
 const heroUploadArea = document.getElementById('heroUploadArea');
@@ -4094,12 +4108,6 @@ function startTypingAnimation() {
     const animatedSubtitle = document.querySelector('.animated-subtitle');
     const cursor = document.querySelector('.typing-cursor');
     
-    console.log('Elements found:', {
-        typingText: !!typingText,
-        animatedSubtitle: !!animatedSubtitle,
-        cursor: !!cursor
-    });
-    
     if (!typingText) {
         console.error('typingText element not found');
         return;
@@ -4107,12 +4115,9 @@ function startTypingAnimation() {
     
     // Reset elements
     typingText.textContent = '';
-    typingText.style.opacity = '1';
     
     if (animatedSubtitle) {
         animatedSubtitle.classList.remove('show');
-        animatedSubtitle.style.opacity = '0';
-        animatedSubtitle.style.transform = 'translateY(20px)';
     }
     
     if (cursor) {
@@ -4143,9 +4148,8 @@ function startTypingAnimation() {
     
     // Start typing immediately
     setTimeout(() => {
-        console.log('Starting to type...');
         typeText();
-    }, 500);
+    }, 300);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -4324,21 +4328,45 @@ function sendHeroMessage() {
         return;
     }
     
-    // Process file if uploaded
-    if (heroUploadedFile) {
-        processFile(heroUploadedFile);
+    // Create new chat if we have a message
+    if (message) {
+        const chatId = Date.now().toString();
+        const newChat = {
+            id: chatId,
+            title: 'New Chat',
+            files: [],
+            messages: [],
+            createdAt: new Date()
+        };
+        
+        chatHistory.unshift(newChat);
+        currentChatId = chatId;
+        updateChatList();
+        
+        // Generate auto title based on message
+        setTimeout(() => {
+            generateChatTitleFromMessage(message);
+        }, 1000);
     }
     
-    // Navigate to data page if there's a message or file
-    if (message || heroUploadedFile) {
-        showDataPage();
+    // Process file if uploaded
+    if (heroUploadedFile) {
+        const fileExtension = heroUploadedFile.name.split('.').pop().toLowerCase();
+        const supportedFormats = ['csv', 'xlsx', 'xls', 'json'];
         
-        // Start chat with message if provided
-        if (message) {
-            setTimeout(() => {
-                startChatWithMessage(message, heroUploadedFile);
-            }, 500);
+        if (supportedFormats.includes(fileExtension)) {
+            processFile(heroUploadedFile);
         }
+    }
+    
+    // Navigate to data page
+    showDataPage();
+    
+    // Start chat with the message
+    if (message) {
+        setTimeout(() => {
+            startChatWithMessage(message, heroUploadedFile);
+        }, 500);
     }
     
     // Clear inputs
