@@ -51,6 +51,7 @@
     color: var(--text-primary);
     line-height: 1.65;
     overflow-x: hidden;
+    overflow-y: auto;
     font-weight: 400;
     letter-spacing: -0.01em;
 }
@@ -178,6 +179,10 @@
     gap: 2rem;
     align-items: start;
     position: relative;
+}
+.main-container .chat-area {
+    grid-column: 1 / -1; /* Make chat area span full width */
+    margin-top: 2rem;
 }
 
         .sidebar {
@@ -939,7 +944,8 @@
     min-height: 100vh;
     background: var(--bg-primary);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .hero-section::before {
@@ -2088,13 +2094,15 @@ body.sidebar-open .hero-section {
     margin: 0 auto;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 }
 
-.help-page-title {
+.help-main-title {
     color: var(--text-primary);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
 .help-content {
@@ -2109,12 +2117,11 @@ body.sidebar-open .hero-section {
 
 .help-section h2 {
     color: var(--text-primary);
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 600;
     margin-bottom: 1rem;
     text-align: center;
 }
-
 .help-section h3 {
     color: var(--text-primary);
     font-size: 1.75rem;
@@ -2322,9 +2329,11 @@ body.sidebar-open .hero-section {
 }
 .chat-area {
     width: 100%;
-    padding: 2rem 0;
+    padding: 2rem;
     margin-top: 2rem;
     border-top: 1px solid var(--border-primary);
+    grid-column: 1 / -1; /* Span full width of the grid */
+    order: 10; /* Ensure it appears after other content */
 }
 
 .chat-log-bubbles {
@@ -2383,15 +2392,18 @@ body.sidebar-open .hero-section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    max-width: 100%;
+    width: 100%;
+    margin-top: 0;
+    padding-bottom: 120px; /* Space for floating chatbox */
 }
 
 .chat-bubble {
-    max-width: 70%;
+    max-width: 60%;
     padding: 1rem 1.5rem;
     border-radius: 18px;
     position: relative;
     word-wrap: break-word;
+    margin-bottom: 1rem;
 }
 
 .chat-bubble.user {
@@ -2399,6 +2411,8 @@ body.sidebar-open .hero-section {
     background: var(--accent-blue);
     color: white;
     border-bottom-right-radius: 4px;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 .chat-bubble.ai {
@@ -2410,6 +2424,8 @@ body.sidebar-open .hero-section {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
+    margin-left: 0;
+    margin-right: auto;
 }
 
 .ai-bubble-avatar {
@@ -2756,28 +2772,26 @@ body.sidebar-open .hero-section {
     <div class="help-page" id="helpPage" style="display: none;">
     <header class="help-header">
     <div class="help-header-content">
-        <div class="header-left">
-            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
-                <i class="fas fa-bars"></i>
-            </button>
-            <button class="btn btn-outline back-to-home-btn" onclick="goHome()" title="Back to Home">
-                <i class="fas fa-arrow-left"></i>
-                Back
-            </button>
-            <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
-            <span class="logo-text">ClearViz</span>
-        </div>
-        <div class="header-center">
-            <h1 class="help-page-title">What is ClearViz?</h1>
-        </div>
+    <div class="header-left">
+        <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button class="btn btn-outline back-to-home-btn" onclick="goHome()" title="Back to Home">
+            <i class="fas fa-arrow-left"></i>
+            Back
+        </button>
+        <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
+        <span class="logo-text">ClearViz</span>
     </div>
+</div>
 </header>
     
     <div class="help-content">
-        <div class="help-section">
-            <h2>Transform Your Data Into Insights</h2>
-            <p>ClearViz is a powerful data visualization tool that transforms your raw data into beautiful, meaningful visualizations. Whether you're working with CSV files, Excel spreadsheets, or JSON data, ClearViz makes it easy to create compelling charts and discover valuable insights.</p>
-        </div>
+    <div class="help-section">
+        <h1 class="help-main-title">What is ClearViz?</h1>
+        <h2>Transform Your Data Into Insights</h2>
+        <p>ClearViz is a powerful data visualization tool that transforms your raw data into beautiful, meaningful visualizations. Whether you're working with CSV files, Excel spreadsheets, or JSON data, ClearViz makes it easy to create compelling charts and discover valuable insights.</p>
+    </div>
         
         <div class="help-section">
             <h3>Key Features</h3>
@@ -2865,7 +2879,7 @@ body.sidebar-open .hero-section {
         let selectedChartType = 'bar';
         let uploadedFiles = [];
         let currentFileIndex = 0;
-        // 1. ADD this isValidDataForChart function right after the global variables section
+        let chartTitleGenerated = false;
 function isValidDataForChart(xColumn, yColumn, chartType) {
     if (!currentData || currentData.length === 0) {
         showMessage('No data available for chart', 'error');
@@ -3400,6 +3414,7 @@ function processData(data, filename) {
     }
 
     currentData = validRows;
+    chartTitleGenerated = false;
     showMessage(`Successfully loaded ${validRows.length} rows from ${filename}`, 'success');
 
     if (!currentChatId) {
@@ -3532,6 +3547,7 @@ function updateChart() {
     // Show empty state if no axes selected
     if (!xColumn || !yColumn || !currentData) {
         showEmptyChart();
+        chartTitleGenerated = false; // Reset when no axes selected
         return;
     }
 
@@ -3544,14 +3560,18 @@ function updateChart() {
     const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
     renderChart(selectedChartType, chartData);
     generateInsights(selectedChartType, xColumn, yColumn, chartData);
+    
+    // Only generate chart title once when both axes are first selected
+    if (selectedXAxis && selectedYAxis && !chartTitleGenerated) {
+        setTimeout(() => {
+            generateChartTitle(selectedXAxis, selectedYAxis, selectedChartType);
+            chartTitleGenerated = true; // Mark as generated
+        }, 500);
+    }
+    
     if (selectedXAxis && selectedYAxis) {
-    setTimeout(() => {
-        generateChartTitle(selectedXAxis, selectedYAxis, selectedChartType);
-    }, 500);
-}
-    if (selectedXAxis && selectedYAxis) {
-    document.getElementById('insightsCard').style.display = 'block';
-}
+        document.getElementById('insightsCard').style.display = 'block';
+    }
 }
 function showEmptyChart() {
     const chartContainer = document.getElementById('chartContainer');
@@ -3751,6 +3771,7 @@ function goHome() {
     
     // Reset data and charts
     currentData = null;
+    chartTitleGenerated = false;
     if (currentChart) {
         currentChart.destroy();
         currentChart = null;
@@ -4001,7 +4022,8 @@ function switchToFile(index) {
     
     currentFileIndex = index;
     const fileData = uploadedFiles[index];
-    
+
+    chartTitleGenerated = false;
     // Update global state from file data
     currentData = fileData.data;
     selectedChartType = fileData.chartType;
@@ -4565,7 +4587,17 @@ function createChatLog() {
 function addToChatLog(sender, message) {
     let chatLog = document.getElementById('chatLog');
     if (!chatLog) {
-        createChatLog();
+        // Create chat log if it doesn't exist
+        const chatArea = document.getElementById('chatArea');
+        if (!chatArea) {
+            const mainContent = document.querySelector('.main-content');
+            const chatAreaDiv = document.createElement('div');
+            chatAreaDiv.id = 'chatArea';
+            chatAreaDiv.className = 'chat-area';
+            chatAreaDiv.style.display = 'block';
+            chatAreaDiv.innerHTML = '<div id="chatLog" class="chat-log-bubbles"></div>';
+            mainContent.appendChild(chatAreaDiv);
+        }
         chatLog = document.getElementById('chatLog');
     }
     
@@ -4683,18 +4715,82 @@ function createNewChat() {
     chatHistory.unshift(newChat);
     currentChatId = chatId;
     
+    // Clear ALL existing data and UI state
+    currentData = null;
+    uploadedFiles = [];
+    currentFileIndex = 0;
+    selectedXAxis = '';
+    selectedYAxis = '';
+    chartTitleGenerated = false;
+    
+    // Destroy existing chart
+    if (currentChart) {
+        currentChart.destroy();
+        currentChart = null;
+    }
+    
+    // Clear all UI elements
+    document.getElementById('fileList').innerHTML = '';
+    document.getElementById('xAxisSelected').textContent = 'Select column...';
+    document.getElementById('yAxisSelected').textContent = 'Select column...';
+    document.getElementById('xAxisTitle').value = '';
+    document.getElementById('yAxisTitle').value = '';
+    document.getElementById('xAxisMenu').innerHTML = '';
+    document.getElementById('yAxisMenu').innerHTML = '';
+    document.getElementById('insightsContainer').innerHTML = '';
+    
+    // Hide all sections that should only show when data is loaded
+    document.getElementById('chartTypeSection').style.display = 'none';
+    document.getElementById('axisSection').style.display = 'none';
+    document.getElementById('insightsCard').style.display = 'none';
+    document.getElementById('floatingChatbox').style.display = 'none';
+    document.getElementById('chatArea').style.display = 'none';
+    
+    // Clear chat log
+    const chatLog = document.getElementById('chatLog');
+    if (chatLog) {
+        chatLog.innerHTML = '';
+    }
+    
+    // Reset chart container to empty state
+    const chartContainer = document.getElementById('chartContainer');
+    const canvas = document.getElementById('chart');
+    const emptyState = chartContainer.querySelector('.empty-state');
+    
+    canvas.style.display = 'none';
+    if (emptyState) {
+        emptyState.innerHTML = `
+            <div class="empty-state-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="empty-state-title">No Data Yet</div>
+            <div class="empty-state-text">Upload a data file to get started with your visualization</div>
+        `;
+        emptyState.style.display = 'flex';
+    }
+    
+    // Reset chart type selection
+    document.querySelectorAll('.chart-type-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector('[data-type="bar"]').classList.add('active');
+    selectedChartType = 'bar';
+    
+    // Hide regression toggle
+    document.getElementById('regressionToggleWrapper').style.display = 'none';
+    document.getElementById('toggleRegression').checked = false;
+    
+    // Clear status messages
+    document.getElementById('statusMessage').innerHTML = '';
+    
+    // Update chat title display
+    document.getElementById('chatTitleDisplay').textContent = 'Untitled';
+    
     updateChatList();
     showDataPage();
     closeSidebar();
     
-    // Clear current data
-    currentData = null;
-    uploadedFiles = [];
-    
-    // Generate auto title
-    setTimeout(() => {
-        generateChatTitle('New Analysis Session');
-    }, 1000);
+    showMessage('New chat created', 'success');
 }
 
 function updateChatList() {
