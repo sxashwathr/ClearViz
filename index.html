@@ -4798,17 +4798,6 @@ function renameChatStart(chatId) {
     titleElement.addEventListener('blur', handleFinish);
     titleElement.addEventListener('keydown', handleKeyDown);
 }
-    
-    const handleEnter = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleFinish();
-        }
-    };
-    
-    titleElement.addEventListener('blur', handleFinish);
-    titleElement.addEventListener('keydown', handleEnter);
-}
 
 function confirmDeleteChat(chatId) {
     // Close menu
