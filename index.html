@@ -176,16 +176,13 @@
     padding: 2rem;
     display: grid;
     grid-template-columns: 400px 1fr;
-    grid-template-rows: auto auto auto;
     gap: 2rem;
     align-items: start;
     position: relative;
 }
 .main-container .chat-area {
     grid-column: 1 / -1; /* Make chat area span full width */
-    grid-row: 3; /* Place in third row */
     margin-top: 2rem;
-    order: 10;
 }
 
         .sidebar {
@@ -545,14 +542,13 @@
     display: flex;
     flex-direction: column;
     height: fit-content;
-    min-height: auto;
+    min-height: calc(100vh - 120px);
     gap: 2rem;
     position: relative;
     margin-top: 0;
     transition: margin-top 0.3s ease;
     align-items: stretch;
-    padding-bottom: 2rem;
-    grid-row: 1 / 3;
+    padding-bottom: 120px;
 }
 
         .main-content .content-card:first-child {
@@ -1729,7 +1725,10 @@
     background: rgba(248, 81, 73, 0.1);
 }
 .floating-chatbox {
-    position: static;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(17, 19, 23, 0.95) 100%);
     border: 2px solid rgba(88, 166, 255, 0.3);
     border-radius: 20px;
@@ -1737,11 +1736,11 @@
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-primary);
     transition: all 0.3s ease;
-    max-width: 100%;
-    width: 100%;
-    margin-top: 2rem;
-    z-index: 10;
+    max-width: 800px;
+    width: calc(100% - 4rem);
+    z-index: 100;
 }
+
 .floating-chatbox.scrolled {
     transform: translateX(-50%) scale(0.9);
     bottom: 1rem;
@@ -2338,18 +2337,20 @@ body.sidebar-open .hero-section {
 }
 .chat-area {
     width: 100%;
-    padding: 2rem 0;
+    padding: 2rem;
     margin-top: 2rem;
     border-top: 1px solid var(--border-primary);
+    grid-column: 1 / -1; /* Span full width of the grid */
+    order: 10; /* Ensure it appears after other content */
 }
 
 .chat-log-bubbles {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    width: 100%;
-    margin-top: 0;
-    padding-bottom: 2rem;
+    max-width: 100%;
+    margin-top: 2rem;
+    padding-bottom: 120px; /* Space for floating chatbox */
 }
 .chat-menu-option {
     padding: 0.5rem;
