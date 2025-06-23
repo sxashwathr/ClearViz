@@ -2465,9 +2465,9 @@ body.sidebar-open .hero-section {
                 <span class="logo-text">ClearViz</span>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-outline" id="helpButton">Help</button>
-                <button class="btn btn-primary" onclick="scrollToUpload()">Get Started</button>
-            </div>
+    <button class="btn btn-outline" id="helpButton">Help</button>
+    <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
+</div>
         </div>
     </nav>
     
@@ -2490,41 +2490,40 @@ body.sidebar-open .hero-section {
     </div>
     <div class="chatbox-input-container">
         <div class="chatbox-input-wrapper">
-            <div class="file-upload-btn" onclick="document.getElementById('heroFileInput').click()">
-                <i class="fas fa-cloud-upload-alt"></i>
-            </div>
-            <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
-            <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
-                <span id="selectedModelText">Llama 3</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <button class="send-btn" id="heroSendBtn" onclick="sendHeroMessage()">
-                <i class="fas fa-arrow-up"></i>
-            </button>
-        </div>
-        <div class="model-dropdown" id="modelDropdown">
-            <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
-                <i class="fas fa-check"></i> Llama 3
-            </div>
-            <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
-                <i class="fas fa-check"></i> Llama 4 Maverick
-            </div>
-            <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
-                <i class="fas fa-check"></i> Llama 4 Scout
-            </div>
-            <div class="model-option disabled">
-                <i class="fas fa-clock"></i> More models coming soon
-            </div>
-        </div>
+    <div class="file-upload-btn" id="heroFileUploadBtn">
+        <i class="fas fa-cloud-upload-alt"></i>
     </div>
-    <input type="file" id="heroFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.json,image/*,.pdf" onchange="handleHeroFile(event)">
-    <div class="file-preview" id="heroFilePreview" style="display: none;">
-        <div class="file-preview-content">
-            <span class="file-name"></span>
-            <button class="file-remove-btn" onclick="removeHeroFile()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+    <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
+    <div class="model-selector-btn" id="heroModelBtn">
+        <span id="selectedModelText">Llama 3</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+    <button class="send-btn" id="heroSendBtn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+</div>
+        <div class="model-dropdown" id="modelDropdown">
+    <div class="model-option selected" data-model="llama3">
+        <i class="fas fa-check"></i> Llama 3
+    </div>
+    <div class="model-option" data-model="llama4-maverick">
+        <i class="fas fa-check"></i> Llama 4 Maverick
+    </div>
+    <div class="model-option" data-model="llama4-scout">
+        <i class="fas fa-check"></i> Llama 4 Scout
+    </div>
+    <div class="model-option disabled">
+        <i class="fas fa-clock"></i> More models coming soon
+    </div>
+</div>
+    </div>
+    <input type="file" id="heroFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.json,image/*,.pdf">
+<div class="file-preview" id="heroFilePreview" style="display: none;">
+    <div class="file-preview-content">
+        <span class="file-name"></span>
+        <button class="file-remove-btn" id="heroFileRemoveBtn">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 </div>
         </div>
@@ -4266,13 +4265,14 @@ function toggleDataModelDropdown() {
 }
 
 function handleHeroFile(event) {
+    console.log('File input changed');
     const file = event.target.files[0];
     if (file) {
+        console.log('File selected:', file.name);
         heroUploadedFile = file;
         showHeroFilePreview(file);
     }
 }
-
 
 function removeHeroFile() {
     heroUploadedFile = null;
@@ -5146,6 +5146,7 @@ function initializeEventHandlers() {
     if (heroSendBtn) {
         heroSendBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Hero send button clicked');
             sendHeroMessage();
         });
     }
@@ -5155,7 +5156,18 @@ function initializeEventHandlers() {
     if (helpButton) {
         helpButton.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Help button clicked');
             showHelpPage();
+        });
+    }
+    
+    // Get Started button handler
+    const getStartedBtn = document.getElementById('getStartedBtn');
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Get Started button clicked');
+            scrollToUpload();
         });
     }
     
@@ -5164,18 +5176,41 @@ function initializeEventHandlers() {
     if (heroModelBtn) {
         heroModelBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('Model dropdown button clicked');
             toggleModelDropdown();
         });
     }
     
     // File upload button handler
-    const fileUploadBtn = document.querySelector('.file-upload-btn');
+    const fileUploadBtn = document.getElementById('heroFileUploadBtn');
     if (fileUploadBtn) {
         fileUploadBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('File upload button clicked');
             document.getElementById('heroFileInput').click();
         });
     }
+    
+    // File remove button handler
+    const fileRemoveBtn = document.getElementById('heroFileRemoveBtn');
+    if (fileRemoveBtn) {
+        fileRemoveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('File remove button clicked');
+            removeHeroFile();
+        });
+    }
+    
+    // Model dropdown options
+    const modelOptions = document.querySelectorAll('#modelDropdown .model-option:not(.disabled)');
+    modelOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modelName = this.dataset.model;
+            console.log('Model option clicked:', modelName);
+            selectModel(modelName);
+        });
+    });
     
     // Drag and drop for hero chatbox
     const heroUploadArea = document.getElementById('aiChatboxHero');
@@ -5196,18 +5231,10 @@ function initializeEventHandlers() {
             heroUploadArea.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
+                console.log('File dropped:', files[0].name);
                 heroUploadedFile = files[0];
                 showHeroFilePreview(files[0]);
             }
-        });
-    }
-    
-    // Get Started button handler
-    const getStartedBtn = document.querySelector('.nav-actions .btn-primary');
-    if (getStartedBtn) {
-        getStartedBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToUpload();
         });
     }
     
