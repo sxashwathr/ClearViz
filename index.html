@@ -1473,6 +1473,25 @@
     font-weight: 600;
     z-index: 10;
 }
+.ai-chatbox-hero.dragover {
+    border-color: var(--accent-blue);
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(17, 19, 23, 0.95) 100%);
+    transform: scale(1.02);
+}
+
+.ai-chatbox-hero.dragover::after {
+    content: "Drop your file here. 📁";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(88, 166, 255, 0.9);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    z-index: 10;
+}
 
 .chatbox-header {
     text-align: center;
@@ -2161,6 +2180,14 @@ body.sidebar-open .hero-section {
     text-align: left;
     margin: 0;
 }
+.upload-area:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 182, 193, 0.1) 0%, 
+        rgba(186, 85, 211, 0.1) 25%, 
+        rgba(138, 43, 226, 0.1) 50%, 
+        rgba(75, 0, 130, 0.1) 75%, 
+        rgba(255, 182, 193, 0.1) 100%);
+}
 
 .formats-grid {
     display: grid;
@@ -2445,31 +2472,31 @@ body.sidebar-open .hero-section {
     <div class="chatbox-input-container">
         <div class="chatbox-input-wrapper">
             <div class="file-upload-btn" onclick="document.getElementById('heroFileInput').click()">
-                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-cloud-upload-alt"></i>
             </div>
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
-           <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
-    <span id="selectedModelText">Llama 3</span>
-    <i class="fas fa-chevron-down"></i>
-</div>
+            <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
+                <span id="selectedModelText">Llama 3</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
             <button class="send-btn" id="heroSendBtn" onclick="sendHeroMessage()">
-    <i class="fas fa-arrow-up"></i>
-</button>
+                <i class="fas fa-arrow-up"></i>
+            </button>
         </div>
         <div class="model-dropdown" id="modelDropdown">
-    <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
-        <i class="fas fa-check"></i> Llama 3
-    </div>
-    <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
-        <i class="fas fa-check"></i> Llama 4 Maverick
-    </div>
-    <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
-        <i class="fas fa-check"></i> Llama 4 Scout
-    </div>
-    <div class="model-option disabled">
-        <i class="fas fa-clock"></i> More models coming soon
-    </div>
-</div>
+            <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
+                <i class="fas fa-check"></i> Llama 3
+            </div>
+            <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
+                <i class="fas fa-check"></i> Llama 4 Maverick
+            </div>
+            <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
+                <i class="fas fa-check"></i> Llama 4 Scout
+            </div>
+            <div class="model-option disabled">
+                <i class="fas fa-clock"></i> More models coming soon
+            </div>
+        </div>
     </div>
     <input type="file" id="heroFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.json,image/*,.pdf" onchange="handleHeroFile(event)">
     <div class="file-preview" id="heroFilePreview" style="display: none;">
@@ -2511,10 +2538,17 @@ body.sidebar-open .hero-section {
     <div class="main-container" id="mainContainer" style="display: none;">
         <aside class="sidebar">
             <div class="sidebar-section">
-    <h3 class="section-title">Data Source</h3>
-    <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
-    <div id="fileList" class="file-list"></div>
-</div>
+                <h3 class="section-title">Data Source</h3>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">Upload more data</div>
+                    <div class="upload-subtext">CSV, Excel, or JSON files</div>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
+                <div id="fileList" class="file-list"></div>
+            </div>
 
             <div class="sidebar-section" id="chartTypeSection" style="display: none;">
                 <h3 class="section-title">Chart Type</h3>
@@ -2532,59 +2566,59 @@ body.sidebar-open .hero-section {
                         Pie Chart
                     </div>
                     <div class="chart-type-btn" data-type="regression" onclick="selectChartType('regression')">
-                        <i class="fas fa-arrow-up""></i>
+                        <i class="fas fa-arrow-up"></i>
                         Regression
                     </div>
                 </div>
             </div>
 
             <div class="sidebar-section" id="axisSection" style="display: none;">
-    <h3 class="section-title">Data Mapping</h3>
-    <div class="axis-selectors">
-        <div class="axis-selector-group">
-            <label class="form-label">X-Axis (Categories)</label>
-            <div class="claude-dropdown" id="xAxisDropdown">
-                <div class="claude-dropdown-button" onclick="toggleDropdown('xAxis')">
-                    <div class="claude-dropdown-content">
-                        <div class="claude-dropdown-title" id="xAxisSelected">Select column...</div>
+                <h3 class="section-title">Data Mapping</h3>
+                <div class="axis-selectors">
+                    <div class="axis-selector-group">
+                        <label class="form-label">X-Axis (Categories)</label>
+                        <div class="claude-dropdown" id="xAxisDropdown">
+                            <div class="claude-dropdown-button" onclick="toggleDropdown('xAxis')">
+                                <div class="claude-dropdown-content">
+                                    <div class="claude-dropdown-title" id="xAxisSelected">Select column...</div>
+                                </div>
+                                <div class="claude-dropdown-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="claude-dropdown-menu" id="xAxisMenu">
+                                <!-- Options will be populated here -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="claude-dropdown-arrow">
-                        <i class="fas fa-chevron-down"></i>
+                    <div class="axis-selector-group">
+                        <label class="form-label">Y-Axis (Values)</label>
+                        <div class="claude-dropdown" id="yAxisDropdown">
+                            <div class="claude-dropdown-button" onclick="toggleDropdown('yAxis')">
+                                <div class="claude-dropdown-content">
+                                    <div class="claude-dropdown-title" id="yAxisSelected">Select column...</div>
+                                </div>
+                                <div class="claude-dropdown-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="claude-dropdown-menu" id="yAxisMenu">
+                                <!-- Options will be populated here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="claude-dropdown-menu" id="xAxisMenu">
-                    <!-- Options will be populated here -->
+                <div class="axis-selectors" style="margin-top: 1rem;">
+                    <div class="axis-selector-group">
+                        <label class="form-label">X-Axis Title</label>
+                        <input type="text" class="form-input" id="xAxisTitle" placeholder="X-Axis Title" onchange="updateChart()">
+                    </div>
+                    <div class="axis-selector-group">
+                        <label class="form-label">Y-Axis Title</label>
+                        <input type="text" class="form-input" id="yAxisTitle" placeholder="Y-Axis Title" onchange="updateChart()">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="axis-selector-group">
-            <label class="form-label">Y-Axis (Values)</label>
-            <div class="claude-dropdown" id="yAxisDropdown">
-                <div class="claude-dropdown-button" onclick="toggleDropdown('yAxis')">
-                    <div class="claude-dropdown-content">
-                        <div class="claude-dropdown-title" id="yAxisSelected">Select column...</div>
-                    </div>
-                    <div class="claude-dropdown-arrow">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-                <div class="claude-dropdown-menu" id="yAxisMenu">
-                    <!-- Options will be populated here -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="axis-selectors" style="margin-top: 1rem;">
-        <div class="axis-selector-group">
-            <label class="form-label">X-Axis Title</label>
-            <input type="text" class="form-input" id="xAxisTitle" placeholder="X-Axis Title" onchange="updateChart()">
-        </div>
-        <div class="axis-selector-group">
-            <label class="form-label">Y-Axis Title</label>
-            <input type="text" class="form-input" id="yAxisTitle" placeholder="Y-Axis Title" onchange="updateChart()">
-        </div>
-    </div>
-</div>
         </aside>
 
         <main class="main-content">
@@ -3482,6 +3516,11 @@ function updateChart() {
     const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
     renderChart(selectedChartType, chartData);
     generateInsights(selectedChartType, xColumn, yColumn, chartData);
+    if (selectedXAxis && selectedYAxis) {
+    setTimeout(() => {
+        generateChartTitle(selectedXAxis, selectedYAxis, selectedChartType);
+    }, 500);
+}
 }
 function showEmptyChart() {
     const chartContainer = document.getElementById('chartContainer');
@@ -3788,6 +3827,12 @@ function showDataPage() {
             document.getElementById('insightsCard').style.display = 'block'; 
         }, 500);
     }
+    setTimeout(() => {
+    const typingText = document.getElementById('typingText');
+    if (typingText) {
+        startTypingAnimation();
+    }
+}, 200);
 }
 
 let selectedXAxis = '';
@@ -4153,20 +4198,16 @@ function startTypingAnimation() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded');
+    console.log('DOM Content Loaded - Starting typing animation');
     
-    // Wait for all elements to be fully rendered
-    setTimeout(() => {
-        startTypingAnimation();
-    }, 100);
-    
-    // Also start animation when window loads (fallback)
-    window.addEventListener('load', function() {
-        console.log('Window fully loaded');
-        setTimeout(() => {
-            startTypingAnimation();
-        }, 200);
-    });
+    // Ensure the page is fully loaded before starting animation
+    if (document.readyState === 'loading') {
+        window.addEventListener('load', () => {
+            setTimeout(startTypingAnimation, 300);
+        });
+    } else {
+        setTimeout(startTypingAnimation, 100);
+    }
 });
 
 let selectedModel = 'llama3';
@@ -4328,26 +4369,19 @@ function sendHeroMessage() {
         return;
     }
     
-    // Create new chat if we have a message
-    if (message) {
-        const chatId = Date.now().toString();
-        const newChat = {
-            id: chatId,
-            title: 'New Chat',
-            files: [],
-            messages: [],
-            createdAt: new Date()
-        };
-        
-        chatHistory.unshift(newChat);
-        currentChatId = chatId;
-        updateChatList();
-        
-        // Generate auto title based on message
-        setTimeout(() => {
-            generateChatTitleFromMessage(message);
-        }, 1000);
-    }
+    // Create new chat if we have a message or file
+    const chatId = Date.now().toString();
+    const newChat = {
+        id: chatId,
+        title: heroUploadedFile ? heroUploadedFile.name.replace(/\.[^/.]+$/, "") : 'New Chat',
+        files: [],
+        messages: [],
+        createdAt: new Date()
+    };
+    
+    chatHistory.unshift(newChat);
+    currentChatId = chatId;
+    updateChatList();
     
     // Process file if uploaded
     if (heroUploadedFile) {
@@ -4356,22 +4390,54 @@ function sendHeroMessage() {
         
         if (supportedFormats.includes(fileExtension)) {
             processFile(heroUploadedFile);
+        } else {
+            // Navigate to chat page even with unsupported files
+            showDataPage();
+            setTimeout(() => {
+                startChatWithMessage(message || "I uploaded a file", heroUploadedFile);
+            }, 500);
         }
-    }
-    
-    // Navigate to data page
-    showDataPage();
-    
-    // Start chat with the message
-    if (message) {
+    } else {
+        // Just message, no file
+        showDataPage();
         setTimeout(() => {
-            startChatWithMessage(message, heroUploadedFile);
+            startChatWithMessage(message, null);
         }, 500);
     }
     
     // Clear inputs
     input.value = '';
     removeHeroFile();
+    document.addEventListener('DOMContentLoaded', function() {
+    const heroUploadArea = document.getElementById('aiChatboxHero');
+    
+    if (heroUploadArea) {
+        heroUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            heroUploadArea.classList.add('dragover');
+        });
+
+        heroUploadArea.addEventListener('dragleave', (e) => {
+            // Only remove dragover if we're leaving the chatbox completely
+            if (!heroUploadArea.contains(e.relatedTarget)) {
+                heroUploadArea.classList.remove('dragover');
+            }
+        });
+
+        heroUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            heroUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                heroUploadedFile = files[0];
+                const preview = document.getElementById('heroFilePreview');
+                const fileName = preview.querySelector('.file-name');
+                fileName.textContent = files[0].name;
+                preview.style.display = 'block';
+            }
+        });
+    }
+});
 }
 
 function generateChatTitleFromMessage(message) {
@@ -5112,8 +5178,10 @@ function openChartInNewWindow() {
     }
     
     const canvas = document.getElementById('chart');
-    const chartDataURL = canvas.toDataURL();
-    
+    const chartDataURL = canvas.toDataURL('image/png');
+    const currentFile = uploadedFiles[currentFileIndex];
+    const chartTitle = currentFile ? `${currentFile.name} - ${selectedChartType} Chart` : 'Chart';
+
     const newWindow = window.open('', '_blank', 'width=800,height=600,resizable=yes');
     
     // Write HTML content without problematic nested scripts
