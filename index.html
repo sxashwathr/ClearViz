@@ -533,7 +533,7 @@
     color: var(--accent-blue);
 }
 
-        .main-content {
+.main-content {
     display: flex;
     flex-direction: column;
     height: fit-content;
@@ -542,6 +542,8 @@
     position: relative;
     margin-top: 0;
     transition: margin-top 0.3s ease;
+    align-items: stretch;
+    padding-bottom: 120px;
 }
 
         .main-content .content-card:first-child {
@@ -1717,16 +1719,20 @@
     background: rgba(248, 81, 73, 0.1);
 }
 .floating-chatbox {
-    position: sticky;
-    bottom: 0;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
     background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(17, 19, 23, 0.95) 100%);
     border: 2px solid rgba(88, 166, 255, 0.3);
     border-radius: 20px;
     padding: 1.5rem;
-    margin: 2rem 0;
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-primary);
     transition: all 0.3s ease;
+    max-width: 800px;
+    width: calc(100% - 4rem);
+    z-index: 100;
 }
 
 .floating-chatbox.scrolled {
@@ -2056,6 +2062,11 @@ body.sidebar-open .hero-section {
     min-height: 100vh;
     background: var(--bg-primary);
     transition: margin-left 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .help-header {
@@ -2067,7 +2078,11 @@ body.sidebar-open .hero-section {
     z-index: 100;
     backdrop-filter: blur(12px);
 }
-
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 .help-header-content {
     max-width: 1400px;
     margin: 0 auto;
@@ -2305,7 +2320,21 @@ body.sidebar-open .hero-section {
     box-shadow: var(--shadow-primary);
     margin-top: 0.25rem;
 }
+.chat-area {
+    width: 100%;
+    padding: 2rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-primary);
+}
 
+.chat-log-bubbles {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+    margin-top: 2rem;
+    padding-bottom: 120px; /* Space for floating chatbox */
+}
 .chat-menu-option {
     padding: 0.5rem;
     color: var(--text-primary);
@@ -2459,17 +2488,22 @@ body.sidebar-open .hero-section {
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <header class="hero-section" id="heroSection">
     <nav class="nav-bar">
-        <div class="nav-content">
+    <div class="nav-content">
+        <div class="nav-left">
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="logo">
                 <img src="./assets/iconwhite.png" alt="ClearViz Logo" class="logo-icon">
                 <span class="logo-text">ClearViz</span>
             </div>
-            <div class="nav-actions">
-    <button class="btn btn-outline" id="helpButton">Help</button>
-    <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
-</div>
         </div>
-    </nav>
+        <div class="nav-actions">
+            <button class="btn btn-outline" id="helpButton">Help</button>
+            <button class="btn btn-primary" id="getStartedBtn">Get Started</button>
+        </div>
+    </div>
+</nav>
     
     <div class="hero-content">
         <div class="hero-badge">
@@ -2700,19 +2734,19 @@ body.sidebar-open .hero-section {
                         </button>
                     </div>
                     <div class="model-dropdown" id="dataModelDropdown">
-                        <div class="model-option selected" data-model="llama3" onclick="selectDataModel('llama3')">
-                            <i class="fas fa-check"></i> Llama 3
-                        </div>
-                        <div class="model-option" data-model="llama4-maverick" onclick="selectDataModel('llama4-maverick')">
-                            <i class="fas fa-check"></i> Llama 4 Maverick
-                        </div>
-                        <div class="model-option" data-model="llama4-scout" onclick="selectDataModel('llama4-scout')">
-                            <i class="fas fa-check"></i> Llama 4 Scout
-                        </div>
-                        <div class="model-option disabled">
-                            <i class="fas fa-clock"></i> More models coming soon
-                        </div>
-                    </div>
+    <div class="model-option selected" data-model="llama3">
+        <i class="fas fa-check"></i> Llama 3
+    </div>
+    <div class="model-option" data-model="llama4-maverick">
+        <i class="fas fa-check"></i> Llama 4 Maverick
+    </div>
+    <div class="model-option" data-model="llama4-scout">
+        <i class="fas fa-check"></i> Llama 4 Scout
+    </div>
+    <div class="model-option disabled">
+        <i class="fas fa-clock"></i> More models coming soon
+    </div>
+</div>
                 </div>
             </div>
             <div class="chat-area" id="chatArea" style="display: none;">
@@ -3399,35 +3433,11 @@ function processData(data, filename) {
 function showDataPreviewAndInsights() {
     if (!currentData || currentData.length === 0) return;
     
-    // Show the insights card
-    document.getElementById('insightsCard').style.display = 'block';
-    
-    // Generate basic data insights without requiring chart
-    const columns = Object.keys(currentData[0]);
-    const rowCount = currentData.length;
-    const numericColumns = columns.filter(col => {
-        return currentData.slice(0, 5).some(row => {
-            const val = row[col];
-            return typeof val === 'number' || (typeof val === 'string' && !isNaN(parseFloat(val)));
-        });
-    });
-    
-    const insights = [
-        { value: rowCount.toLocaleString(), label: 'Total Rows' },
-        { value: columns.length, label: 'Total Columns' },
-        { value: numericColumns.length, label: 'Numeric Columns' },
-        { value: (columns.length - numericColumns.length), label: 'Text Columns' },
-        { value: columns[0] || 'N/A', label: 'First Column' },
-        { value: columns[columns.length - 1] || 'N/A', label: 'Last Column' }
-    ];
-    
-    const insightsContainer = document.getElementById('insightsContainer');
-    insightsContainer.innerHTML = insights.map(insight => `
-        <div class="insight-card">
-            <div class="insight-value">${insight.value}</div>
-            <div class="insight-label">${insight.label}</div>
-        </div>
-    `).join('');
+    // DON'T show insights card automatically - only show when chart is created
+    // Just populate column selectors
+    populateColumnSelectors();
+    document.getElementById('chartTypeSection').style.display = 'block';
+    document.getElementById('axisSection').style.display = 'block';
 }
 
         function populateColumnSelectors() {
@@ -3538,6 +3548,9 @@ function updateChart() {
     setTimeout(() => {
         generateChartTitle(selectedXAxis, selectedYAxis, selectedChartType);
     }, 500);
+}
+    if (selectedXAxis && selectedYAxis) {
+    document.getElementById('insightsCard').style.display = 'block';
 }
 }
 function showEmptyChart() {
