@@ -896,8 +896,8 @@
 
 .hero-title {
     animation-delay: 0.4s;
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
     animation: fadeInUp 0.8s ease-out forwards;
 }
 
@@ -1408,27 +1408,73 @@
     animation: fadeInUp 0.8s ease-out forwards;
 }
 
+.ai-chatbox-hero {
+    position: relative;
+    overflow: hidden;
+}
+
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        rgba(88, 166, 255, 0.6) 0%, 
-        rgba(188, 140, 255, 0.6) 25%, 
-        rgba(63, 185, 80, 0.6) 50%, 
-        rgba(88, 166, 255, 0.6) 75%, 
-        rgba(188, 140, 255, 0.6) 100%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 20px;
-    z-index: -1;
-    animation: borderGlow 4s ease-in-out infinite;
+    padding: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(88, 166, 255, 0.8), 
+        transparent);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    animation: movingLight 3s linear infinite;
+    z-index: 1;
 }
 
-@keyframes borderGlow {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+@keyframes movingLight {
+    0% {
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(88, 166, 255, 0.8), 
+            transparent);
+        transform: translateX(-100%) rotate(0deg);
+    }
+    25% {
+        background: linear-gradient(180deg, 
+            transparent, 
+            rgba(88, 166, 255, 0.8), 
+            transparent);
+        transform: translateX(0%) rotate(90deg);
+    }
+    50% {
+        background: linear-gradient(270deg, 
+            transparent, 
+            rgba(88, 166, 255, 0.8), 
+            transparent);
+        transform: translateX(100%) rotate(180deg);
+    }
+    75% {
+        background: linear-gradient(0deg, 
+            transparent, 
+            rgba(88, 166, 255, 0.8), 
+            transparent);
+        transform: translateX(0%) rotate(270deg);
+    }
+    100% {
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(88, 166, 255, 0.8), 
+            transparent);
+        transform: translateX(-100%) rotate(360deg);
+    }
+}
+
+.ai-chatbox-hero > * {
+    position: relative;
+    z-index: 2;
 }
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
@@ -2420,13 +2466,13 @@ body.sidebar-open .hero-section {
                 <i class="fas fa-paperclip"></i>
             </div>
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
-           <div class="model-selector-btn" onclick="toggleModelDropdown()">
+           <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
     <span id="selectedModelText">Claude Sonnet 4</span>
     <i class="fas fa-chevron-down"></i>
 </div>
-            <button class="send-btn" onclick="sendHeroMessage()">
-                <i class="fas fa-arrow-up"></i>
-            </button>
+            <button class="send-btn" id="heroSendBtn" onclick="sendHeroMessage()">
+    <i class="fas fa-arrow-up"></i>
+</button>
         </div>
         <div class="model-dropdown" id="modelDropdown">
     <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
@@ -2483,17 +2529,10 @@ body.sidebar-open .hero-section {
     <div class="main-container" id="mainContainer" style="display: none;">
         <aside class="sidebar">
             <div class="sidebar-section">
-                <h3 class="section-title">Data Source</h3>
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <div class="upload-text">Upload more data</div>
-                    <div class="upload-subtext">CSV, Excel, or JSON files</div>
-                </div>
-                <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
-                <div id="fileList" class="file-list"></div>
-            </div>
+    <h3 class="section-title">Data Source</h3>
+    <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls,.json" onchange="handleFile(event)">
+    <div id="fileList" class="file-list"></div>
+</div>
 
             <div class="sidebar-section" id="chartTypeSection" style="display: none;">
                 <h3 class="section-title">Chart Type</h3>
@@ -4071,19 +4110,36 @@ function deleteFile(index) {
     showMessage('File deleted successfully', 'success');
 }
 function startTypingAnimation() {
+    console.log('Starting typing animation...');
+    
     const typingText = document.getElementById('typingText');
     const animatedSubtitle = document.querySelector('.animated-subtitle');
     const cursor = document.querySelector('.typing-cursor');
     
-    if (!typingText) return;
+    console.log('Elements found:', {
+        typingText: !!typingText,
+        animatedSubtitle: !!animatedSubtitle,
+        cursor: !!cursor
+    });
+    
+    if (!typingText) {
+        console.error('typingText element not found');
+        return;
+    }
     
     // Reset elements
     typingText.textContent = '';
+    typingText.style.opacity = '1';
+    
     if (animatedSubtitle) {
         animatedSubtitle.classList.remove('show');
+        animatedSubtitle.style.opacity = '0';
+        animatedSubtitle.style.transform = 'translateY(20px)';
     }
+    
     if (cursor) {
         cursor.style.display = 'inline-block';
+        cursor.style.opacity = '1';
     }
     
     const text = 'ClearViz';
@@ -4093,30 +4149,42 @@ function startTypingAnimation() {
         if (index < text.length) {
             typingText.textContent += text.charAt(index);
             index++;
-            setTimeout(typeText, 150);
+            setTimeout(typeText, 120);
         } else {
             // Animation complete
             setTimeout(() => {
                 if (cursor) {
-                    cursor.style.display = 'none';
+                    cursor.style.opacity = '0';
                 }
                 if (animatedSubtitle) {
                     animatedSubtitle.classList.add('show');
                 }
-            }, 600);
+            }, 800);
         }
     }
     
-    // Start typing after a delay
+    // Start typing immediately
     setTimeout(() => {
+        console.log('Starting to type...');
         typeText();
-    }, 1200);
+    }, 500);
 }
 
-// Make sure the animation starts when the page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, starting typing animation...');
-    startTypingAnimation();
+    console.log('DOM Content Loaded');
+    
+    // Wait for all elements to be fully rendered
+    setTimeout(() => {
+        startTypingAnimation();
+    }, 100);
+    
+    // Also start animation when window loads (fallback)
+    window.addEventListener('load', function() {
+        console.log('Window fully loaded');
+        setTimeout(() => {
+            startTypingAnimation();
+        }, 200);
+    });
 });
 
 let selectedModel = 'llama3';
@@ -4273,55 +4341,33 @@ function sendHeroMessage() {
     const input = document.getElementById('heroPromptInput');
     const message = input.value.trim();
     
+    // Don't proceed if no message and no file
     if (!message && !heroUploadedFile) {
-        return; // Don't proceed if no message and no file
-    }
-    
-    // Create new chat if we have a message
-    if (message) {
-        const chatId = Date.now().toString();
-        const newChat = {
-            id: chatId,
-            title: 'New Chat',
-            files: [],
-            messages: [],
-            createdAt: new Date()
-        };
-        
-        chatHistory.unshift(newChat);
-        currentChatId = chatId;
-        updateChatList();
-        
-        // Generate auto title based on message
-        setTimeout(() => {
-            generateChatTitleFromMessage(message);
-        }, 1000);
+        return;
     }
     
     // Process file if uploaded
     if (heroUploadedFile) {
-        const fileExtension = heroUploadedFile.name.split('.').pop().toLowerCase();
-        const supportedFormats = ['csv', 'xlsx', 'xls', 'json'];
-        
-        if (supportedFormats.includes(fileExtension)) {
-            processFile(heroUploadedFile);
-        }
+        processFile(heroUploadedFile);
     }
     
-    // Navigate to data page
-    showDataPage();
-    
-    // Start chat with the message
-    if (message) {
-        setTimeout(() => {
-            startChatWithMessage(message, heroUploadedFile);
-        }, 500);
+    // Navigate to data page if there's a message or file
+    if (message || heroUploadedFile) {
+        showDataPage();
+        
+        // Start chat with message if provided
+        if (message) {
+            setTimeout(() => {
+                startChatWithMessage(message, heroUploadedFile);
+            }, 500);
+        }
     }
     
     // Clear inputs
     input.value = '';
     removeHeroFile();
 }
+
 function generateChatTitleFromMessage(message) {
     // Create a title based on the first few words of the message
     const words = message.split(' ').slice(0, 4).join(' ');
@@ -4569,7 +4615,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataInput = document.getElementById('dataPromptInput');
     
     if (heroInput) {
-        heroInput.addEventListener('keydown', (e) => {
+        heroInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendHeroMessage();
@@ -4584,6 +4630,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 sendDataMessage();
             }
         });
+    }
+
+    // Fix hero send button
+    const heroSendBtn = document.getElementById('heroSendBtn');
+    if (heroSendBtn) {
+        heroSendBtn.addEventListener('click', sendHeroMessage);
+    }
+
+    // Fix model dropdown
+    const heroModelBtn = document.getElementById('heroModelBtn');
+    if (heroModelBtn) {
+        heroModelBtn.addEventListener('click', toggleModelDropdown);
     }
 });
 document.addEventListener('DOMContentLoaded', startTypingAnimation);
