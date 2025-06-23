@@ -2465,7 +2465,7 @@ body.sidebar-open .hero-section {
                 <span class="logo-text">ClearViz</span>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-outline" onclick="showHelpPage()">Help</button>
+                <button class="btn btn-outline" id="helpButton">Help</button>
                 <button class="btn btn-primary" onclick="scrollToUpload()">Get Started</button>
             </div>
         </div>
@@ -3649,118 +3649,6 @@ function fixCanvasSize() {
     container.style.height = '500px';
     container.style.position = 'relative';
 }
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, fixing canvas size...');
-    fixCanvasSize();
-});
-
-// Hero upload area functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const heroUploadArea = document.getElementById('heroUploadArea');
-    const fileInput = document.getElementById('fileInput');
-    
-    if (heroUploadArea && fileInput) {
-        heroUploadArea.addEventListener('click', function() {
-            fileInput.click();
-        });
-    }
-});
-// Hero upload area functionality and event handlers
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initializing homepage functionality...');
-    
-    // Fix typing animation
-    setTimeout(startTypingAnimation, 300);
-    
-    // Hero file input handler
-    const heroFileInput = document.getElementById('heroFileInput');
-    if (heroFileInput) {
-        heroFileInput.addEventListener('change', handleHeroFile);
-    }
-    
-    // Hero prompt input enter key handler
-    const heroPromptInput = document.getElementById('heroPromptInput');
-    if (heroPromptInput) {
-        heroPromptInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendHeroMessage();
-            }
-        });
-    }
-    
-    // Hero send button handler
-    const heroSendBtn = document.getElementById('heroSendBtn');
-    if (heroSendBtn) {
-        heroSendBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            sendHeroMessage();
-        });
-    }
-    
-    // Hero model button handler
-    const heroModelBtn = document.getElementById('heroModelBtn');
-    if (heroModelBtn) {
-        heroModelBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleModelDropdown();
-        });
-    }
-    
-    // File upload button handler
-    const fileUploadBtn = document.querySelector('.file-upload-btn');
-    if (fileUploadBtn) {
-        fileUploadBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('heroFileInput').click();
-        });
-    }
-    
-    // Drag and drop for hero chatbox
-    const heroUploadArea = document.getElementById('aiChatboxHero');
-    if (heroUploadArea) {
-        heroUploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            heroUploadArea.classList.add('dragover');
-        });
-
-        heroUploadArea.addEventListener('dragleave', function(e) {
-            if (!heroUploadArea.contains(e.relatedTarget)) {
-                heroUploadArea.classList.remove('dragover');
-            }
-        });
-
-        heroUploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            heroUploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                heroUploadedFile = files[0];
-                showHeroFilePreview(files[0]);
-            }
-        });
-    }
-    
-    // Help button handler
-    const helpBtn = document.querySelector('.nav-actions .btn-outline');
-    if (helpBtn) {
-        helpBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showHelpPage();
-        });
-    }
-    
-    // Get Started button handler
-    const getStartedBtn = document.querySelector('.nav-actions .btn-primary');
-    if (getStartedBtn) {
-        getStartedBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToUpload();
-        });
-    }
-    
-    console.log('Homepage functionality initialized');
-});
 // Also update the existing drag and drop for hero area
 const heroUploadArea = document.getElementById('heroUploadArea');
 if (heroUploadArea) {
@@ -3803,17 +3691,6 @@ function showMessage(message, type) {
         }
     }, 5000);
 }
-        
-document.addEventListener('DOMContentLoaded', function() {
-    const canvas = document.getElementById('chart');
-    const container = document.getElementById('chartContainer');
-    
-    if (canvas && container) {
-        canvas.style.width = '100%';
-        canvas.style.height = '400px';
-        container.style.position = 'relative';
-    }
-});
 
 
 // Page Navigation Functions
@@ -3924,12 +3801,6 @@ function showDataPage() {
             document.getElementById('insightsCard').style.display = 'block'; 
         }, 500);
     }
-    setTimeout(() => {
-    const typingText = document.getElementById('typingText');
-    if (typingText) {
-        startTypingAnimation();
-    }
-}, 200);
 }
 
 let selectedXAxis = '';
@@ -3991,12 +3862,9 @@ function selectColumn(axis, column) {
 }
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(event) {
-    if (!event.target.closest('.claude-dropdown')) {
-        document.querySelectorAll('.claude-dropdown').forEach(dropdown => {
-            dropdown.classList.remove('open');
-        });
-        document.querySelectorAll('.claude-dropdown-menu').forEach(menu => {
-            menu.classList.remove('show');
+    if (!event.target.closest('.model-selector-btn') && !event.target.closest('.model-dropdown')) {
+        document.querySelectorAll('.model-dropdown').forEach(dropdown => {
+            dropdown.classList.remove('show');
         });
     }
 });
@@ -4301,18 +4169,6 @@ function startTypingAnimation() {
     }, 100);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - Starting typing animation');
-    
-    // Ensure the page is fully loaded before starting animation
-    if (document.readyState === 'loading') {
-        window.addEventListener('load', () => {
-            setTimeout(startTypingAnimation, 300);
-        });
-    } else {
-        setTimeout(startTypingAnimation, 100);
-    }
-});
 
 let selectedModel = 'llama3';
 let heroUploadedFile = null;
@@ -4375,47 +4231,7 @@ function updateModelButtonText(modelName) {
         buttonText.textContent = modelNames[modelName] || 'Llama 3';
     }
 }
-function selectModel(modelName) {
-    selectedModel = modelName;
-    
-    // Update all model options
-    document.querySelectorAll('#modelDropdown .model-option').forEach(option => {
-        option.classList.remove('selected');
-        const check = option.querySelector('i');
-        if (check) {
-            check.style.opacity = '0';
-        }
-    });
-    
-    // Select the clicked model
-    document.querySelectorAll('#modelDropdown .model-option').forEach(option => {
-        if (option.dataset.model === modelName) {
-            option.classList.add('selected');
-            const check = option.querySelector('i');
-            if (check) {
-                check.style.opacity = '1';
-            }
-        }
-    });
-    
-    // Close dropdown
-    document.getElementById('modelDropdown').classList.remove('show');
 
-    updateModelButtonText(modelName);
-}
-
-function updateModelButtonText(modelName) {
-    const modelNames = {
-        'llama3': 'Llama 3',
-        'llama4-maverick': 'Llama 4 Maverick',
-        'llama4-scout': 'Llama 4 Scout'
-    };
-    
-    const buttonText = document.getElementById('selectedModelText');
-    if (buttonText) {
-        buttonText.textContent = modelNames[modelName] || 'Claude Sonnet 4';
-    }
-}
 function selectDataModel(modelName) {
     selectedModel = modelName;
     
@@ -4610,11 +4426,11 @@ function generateChatTitleFromMessage(message) {
     }
 }
 function startChatWithMessage(message, file) {
-    // Initialize chat log
-    createChatLog();
+    console.log('Starting chat with message:', message);
     
-    // Show floating chatbox
+    // Show floating chatbox and chat area
     document.getElementById('floatingChatbox').style.display = 'block';
+    document.getElementById('chatArea').style.display = 'block';
     
     // Add user message to chat
     addToChatLog('user', message);
@@ -4633,7 +4449,6 @@ function startChatWithMessage(message, file) {
                 response = `I see you've uploaded a file. For data visualization, please upload your data files using the upload area in the top left panel. I can help analyze CSV, Excel, or JSON files for creating charts and insights.`;
             }
         } else {
-            // Generate a response based on the message content
             if (message.toLowerCase().includes('data') || message.toLowerCase().includes('chart') || message.toLowerCase().includes('visualization')) {
                 response = `I'd be happy to help you with data visualization! Please upload your data file using the upload area on the left, and I can help you create charts and provide insights about your data.`;
             } else if (message.toLowerCase().includes('help')) {
@@ -4655,7 +4470,7 @@ function startChatWithMessage(message, file) {
                 );
             }
         }
-    }, 1500); // 1.5 second delay to simulate AI thinking
+    }, 1500);
 }
 function sendDataMessage() {
     const input = document.getElementById('dataPromptInput');
@@ -4806,41 +4621,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const heroInput = document.getElementById('heroPromptInput');
-    const dataInput = document.getElementById('dataPromptInput');
-    
-    if (heroInput) {
-        heroInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendHeroMessage();
-            }
-        });
-    }
-    
-    if (dataInput) {
-        dataInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendDataMessage();
-            }
-        });
-    }
-
-    // Fix hero send button
-    const heroSendBtn = document.getElementById('heroSendBtn');
-    if (heroSendBtn) {
-        heroSendBtn.addEventListener('click', sendHeroMessage);
-    }
-
-    // Fix model dropdown
-    const heroModelBtn = document.getElementById('heroModelBtn');
-    if (heroModelBtn) {
-        heroModelBtn.addEventListener('click', toggleModelDropdown);
-    }
-});
-document.addEventListener('DOMContentLoaded', startTypingAnimation);
        
 let chatHistory = [];
 let currentChatId = null;
@@ -5215,6 +4995,8 @@ function enableTitleEdit(element) {
 }
 
 function showHelpPage() {
+    console.log('Showing help page');
+    
     // Hide all other pages
     document.getElementById('heroSection').style.display = 'none';
     document.getElementById('mainContainer').style.display = 'none';
@@ -5269,31 +5051,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Initialize chat system
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize empty chat history
-    chatHistory = [];
-    
-    // Show floating chatbox when data is loaded
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-                const insightsCard = document.getElementById('insightsCard');
-                if (insightsCard && insightsCard.style.display !== 'none') {
-                    document.getElementById('floatingChatbox').style.display = 'block';
-                }
-            }
-        });
-    });
-    
-    const insightsCard = document.getElementById('insightsCard');
-    if (insightsCard) {
-        observer.observe(insightsCard, { 
-            attributes: true, 
-            attributeFilter: ['style'] 
-        });
-    }
-});
+
 
 function openChartInNewWindow() {
     if (!currentChart) {
@@ -5325,7 +5083,147 @@ function openChartInNewWindow() {
     newWindow.document.write('</body></html>');
     newWindow.document.close();
 }
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Initializing everything...');
+    
+    // Initialize chat history
+    chatHistory = [];
+    
+    // Start typing animation
+    setTimeout(() => {
+        startTypingAnimation();
+    }, 500);
+    
+    // Initialize all event handlers
+    initializeEventHandlers();
+    
+    // Fix canvas
+    fixCanvasSize();
+    
+    // Show floating chatbox when data is loaded
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                const insightsCard = document.getElementById('insightsCard');
+                if (insightsCard && insightsCard.style.display !== 'none') {
+                    document.getElementById('floatingChatbox').style.display = 'block';
+                }
+            }
+        });
+    });
+    
+    const insightsCard = document.getElementById('insightsCard');
+    if (insightsCard) {
+        observer.observe(insightsCard, { 
+            attributes: true, 
+            attributeFilter: ['style'] 
+        });
+    }
+});
 
+function initializeEventHandlers() {
+    console.log('Initializing event handlers...');
+    
+    // Hero file input handler
+    const heroFileInput = document.getElementById('heroFileInput');
+    if (heroFileInput) {
+        heroFileInput.addEventListener('change', handleHeroFile);
+    }
+    
+    // Hero prompt input enter key handler
+    const heroPromptInput = document.getElementById('heroPromptInput');
+    if (heroPromptInput) {
+        heroPromptInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendHeroMessage();
+            }
+        });
+    }
+    
+    // Hero send button handler
+    const heroSendBtn = document.getElementById('heroSendBtn');
+    if (heroSendBtn) {
+        heroSendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            sendHeroMessage();
+        });
+    }
+    
+    // Help button handler
+    const helpButton = document.getElementById('helpButton');
+    if (helpButton) {
+        helpButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            showHelpPage();
+        });
+    }
+    
+    // Hero model button handler
+    const heroModelBtn = document.getElementById('heroModelBtn');
+    if (heroModelBtn) {
+        heroModelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleModelDropdown();
+        });
+    }
+    
+    // File upload button handler
+    const fileUploadBtn = document.querySelector('.file-upload-btn');
+    if (fileUploadBtn) {
+        fileUploadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('heroFileInput').click();
+        });
+    }
+    
+    // Drag and drop for hero chatbox
+    const heroUploadArea = document.getElementById('aiChatboxHero');
+    if (heroUploadArea) {
+        heroUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            heroUploadArea.classList.add('dragover');
+        });
+
+        heroUploadArea.addEventListener('dragleave', function(e) {
+            if (!heroUploadArea.contains(e.relatedTarget)) {
+                heroUploadArea.classList.remove('dragover');
+            }
+        });
+
+        heroUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            heroUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                heroUploadedFile = files[0];
+                showHeroFilePreview(files[0]);
+            }
+        });
+    }
+    
+    // Get Started button handler
+    const getStartedBtn = document.querySelector('.nav-actions .btn-primary');
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            scrollToUpload();
+        });
+    }
+    
+    // Data input handlers
+    const dataInput = document.getElementById('dataPromptInput');
+    if (dataInput) {
+        dataInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendDataMessage();
+            }
+        });
+    }
+    
+    console.log('Event handlers initialized');
+}
         
 </script>
 </body>
