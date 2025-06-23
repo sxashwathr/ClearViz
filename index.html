@@ -1416,65 +1416,43 @@
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     border-radius: 20px;
-    padding: 2px;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(88, 166, 255, 0.8), 
-        transparent);
+    padding: 1px;
+    background: linear-gradient(90deg, transparent, transparent, #58a6ff, transparent, transparent);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: xor;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-    animation: movingLight 3s linear infinite;
-    z-index: 1;
+    animation: borderTravel 4s linear infinite;
 }
 
-@keyframes movingLight {
+@keyframes borderTravel {
     0% {
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(88, 166, 255, 0.8), 
-            transparent);
-        transform: translateX(-100%) rotate(0deg);
+        background: linear-gradient(90deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
     }
     25% {
-        background: linear-gradient(180deg, 
-            transparent, 
-            rgba(88, 166, 255, 0.8), 
-            transparent);
-        transform: translateX(0%) rotate(90deg);
+        background: linear-gradient(180deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 50% 0%;
     }
     50% {
-        background: linear-gradient(270deg, 
-            transparent, 
-            rgba(88, 166, 255, 0.8), 
-            transparent);
-        transform: translateX(100%) rotate(180deg);
+        background: linear-gradient(270deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 100% 50%;
     }
     75% {
-        background: linear-gradient(0deg, 
-            transparent, 
-            rgba(88, 166, 255, 0.8), 
-            transparent);
-        transform: translateX(0%) rotate(270deg);
+        background: linear-gradient(0deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 50% 100%;
     }
     100% {
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(88, 166, 255, 0.8), 
-            transparent);
-        transform: translateX(-100%) rotate(360deg);
+        background: linear-gradient(90deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
     }
-}
-
-.ai-chatbox-hero > * {
-    position: relative;
-    z-index: 2;
 }
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
