@@ -896,8 +896,8 @@
 
 .hero-title {
     animation-delay: 0.4s;
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
     animation: fadeInUp 0.8s ease-out forwards;
 }
 
@@ -1408,27 +1408,70 @@
     animation: fadeInUp 0.8s ease-out forwards;
 }
 
+.ai-chatbox-hero {
+    position: relative;
+    overflow: hidden;
+}
+
 .ai-chatbox-hero::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        rgba(88, 166, 255, 0.6) 0%, 
-        rgba(188, 140, 255, 0.6) 25%, 
-        rgba(63, 185, 80, 0.6) 50%, 
-        rgba(88, 166, 255, 0.6) 75%, 
-        rgba(188, 140, 255, 0.6) 100%);
+    inset: 0;
     border-radius: 20px;
-    z-index: -1;
-    animation: borderGlow 4s ease-in-out infinite;
+    padding: 1px;
+    background: linear-gradient(90deg, transparent, transparent, #58a6ff, transparent, transparent);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    animation: borderTravel 4s linear infinite;
 }
 
-@keyframes borderGlow {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
+@keyframes borderTravel {
+    0% {
+        background: linear-gradient(90deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+    }
+    25% {
+        background: linear-gradient(180deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 50% 0%;
+    }
+    50% {
+        background: linear-gradient(270deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 100% 50%;
+    }
+    75% {
+        background: linear-gradient(0deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 50% 100%;
+    }
+    100% {
+        background: linear-gradient(90deg, #58a6ff, transparent, transparent, transparent, transparent);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+    }
+}
+.ai-chatbox-hero.dragover {
+    border-color: var(--accent-blue);
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(17, 19, 23, 0.95) 100%);
+    transform: scale(1.02);
+}
+
+.ai-chatbox-hero.dragover::after {
+    content: "Drop your file here. 📁";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(88, 166, 255, 0.9);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    z-index: 10;
 }
 .ai-chatbox-hero.dragover {
     border-color: var(--accent-blue);
@@ -2137,6 +2180,14 @@ body.sidebar-open .hero-section {
     text-align: left;
     margin: 0;
 }
+.upload-area:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 182, 193, 0.1) 0%, 
+        rgba(186, 85, 211, 0.1) 25%, 
+        rgba(138, 43, 226, 0.1) 50%, 
+        rgba(75, 0, 130, 0.1) 75%, 
+        rgba(255, 182, 193, 0.1) 100%);
+}
 
 .formats-grid {
     display: grid;
@@ -2321,7 +2372,11 @@ body.sidebar-open .hero-section {
     flex-shrink: 0;
     margin-top: 0.25rem;
 }
-
+.typing-text {
+    display: inline-block;
+    min-height: 1.2em;
+}
+        
 .ai-bubble-avatar img {
     width: 100%;
     height: 100%;
@@ -2417,31 +2472,31 @@ body.sidebar-open .hero-section {
     <div class="chatbox-input-container">
         <div class="chatbox-input-wrapper">
             <div class="file-upload-btn" onclick="document.getElementById('heroFileInput').click()">
-                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-cloud-upload-alt"></i>
             </div>
             <input type="text" class="chatbox-input" placeholder="Ask about your data..." id="heroPromptInput">
-           <div class="model-selector-btn" onclick="toggleModelDropdown()">
-    <span id="selectedModelText">Claude Sonnet 4</span>
-    <i class="fas fa-chevron-down"></i>
-</div>
-            <button class="send-btn" onclick="sendHeroMessage()">
+            <div class="model-selector-btn" id="heroModelBtn" onclick="toggleModelDropdown()">
+                <span id="selectedModelText">Llama 3</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <button class="send-btn" id="heroSendBtn" onclick="sendHeroMessage()">
                 <i class="fas fa-arrow-up"></i>
             </button>
         </div>
         <div class="model-dropdown" id="modelDropdown">
-    <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
-        <i class="fas fa-check"></i> Llama 3
-    </div>
-    <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
-        <i class="fas fa-check"></i> Llama 4 Maverick
-    </div>
-    <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
-        <i class="fas fa-check"></i> Llama 4 Scout
-    </div>
-    <div class="model-option disabled">
-        <i class="fas fa-clock"></i> More models coming soon
-    </div>
-</div>
+            <div class="model-option selected" data-model="llama3" onclick="selectModel('llama3')">
+                <i class="fas fa-check"></i> Llama 3
+            </div>
+            <div class="model-option" data-model="llama4-maverick" onclick="selectModel('llama4-maverick')">
+                <i class="fas fa-check"></i> Llama 4 Maverick
+            </div>
+            <div class="model-option" data-model="llama4-scout" onclick="selectModel('llama4-scout')">
+                <i class="fas fa-check"></i> Llama 4 Scout
+            </div>
+            <div class="model-option disabled">
+                <i class="fas fa-clock"></i> More models coming soon
+            </div>
+        </div>
     </div>
     <input type="file" id="heroFileInput" style="display: none;" accept=".csv,.xlsx,.xls,.json,image/*,.pdf" onchange="handleHeroFile(event)">
     <div class="file-preview" id="heroFilePreview" style="display: none;">
@@ -2484,7 +2539,7 @@ body.sidebar-open .hero-section {
         <aside class="sidebar">
             <div class="sidebar-section">
                 <h3 class="section-title">Data Source</h3>
-                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()" id="uploadArea">
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
@@ -2511,59 +2566,59 @@ body.sidebar-open .hero-section {
                         Pie Chart
                     </div>
                     <div class="chart-type-btn" data-type="regression" onclick="selectChartType('regression')">
-                        <i class="fas fa-arrow-up""></i>
+                        <i class="fas fa-arrow-up"></i>
                         Regression
                     </div>
                 </div>
             </div>
 
             <div class="sidebar-section" id="axisSection" style="display: none;">
-    <h3 class="section-title">Data Mapping</h3>
-    <div class="axis-selectors">
-        <div class="axis-selector-group">
-            <label class="form-label">X-Axis (Categories)</label>
-            <div class="claude-dropdown" id="xAxisDropdown">
-                <div class="claude-dropdown-button" onclick="toggleDropdown('xAxis')">
-                    <div class="claude-dropdown-content">
-                        <div class="claude-dropdown-title" id="xAxisSelected">Select column...</div>
+                <h3 class="section-title">Data Mapping</h3>
+                <div class="axis-selectors">
+                    <div class="axis-selector-group">
+                        <label class="form-label">X-Axis (Categories)</label>
+                        <div class="claude-dropdown" id="xAxisDropdown">
+                            <div class="claude-dropdown-button" onclick="toggleDropdown('xAxis')">
+                                <div class="claude-dropdown-content">
+                                    <div class="claude-dropdown-title" id="xAxisSelected">Select column...</div>
+                                </div>
+                                <div class="claude-dropdown-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="claude-dropdown-menu" id="xAxisMenu">
+                                <!-- Options will be populated here -->
+                            </div>
+                        </div>
                     </div>
-                    <div class="claude-dropdown-arrow">
-                        <i class="fas fa-chevron-down"></i>
+                    <div class="axis-selector-group">
+                        <label class="form-label">Y-Axis (Values)</label>
+                        <div class="claude-dropdown" id="yAxisDropdown">
+                            <div class="claude-dropdown-button" onclick="toggleDropdown('yAxis')">
+                                <div class="claude-dropdown-content">
+                                    <div class="claude-dropdown-title" id="yAxisSelected">Select column...</div>
+                                </div>
+                                <div class="claude-dropdown-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="claude-dropdown-menu" id="yAxisMenu">
+                                <!-- Options will be populated here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="claude-dropdown-menu" id="xAxisMenu">
-                    <!-- Options will be populated here -->
+                <div class="axis-selectors" style="margin-top: 1rem;">
+                    <div class="axis-selector-group">
+                        <label class="form-label">X-Axis Title</label>
+                        <input type="text" class="form-input" id="xAxisTitle" placeholder="X-Axis Title" onchange="updateChart()">
+                    </div>
+                    <div class="axis-selector-group">
+                        <label class="form-label">Y-Axis Title</label>
+                        <input type="text" class="form-input" id="yAxisTitle" placeholder="Y-Axis Title" onchange="updateChart()">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="axis-selector-group">
-            <label class="form-label">Y-Axis (Values)</label>
-            <div class="claude-dropdown" id="yAxisDropdown">
-                <div class="claude-dropdown-button" onclick="toggleDropdown('yAxis')">
-                    <div class="claude-dropdown-content">
-                        <div class="claude-dropdown-title" id="yAxisSelected">Select column...</div>
-                    </div>
-                    <div class="claude-dropdown-arrow">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-                <div class="claude-dropdown-menu" id="yAxisMenu">
-                    <!-- Options will be populated here -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="axis-selectors" style="margin-top: 1rem;">
-        <div class="axis-selector-group">
-            <label class="form-label">X-Axis Title</label>
-            <input type="text" class="form-input" id="xAxisTitle" placeholder="X-Axis Title" onchange="updateChart()">
-        </div>
-        <div class="axis-selector-group">
-            <label class="form-label">Y-Axis Title</label>
-            <input type="text" class="form-input" id="yAxisTitle" placeholder="Y-Axis Title" onchange="updateChart()">
-        </div>
-    </div>
-</div>
         </aside>
 
         <main class="main-content">
@@ -3461,6 +3516,11 @@ function updateChart() {
     const chartData = prepareChartData(xColumn, yColumn, selectedChartType, maxRows);
     renderChart(selectedChartType, chartData);
     generateInsights(selectedChartType, xColumn, yColumn, chartData);
+    if (selectedXAxis && selectedYAxis) {
+    setTimeout(() => {
+        generateChartTitle(selectedXAxis, selectedYAxis, selectedChartType);
+    }, 500);
+}
 }
 function showEmptyChart() {
     const chartContainer = document.getElementById('chartContainer');
@@ -3593,6 +3653,16 @@ document.addEventListener('DOMContentLoaded', function() {
         helpButton.addEventListener('click', showHelp);
     }
 });
+const heroHelpBtn = document.querySelector('.nav-actions .btn-outline');
+const heroGetStartedBtn = document.querySelector('.nav-actions .btn-primary');
+
+if (heroHelpBtn) {
+    heroHelpBtn.addEventListener('click', showHelpPage);
+}
+
+if (heroGetStartedBtn) {
+    heroGetStartedBtn.addEventListener('click', scrollToUpload);
+}
 
 // Also update the existing drag and drop for hero area
 const heroUploadArea = document.getElementById('heroUploadArea');
@@ -3757,6 +3827,12 @@ function showDataPage() {
             document.getElementById('insightsCard').style.display = 'block'; 
         }, 500);
     }
+    setTimeout(() => {
+    const typingText = document.getElementById('typingText');
+    if (typingText) {
+        startTypingAnimation();
+    }
+}, 200);
 }
 
 let selectedXAxis = '';
@@ -4071,19 +4147,27 @@ function deleteFile(index) {
     showMessage('File deleted successfully', 'success');
 }
 function startTypingAnimation() {
+    console.log('Starting typing animation...');
+    
     const typingText = document.getElementById('typingText');
     const animatedSubtitle = document.querySelector('.animated-subtitle');
     const cursor = document.querySelector('.typing-cursor');
     
-    if (!typingText) return;
+    if (!typingText) {
+        console.error('typingText element not found');
+        return;
+    }
     
     // Reset elements
     typingText.textContent = '';
+    
     if (animatedSubtitle) {
         animatedSubtitle.classList.remove('show');
     }
+    
     if (cursor) {
         cursor.style.display = 'inline-block';
+        cursor.style.opacity = '1';
     }
     
     const text = 'ClearViz';
@@ -4093,30 +4177,37 @@ function startTypingAnimation() {
         if (index < text.length) {
             typingText.textContent += text.charAt(index);
             index++;
-            setTimeout(typeText, 150);
+            setTimeout(typeText, 120);
         } else {
             // Animation complete
             setTimeout(() => {
                 if (cursor) {
-                    cursor.style.display = 'none';
+                    cursor.style.opacity = '0';
                 }
                 if (animatedSubtitle) {
                     animatedSubtitle.classList.add('show');
                 }
-            }, 600);
+            }, 800);
         }
     }
     
-    // Start typing after a delay
+    // Start typing immediately
     setTimeout(() => {
         typeText();
-    }, 1200);
+    }, 300);
 }
 
-// Make sure the animation starts when the page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, starting typing animation...');
-    startTypingAnimation();
+    console.log('DOM Content Loaded - Starting typing animation');
+    
+    // Ensure the page is fully loaded before starting animation
+    if (document.readyState === 'loading') {
+        window.addEventListener('load', () => {
+            setTimeout(startTypingAnimation, 300);
+        });
+    } else {
+        setTimeout(startTypingAnimation, 100);
+    }
 });
 
 let selectedModel = 'llama3';
@@ -4273,30 +4364,24 @@ function sendHeroMessage() {
     const input = document.getElementById('heroPromptInput');
     const message = input.value.trim();
     
+    // Don't proceed if no message and no file
     if (!message && !heroUploadedFile) {
-        return; // Don't proceed if no message and no file
+        return;
     }
     
-    // Create new chat if we have a message
-    if (message) {
-        const chatId = Date.now().toString();
-        const newChat = {
-            id: chatId,
-            title: 'New Chat',
-            files: [],
-            messages: [],
-            createdAt: new Date()
-        };
-        
-        chatHistory.unshift(newChat);
-        currentChatId = chatId;
-        updateChatList();
-        
-        // Generate auto title based on message
-        setTimeout(() => {
-            generateChatTitleFromMessage(message);
-        }, 1000);
-    }
+    // Create new chat if we have a message or file
+    const chatId = Date.now().toString();
+    const newChat = {
+        id: chatId,
+        title: heroUploadedFile ? heroUploadedFile.name.replace(/\.[^/.]+$/, "") : 'New Chat',
+        files: [],
+        messages: [],
+        createdAt: new Date()
+    };
+    
+    chatHistory.unshift(newChat);
+    currentChatId = chatId;
+    updateChatList();
     
     // Process file if uploaded
     if (heroUploadedFile) {
@@ -4305,23 +4390,56 @@ function sendHeroMessage() {
         
         if (supportedFormats.includes(fileExtension)) {
             processFile(heroUploadedFile);
+        } else {
+            // Navigate to chat page even with unsupported files
+            showDataPage();
+            setTimeout(() => {
+                startChatWithMessage(message || "I uploaded a file", heroUploadedFile);
+            }, 500);
         }
-    }
-    
-    // Navigate to data page
-    showDataPage();
-    
-    // Start chat with the message
-    if (message) {
+    } else {
+        // Just message, no file
+        showDataPage();
         setTimeout(() => {
-            startChatWithMessage(message, heroUploadedFile);
+            startChatWithMessage(message, null);
         }, 500);
     }
     
     // Clear inputs
     input.value = '';
     removeHeroFile();
+    document.addEventListener('DOMContentLoaded', function() {
+    const heroUploadArea = document.getElementById('aiChatboxHero');
+    
+    if (heroUploadArea) {
+        heroUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            heroUploadArea.classList.add('dragover');
+        });
+
+        heroUploadArea.addEventListener('dragleave', (e) => {
+            // Only remove dragover if we're leaving the chatbox completely
+            if (!heroUploadArea.contains(e.relatedTarget)) {
+                heroUploadArea.classList.remove('dragover');
+            }
+        });
+
+        heroUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            heroUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                heroUploadedFile = files[0];
+                const preview = document.getElementById('heroFilePreview');
+                const fileName = preview.querySelector('.file-name');
+                fileName.textContent = files[0].name;
+                preview.style.display = 'block';
+            }
+        });
+    }
+});
 }
+
 function generateChatTitleFromMessage(message) {
     // Create a title based on the first few words of the message
     const words = message.split(' ').slice(0, 4).join(' ');
@@ -4569,7 +4687,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dataInput = document.getElementById('dataPromptInput');
     
     if (heroInput) {
-        heroInput.addEventListener('keydown', (e) => {
+        heroInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendHeroMessage();
@@ -4584,6 +4702,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 sendDataMessage();
             }
         });
+    }
+
+    // Fix hero send button
+    const heroSendBtn = document.getElementById('heroSendBtn');
+    if (heroSendBtn) {
+        heroSendBtn.addEventListener('click', sendHeroMessage);
+    }
+
+    // Fix model dropdown
+    const heroModelBtn = document.getElementById('heroModelBtn');
+    if (heroModelBtn) {
+        heroModelBtn.addEventListener('click', toggleModelDropdown);
     }
 });
 document.addEventListener('DOMContentLoaded', startTypingAnimation);
@@ -5048,8 +5178,10 @@ function openChartInNewWindow() {
     }
     
     const canvas = document.getElementById('chart');
-    const chartDataURL = canvas.toDataURL();
-    
+    const chartDataURL = canvas.toDataURL('image/png');
+    const currentFile = uploadedFiles[currentFileIndex];
+    const chartTitle = currentFile ? `${currentFile.name} - ${selectedChartType} Chart` : 'Chart';
+
     const newWindow = window.open('', '_blank', 'width=800,height=600,resizable=yes');
     
     // Write HTML content without problematic nested scripts
